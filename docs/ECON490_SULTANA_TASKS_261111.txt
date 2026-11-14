@@ -1,0 +1,27 @@
+ECON 490 / Sultana 11-18 task list
+Generated 2026-11-11. Copy-paste block below is the message to Sultana.
+
+================ COPY FROM HERE ================
+
+Hey Sultana! Quick heads-up for the Nov 18 Econometric Files drop. Hansen and Neal are handling all the Stata code, so no need to touch any .do files. Could you own the paper side?
+
+- Write the Data section (samples: Europe 23 countries 2006-2019, OECD 26 countries 2000-2024; variable definitions and units) and the Results section (equations, coefficients, SEs, stars, N, fixed effects, and the heteroskedasticity / serial correlation / winsor notes). Use the four logs in log_files/ - we'll send you the exact numbers so you don't have to guess.
+- Tidy the exported .docx tables into proper paper tables. No raw Stata output anywhere in the paper.
+- Fill literature/ with the PDFs we're still citing, and drop a draft intro + lit review + hypothesis into paper/ (three parts: outcome, mechanism, hypothesis).
+- Go through the Final Paper Checklist line by line and flag anything missing, especially the mean/sd/min/max/N table and the formatted graph.
+- Check with the instructor about written AI permission, then make sure do + log + tables + figures are all synced in OneDrive and ready for Canvas.
+
+That's it - anything code-related comes to us. Thanks!
+
+================ COPY TO HERE ==================
+
+Notes for Hansen (not for Sultana)
+
+Why these tasks: every item is on the Final Paper Checklist, is currently unfilled (paper/ and literature/ are empty), and does not require editing do files. Sultana must not change sample definitions or rewrite numbers - those are tied to the logs.
+
+What the AIs can take off her plate:
+- This AI (has the ECON 490 knowledge base, has run the full 0-4 chain, keeps the command whitelist): draft the Results text and clean table layouts straight from the logs; draft Data section variable definitions; map every Checklist line to an existing output file; format citations; proofread her English; write graph titles/notes/units; and re-run the chain if any number changes.
+- Hansen's / Neal's AIs (no ECON 490 knowledge base): fine for plain language polishing, consistent formatting, reference metadata checks, and meeting notes. Not reliable for course command whitelists, p-value conventions, or model-specification calls - that gap is exactly what caused the earlier feedback round to need correcting.
+- Sultana herself: final authorial sign-off, contacting the instructor, academic-integrity attribution, and the actual Canvas submission.
+
+Boundary: the @long-text literature table was only passed in as a header row, so the reference list below is based on the readable References / Literature review sections of ECON 490 Research (1).pdf.
