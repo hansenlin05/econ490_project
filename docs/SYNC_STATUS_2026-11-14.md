@@ -10,9 +10,11 @@ policy-build block were removed. A full rerun keeps all 2396 numbers in
 three rate columns; all reported coefficients, standard errors, p-values and
 sample sizes are identical.
 
-Binary deliverables (exported .docx/.xlsx tables, .png figures, .dta files and
-raw sources) are intentionally NOT mirrored here. They live in the team OneDrive
-project and are part of the Canvas submission.
+As of the second 14 Nov sync, do-file derivatives ARE mirrored here:
+`tables/` (5), `figures/` (4), `data_raw/` (8), `data_final/` (10) and the
+three numbered logs. This makes the repository a complete working mirror for
+teammate and AI handoff. It is still a mirror only: Canvas submissions come
+from the OneDrive project, not from GitHub.
 
 ## Submission state
 
