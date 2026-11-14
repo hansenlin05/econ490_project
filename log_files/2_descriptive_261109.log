@@ -1,0 +1,244 @@
+-------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  C:/Users/Hansen/UBC/ECON 490 003 2026W1 Seminar in Applied Economi
+> cs - 2_Team/econ490_project/log_files/2_descriptive_261109.log
+  log type:  text
+ opened on:  14 Nov 2026, 11:30:24
+. }
+
+. 
+. * Load the saved file if the build step was skipped
+. if ${run_build}==0 {
+.     use "${datadir_final}/europe_analysis_261109.dta", clear
+. }
+
+. 
+. summarize year
+
+    Variable |        Obs        Mean    Std. dev.       Min        Max
+-------------+---------------------------------------------------------
+        year |        295      2012.8     4.02847       2006       2019
+
+. 
+. * Univariate statistics
+. summarize employment_gap male_rate female_rate fatherweeks10 ///
+>     lag_fatherweeks10 lag_lngdp lag_gdp_growth leave_gdp
+
+    Variable |        Obs        Mean    Std. dev.       Min        Max
+-------------+---------------------------------------------------------
+employment~p |        295    27.64681    12.06477   7.680142   60.93509
+   male_rate |        295     90.7258    3.839696   74.52456   97.55639
+ female_rate |        295    63.07899    12.57904     34.455   84.52414
+fatherwee~10 |        295    .7429291    .9252702          0       2.86
+lag_fathe~10 |        272     .730279    .9217422          0       2.86
+-------------+---------------------------------------------------------
+   lag_lngdp |        295     10.2962    .5864253   9.059352   11.63002
+lag_gdp_gr~h |        295    1.881435    3.396585  -14.63022   24.62399
+   leave_gdp |        295    .4184661    .2936958   .0127021   1.559837
+
+. summarize employment_gap, detail
+
+                       employment_gap
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%     10.46352       7.680142
+ 5%     11.57448       8.017596
+10%     12.95757       10.46352       Obs                 295
+25%     17.94217        10.5433       Sum of wgt.         295
+
+50%       26.561                      Mean           27.64681
+                        Largest       Std. dev.      12.06477
+75%     33.92188       57.35712
+90%     48.25383       59.54489       Variance       145.5586
+95%     49.83445        60.4019       Skewness       .6734948
+99%     59.54489       60.93509       Kurtosis       2.700785
+
+. return list
+
+scalars:
+                  r(N) =  295
+              r(sum_w) =  295
+               r(mean) =  27.64680736190332
+                r(Var) =  145.5585725961991
+                 r(sd) =  12.06476574974413
+           r(skewness) =  .6734948454774369
+           r(kurtosis) =  2.700785153030262
+                r(sum) =  8155.80817176148
+                r(min) =  7.680142071613432
+                r(max) =  60.93508849642166
+                 r(p1) =  10.46352078090882
+                 r(p5) =  11.5744820512363
+                r(p10) =  12.95756580719532
+                r(p25) =  17.94217014540114
+                r(p50) =  26.56100437895439
+                r(p75) =  33.92188170262702
+                r(p90) =  48.25382876246789
+                r(p95) =  49.83444866420604
+                r(p99) =  59.54489322240178
+
+. summarize lag_lngdp, detail
+
+               Lagged log real GDP per capita
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%      9.18612       9.059352
+ 5%     9.361191       9.120159
+10%      9.49717        9.18612       Obs                 295
+25%     9.778201       9.228888       Sum of wgt.         295
+
+50%     10.48138                      Mean            10.2962
+                        Largest       Std. dev.      .5864253
+75%      10.7062       11.58191
+90%     10.85929       11.59314       Variance       .3438946
+95%     11.21221       11.60911       Skewness        .011884
+99%     11.59314       11.63002       Kurtosis       2.287678
+
+. return list
+
+scalars:
+                  r(N) =  295
+              r(sum_w) =  295
+               r(mean) =  10.29620294610108
+                r(Var) =  .3438946373963513
+                 r(sd) =  .58642530419172
+           r(skewness) =  .0118840446775288
+           r(kurtosis) =  2.287678144325351
+                r(sum) =  3037.37986909982
+                r(min) =  9.059352020697489
+                r(max) =  11.63001624718559
+                 r(p1) =  9.186119818358597
+                 r(p5) =  9.361190913672198
+                r(p10) =  9.497170250359037
+                r(p25) =  9.778200762615235
+                r(p50) =  10.48137588935618
+                r(p75) =  10.70620383140487
+                r(p90) =  10.85929094712964
+                r(p95) =  11.21221292603912
+                r(p99) =  11.59313541827282
+
+. 
+. * Mean, sd, min, max and N for all variables
+. preserve
+
+.     collapse ///
+>         (mean) mean_gap=employment_gap (sd) sd_gap=employment_gap ///
+>         (min) min_gap=employment_gap (max) max_gap=employment_gap ///
+>         (count) n_gap=employment_gap ///
+>         (mean) mean_leave10=lag_fatherweeks10 (sd) sd_leave10=lag_fatherweeks
+> 10 ///
+>         (min) min_leave10=lag_fatherweeks10 (max) max_leave10=lag_fatherweeks
+> 10 ///
+>         (count) n_leave10=lag_fatherweeks10 ///
+>         (mean) mean_lngdp=lag_lngdp (sd) sd_lngdp=lag_lngdp ///
+>         (min) min_lngdp=lag_lngdp (max) max_lngdp=lag_lngdp ///
+>         (count) n_lngdp=lag_lngdp ///
+>         (mean) mean_growth=lag_gdp_growth (sd) sd_growth=lag_gdp_growth ///
+>         (min) min_growth=lag_gdp_growth (max) max_growth=lag_gdp_growth ///
+>         (count) n_growth=lag_gdp_growth ///
+>         (mean) mean_spend=leave_gdp (sd) sd_spend=leave_gdp ///
+>         (min) min_spend=leave_gdp (max) max_spend=leave_gdp ///
+>         (count) n_spend=leave_gdp ///
+>         (mean) mean_male=male_rate (sd) sd_male=male_rate ///
+>         (min) min_male=male_rate (max) max_male=male_rate ///
+>         (count) n_male=male_rate ///
+>         (mean) mean_female=female_rate (sd) sd_female=female_rate ///
+>         (min) min_female=female_rate (max) max_female=female_rate ///
+>         (count) n_female=female_rate
+
+.     list
+
+     +-----------------------------------------------------------------+
+  1. | mean_gap |   sd_gap |  min_gap |  max_gap  | n_gap  | mean_~10  |
+     | 27.64681 | 12.06477 | 7.680142 | 60.93509  |   295  |  .730279  |
+     |----------+----------+----------+--------------------------------|
+     | sd_le~10 | min_l~10 | max_l~10 | n_lea~10 | mean_l~p | sd_lngdp |
+     | .9217423 |        0 |     2.86 |      272 |  10.2962 | .5864253 |
+     |----------+----------+-------------------------------------------|
+     | min_ln~p | max_ln~p | n_lngdp | mean_g~h | sd_gro~h | min_gro~h |
+     | 9.059352 | 11.63002 |     295 | 1.881435 | 3.396585 | -14.63022 |
+     |----------+----------+-------------------------------------------|
+     | max_gr~h | n_growth | mean_s~d | sd_spend | min_sp~d | max_sp~d |
+     | 24.62399 |      295 | .4184661 | .2936958 | .0127021 | 1.559837 |
+     |-------------------------------------------+---------------------|
+     | n_spend | mean_m~e |  sd_male | min_male  | max_male  | n_male  |
+     |     295 |  90.7258 | 3.839696 | 74.52456  | 97.55639  |    295  |
+     |-----------------------------------------------------------------|
+     |  mean_f~e  |  sd_fem~e  |  min_fe~e  |  max_fe~e  |  n_female   |
+     |  63.07899  |  12.57904  |    34.455  |  84.52414  |       295   |
+     +-----------------------------------------------------------------+
+
+.     export excel using "${tabledir}/descriptive_261109.xlsx", firstrow(variab
+> les) replace
+file C:/Users/Hansen/UBC/ECON 490 003 2026W1 Seminar in Applied Economics - 2_T
+> eam/econ490_project/tables/descriptive_261109.xlsx saved
+
+. restore
+
+. 
+. * Compact N/mean/sd table
+. dtable employment_gap lag_fatherweeks10 lag_lngdp lag_gdp_growth ///
+>     leave_gdp male_rate female_rate, ///
+>     export("${tabledir}/descriptive_dtable_261109.docx", replace)
+
+----------------------------------------------------------------------------
+                                                                 Summary    
+----------------------------------------------------------------------------
+N                                                                        295
+employment_gap                                               27.647 (12.065)
+Lagged father-specific paid leave, per 10 weeks                0.730 (0.922)
+Lagged log real GDP per capita                                10.296 (0.586)
+Lagged real GDP growth, percent                                1.881 (3.397)
+Public maternity and parental leave spending, percent of GDP   0.418 (0.294)
+male_rate                                                     90.726 (3.840)
+female_rate                                                  63.079 (12.579)
+----------------------------------------------------------------------------
+(collection DTable exported to file C:/Users/Hansen/UBC/ECON 490 003 2026W1
+ Seminar in Applied Economics -
+ 2_Team/econ490_project/tables/descriptive_dtable_261109.docx)
+
+. 
+. * Figure 1: gap against lagged leave
+. twoway (scatter employment_gap lag_fatherweeks10) ///
+>     (lfit employment_gap lag_fatherweeks10), ///
+>     title("Father-specific paid leave and the employment gap") ///
+>     xtitle("Lagged father-specific paid leave, per 10 weeks") ///
+>     ytitle("Male minus female employment rate, percentage points") ///
+>     legend(label(1 "Country-year observation") label(2 "Linear fit")) ///
+>     graphregion(color(white))
+
+. graph export "${figdir}/scatter_gap_leave_261109.png", as(png) replace
+file C:/Users/Hansen/UBC/ECON 490 003 2026W1 Seminar in Applied Economics -
+    2_Team/econ490_project/figures/scatter_gap_leave_261109.png saved as PNG
+    format
+
+. 
+. * Figure 2: outcome distribution
+. histogram employment_gap, ///
+>     title("Distribution of the employment gap") ///
+>     xtitle("Male minus female employment rate, percentage points") ///
+>     graphregion(color(white))
+(bin=17, start=7.6801421, width=3.1326439)
+
+. graph export "${figdir}/histogram_gap_261109.png", as(png) replace
+file C:/Users/Hansen/UBC/ECON 490 003 2026W1 Seminar in Applied Economics -
+    2_Team/econ490_project/figures/histogram_gap_261109.png saved as PNG
+    format
+
+. 
+. * Figure 3: average gap over time
+. bysort year: egen mean_gap = mean(employment_gap)
+
+. twoway (connected mean_gap year), ///
+>     title("Average employment gap, 23 European OECD countries") ///
+>     ytitle("Male minus female employment rate, percentage points") ///
+>     xtitle("Year") ///
+>     graphregion(color(white))
+
+. graph export "${figdir}/trend_gap_261109.png", as(png) replace
+file C:/Users/Hansen/UBC/ECON 490 003 2026W1 Seminar in Applied Economics -
+    2_Team/econ490_project/figures/trend_gap_261109.png saved as PNG format
+
+. 
+. //Close log if needed
+. if ${store_log_descriptive}==1 {
+.     cap log close

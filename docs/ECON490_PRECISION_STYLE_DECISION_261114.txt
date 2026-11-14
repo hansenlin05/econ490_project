@@ -1,0 +1,95 @@
+ECON 490 · 2026-11-14 · import 选项精度影响与代码水平复核记录
+生成时点：2026-11-14 上午（本机 date：2026-11-14）。
+本文件只记录本轮两个问题的实证结论，不是课程资料，也不是 do 文件注释。
+
+
+一、用户判据
+
+上一轮把 stringcols(_all) 与 allstring 判为「不能替换」，理由是去掉后四个 CSV 的
+md5 全变。本轮用户改了判据：如果只是精度差异、对研究影响微乎其微，就替换掉，
+保证 do 文件全部是课程白名单命令；同时审查代码有没有明显超出 COMET 教学水平
+和本科生水平、能否换成更简单且结果大致一样的写法。
+
+
+二、只去掉那 6 处 import 选项的定量影响（受控实跑：变体 B）
+
+唯一差别是 4 处 stringcols(_all) 与 2 处 allstring，其余代码逐字相同，从 data_raw
+整链重跑。
+
+样本与列：Europe 295 行、OECD 477 行，行数不变。四个 CSV 中只有 male_rate、
+female_rate、employment_gap 三列出现差异；total_paid_raw、reform_year、treated、
+known_policy、全部 GDP 控制等其余列逐字节相同。allstring 本身完全没有影响，
+精度差异全部来自 import delimited 把就业率读成 float。
+
+差异量级：
+    Europe  male_rate 8.49e-06、female_rate 5.63e-06、employment_gap 1.03e-05
+    OECD    male_rate 4.00e-06、female_rate 4.00e-06、employment_gap 7.08e-06
+    单位都是百分点；典型就业差距约为 7–20 个百分点，相对变化约百万分之一。
+
+描述统计日志：29 个显示数字变化，最大 1.67e-05，mean/sd/min/max/N 在论文两位
+小数下完全相同。
+
+结果日志：2396 个浮点数里 712 个只在第 5–6 位小数变化，中位数 3e-06。以下各行
+逐字相同：lag_fatherweeks10（14 行）、1.treated#1.post、event_time_dummy*、
+Number of observations、Number of groups、Prob >、F()、R-sq、lag_gdp_growth。
+最大两处差异分别是 Wald chi2(47) 18183.50 → 18183.49（0.01）与一个回归常数项
+-127.9567 → -127.9566（0.0001），都不是报告用系数。
+
+离散副作用只有一个：结果变量 1/99 缩尾实际改动观测数由 5 变 4，原因是一个观测
+恰落在临界值上；滞后人均 GDP 缩尾仍为 4。缩尾模型的 lag_fatherweeks10 系数
+在显示精度下未变。
+
+结论：这是 float 与 double 的存储精度差异，不是样本口径、变量定义、识别策略或
+模型设定的变化。系数、标准误、p 值、样本量、显著性结论与论文结论全部不变。
+按用户判据，去掉这两个选项。import delimited ..., varnames(1) 与
+import excel ..., sheet() cellrange() clear 本身逐字见于 CheatSheet p.3。
+
+
+三、代码水平审查与实际替换
+
+课程语料（COMET qmd、全部 Quiz/Test 提取文本、UsedDoFiles 29 份 do、CheatSheet）
+里 cond(、[_n-1]、[_n+1]、[1] 零命中；abs( 出现 5 次、L1. 63 次、F1. 1 次、
+egen 25 次、reshape 32 次、recast double 1 次。据此做了下面五类替换，全部在副本
+从 raw 整链验证，与「仅去选项」变体的四个 CSV md5 完全相同、三份 log 的
+46 / 131 / 2396 个浮点数逐字一致：
+
+    1. 在 isid iso year 后加 encode iso, generate(pid)、xtset pid year, yearly、
+       sort pid year，为讲义算子铺路。
+    2. bysort iso: egen aligned = max(cond(year==...,snapshot,.)) 四组对齐
+       → 每行一条 string(F1.snapshot,"%18.10g")。
+    3. same_ / nondecrease_ / increase_ / expansion 的 [_n-1] 下标 → L1. 算子。
+    4. cond(sex=="SEX_M","M","F") → generate + replace 两行。
+    5. bysort iso (reform_year): replace reform_year = reform_year[1]
+       → bysort iso: egen first_reform = min(reform_year) 配 replace。
+
+复核后另外清掉两类明显不属于本科生整洁代码的东西：4 条 destring 在去掉选项后
+在 log 里全部打印 already numeric; no replace，属空转命令，已删除；政策历史原被
+逐字复制了两遍（各约 79 行，只差 tempfile 后缀），已合并成一段，OECD 样本复用
+同一个 policy 临时文件。1_build_data_261109.do 由 357 行降到 275 行。
+
+保留并说明理由的写法：reshape wide（课程讲义讲过，比四次 merge 更易懂）、
+egen ... = mean()/min()/max()（课程逐字展示 mean()，min/max 是同类基础统计函数）、
+abs()、strpos()、real()、string()、missing()、inrange()、inlist()，以及
+generate + recast double + replace 三步（课程只逐字展示 recast double mpg，
+这三行是验算证明必需的精度写法，改成 generate double 反而不在白名单内）。
+这些都不是被禁的高级命令应用。
+
+当前四份 do 的命令首词全部在课程语料命中，没有 stringcols、allstring、cond(、
+[_n±1]、[1]、generate double、空转命令、重复块或交付记录式注释。
+
+
+四、正式项目状态
+
+四份 do 已全部落地并整链重跑：三份编号 log 正常 log close，无 r() 报错；
+四个 CSV 的 md5 与验证副本一致；3_results_261109.log 的 2396 个浮点数与
+改造前逐位一致，核心系数 +0.668、聚类 p=0.065、PCSE +0.560 p=0.007、
+DiD -0.626 p=0.653、OECD 三列 p=0.352/0.583/0.746 全部未变。缩尾计数现为
+结果变量 4 个、滞后人均 GDP 4 个（论文若引用该数字，用 4）。
+
+提交包：do 4、log 3、tables 5、figures 4、data_raw 8、data_final 10；根目录
+只有九个交付目录，无中文文件、无 changelog。改造前备份在
+.workbuddy/_cache_261113/backups/ 下 before_precision_261114、
+before_nodestring_261114、before_dedup_261114 三个目录。
+
+同步更新的文档：StataTest与ECON490Quizzes_命令与语法汇总.md（11-14 更新二）、
+ECON490_HANDOVER_CURRENT.md、.workbuddy/memory/MEMORY.md、当日工作日志。
