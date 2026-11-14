@@ -47,4 +47,3 @@ if ${run_mainresults}==1 {
     capture noisily do "${do_dir}/3_results_261109.do"
 }
 
-display "Master do-file ended; check the three numbered logs for r() errors."
