@@ -1,8 +1,8 @@
 /* Project info
    1_build_data_261109.do | build the two locked panels, then the two analysis files.
    Europe: 23 Eurostat countries, 2006-2019, N=295. OECD: 26 ILO countries, 2000-2024, N=477. Never pooled.
-   Inputs: country_codes.csv, oecd_leave_history.xlsx, eurostat_employment_raw.csv,
-   ilo_household_raw.csv, wdi_raw.dta, oecd_policy_donor.dta. */
+   Reads OECD, Eurostat, ILOSTAT and World Bank data from their official endpoints.
+   The repository country lookup defines the study sample. */
 
 //If log setting is activated, we record a log file in the log folder
 if ${store_log_build}==1 {
@@ -21,7 +21,7 @@ keep if geo!=""
 save `euro_codes'
 restore
 
-import excel "${datadir_raw}/oecd_leave_history.xlsx", sheet("Time-Series") cellrange(A9) clear
+import excel "https://webfs.oecd.org/els-com/Family_Database/PF2_5_Trends_in_leave_entitlements_around_childbirth.xlsx", sheet("Time-Series") cellrange(A9) clear
 rename A country
 rename B year
 rename S total_all_raw
@@ -91,9 +91,12 @@ keep iso country year total_all_raw total_paid_raw known_policy reform_year timi
 keep if inrange(year,2000,2024)
 save `policy'
 
-* Read the Eurostat employment file.
-import delimited "${datadir_raw}/eurostat_employment_raw.csv", clear varnames(1)
-rename time year
+* Read Eurostat SDMX CSV with the same age, sex, employment and year filters.
+global eurostat "https://ec.europa.eu/eurostat/api/dissemination/sdmx/3.0/data/dataflow/ESTAT/LFST_HHACWNC/1.0"
+import delimited "${eurostat}?format=csvdata&formatVersion=2.0&compress=false&c[TIME_PERIOD]=ge:2006+le:2019&c[age]=Y25-54&c[agechild]=Y_LT6&c[n_child]=TOTAL&c[unit]=THS_PER&c[sex]=M,F&c[wstatus]=EMP,POP", clear varnames(1)
+rename time_period year
+rename obs_value value
+rename obs_flag flag
 keep if freq=="A" & age=="Y25-54" & unit=="THS_PER"
 keep if n_child=="TOTAL" & agechild=="Y_LT6"
 keep if inlist(sex,"M","F") & inlist(wstatus,"EMP","POP")
@@ -135,7 +138,7 @@ export delimited using "${datadir_final}/europe_twfe.csv", replace
 * OECD extension: ILO household series, 26 countries, 2000-2024, N=477
 
 * Read the ILO household file.
-import delimited "${datadir_raw}/ilo_household_raw.csv", clear varnames(1)
+import delimited "https://rplumber.ilo.org/data/indicator?id=GED_PEPR_SEX_HHT_CHL_RT_A&format=.csv", clear varnames(1)
 rename ref_area iso
 rename time year
 keep if classif1=="HHT_AGGREGATE_K" & classif2=="CHL_AGET6_YES"
@@ -169,10 +172,33 @@ export delimited using "${datadir_final}/oecd_twfe.csv", replace
 
 * Build the GDP controls on the full annual series, before merging.
 preserve
-    use "${datadir_raw}/wdi_raw.dta", clear
-    rename countrycode iso
-    keep iso year ny_gdp_pcap_kd ny_gdp_mktp_kd_zg
-    duplicates report iso year
+    global wdi "https://api.worldbank.org/v2/en/indicator"
+    tempfile ny_gdp_pcap_kd ny_gdp_mktp_kd_zg
+    foreach indicator in NY.GDP.PCAP.KD NY.GDP.MKTP.KD.ZG {
+        import excel "${wdi}/`indicator'?downloadformat=excel", sheet("Data") cellrange(A5) clear
+        rename B iso
+        local columns AR AS AT AU AV AW AX AY AZ BA BB BC BD BE BF BG BH BI BJ BK BL BM BN BO BP BQ
+        keep iso `columns'
+        local year = 1999
+        foreach column of local columns {
+            rename `column' wdi`year'
+            local year = `year'+1
+        }
+        reshape long wdi, i(iso) j(year)
+        if "`indicator'"=="NY.GDP.PCAP.KD" {
+            rename wdi ny_gdp_pcap_kd
+            save `ny_gdp_pcap_kd'
+        }
+        if "`indicator'"=="NY.GDP.MKTP.KD.ZG" {
+            rename wdi ny_gdp_mktp_kd_zg
+            save `ny_gdp_mktp_kd_zg'
+        }
+    }
+
+    use `ny_gdp_pcap_kd', clear
+    merge 1:1 iso year using `ny_gdp_mktp_kd_zg'
+    keep if _merge==3
+    drop _merge
 
     generate lngdp = ln(ny_gdp_pcap_kd) if ny_gdp_pcap_kd>0
     recast double lngdp
@@ -201,11 +227,14 @@ preserve
     save "${datadir_final}/wdi_controls.dta", replace
 restore
 
+* OECD SOCX publishes public maternity and parental leave spending as a percent of GDP.
 preserve
-    use "${datadir_raw}/oecd_policy_donor.dta", clear
-    keep countrycode year leave_gdp maternal_weeks
-    rename countrycode iso
-    duplicates report iso year
+    import delimited "https://sdmx.oecd.org/public/rest/v1/data/OECD.ELS.SPD,DSD_SOCX_AGG@DF_SOCX_AGG,1.0/.A..PT_B1GQ.ES10..TP512.?startPeriod=2000&endPeriod=2024&format=csvfile", clear varnames(1)
+    rename ref_area iso
+    rename time_period year
+    rename obs_value leave_gdp
+    keep iso year leave_gdp
+    isid iso year
     save "${datadir_final}/policy_controls.dta", replace
 restore
 
@@ -215,13 +244,13 @@ foreach s in europe oecd {
     use "${datadir_final}/`s'_twfe.dta", clear
     xtset country_id year, yearly
 
-    * PF2.1 Total_Father_specific_paid; slash cells keep the lower bound
+    * PF2.5 Total_Father_specific_paid; slash cells keep the lower bound
     generate fatherweeks = real(total_paid_raw)
     recast double fatherweeks
     replace fatherweeks = real(total_paid_raw)
     replace fatherweeks = 28.6  if total_paid_raw == "28.6 / 54.6"
     replace fatherweeks = 30.17 if total_paid_raw == "30.17 / 56.17"
-    label variable fatherweeks "Weeks of paid father-specific leave (PF2.1, lower bound)"
+    label variable fatherweeks "Weeks of paid father-specific leave (PF2.5, lower bound)"
 
     * Unit: pp change in the gap per 10 extra weeks of lagged leave
     generate fatherweeks10 = fatherweeks/10
@@ -235,10 +264,10 @@ foreach s in europe oecd {
     keep if _merge==3
     drop _merge
 
-    * Public leave spending; maternal_weeks kept for inspection only (sparse coverage)
+    * Public leave spending; keep unmatched panel rows for the model without this control.
     sort iso year
     merge 1:1 iso year using "${datadir_final}/policy_controls.dta"
-    keep if _merge==3
+    drop if _merge==2
     drop _merge
 
     * Lagged log GDP per capita is required in every regression
@@ -250,8 +279,6 @@ foreach s in europe oecd {
     label variable post "Post first verified expansion of reserved paid leave"
 
     * Coverage of the control variables
-    * Non-missing paid maternity weeks
-    count if maternal_weeks!=.
     * Non-missing lagged log GDP per capita
     count if lag_lngdp!=.
     * Non-missing public leave spending
