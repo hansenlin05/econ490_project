@@ -1,4 +1,20 @@
 ECON 490 · 11/18 Econometric Files 逐条缺口核查
+【2026-11-14 20:50 状态更新：以下缺口已在代码侧全部补齐，正文保留作核查记录】
+
+已补齐并整链重跑验证：do 内五个官方数据源的 AER / Chicago 作者-年份引用；
+2019 单一年份且仅主解释变量非缺失的描述统计表（23 观测，同时导出 xlsx 与 csv）；
+逐变量嵌套回归表（主解释变量第一列，表注含 Year FE: yes / Country FE: yes）；
+全样本 26 国 / 欧洲 19 国 / 非欧洲 7 国三列子集表；至少两个重叠直方图的 PNG；
+merge 未匹配说明、缩尾是否首选、二次项为何不纳入的三类注释。
+为把每份 log 压到 25 页以内，新增 `4_tables_261109.do` 与 `4_tables_261109.log`，
+提交链变为 5 份 do + 4 份编号 log。四份 log 行数 732 / 331 / 1113 / 558。
+原有 2396 个结果浮点数逐字保留，四个分析 CSV 的 md5 不变，无 r() 报错。
+产物：tables 9 项、figures 5 项；已同步 GitHub（29eb0d3..9598fc6）。
+
+仍需人工完成：Canvas 上传（只传 log/csv/png/do/docx/jpeg 类型）、粘贴第四节
+comments 草稿、确认五个数据源的精确访问日期（当前注释只写到月份）、
+确认 11/18 assignment 页面是否另有上传入口或命名要求。
+
 生成时点：2026-11-14 19:00 MST
 一手依据：E:\Hansen\Downloads\Econometric Files for Final Paper.pdf
           （Canvas assignment 页面导出，含 100 分 rubric；提取文本存
