@@ -38,11 +38,12 @@ These choices were made against the hard rubric in
 | Choice | Decision | Why it meets the rubric |
 |---|---|---|
 | "All countries" column | 26-country OECD panel | The rubric asks for one regression with all countries plus two subsets. Team agreement |
-| Representative year | 2019 | Single-year summary table, broad coverage, 23 non-missing rows on the main regressor (`tables/descriptive_2019_oecd_261109.csv`) |
+| Representative year | 2019 | Single-year summary table, broad coverage, 23 non-missing rows on the main regressor (`tables/descriptive_2019_oecd_261109.csv` and `.docx`) |
 | Subsets | European OECD 19 / non-European OECD 7 | Rubric p.3: "The choice of subsets must be a reasonable one ... dedicated by the economic theory that explains the hypothesis." European OECD members share supranational work-life-balance mandates; EU Directive (EU) 2019/1158 is listed in "Further Reading" of `PF2_5_Trends_in_leave_entitlements_around_childbirth.pdf` (https://eur-lex.europa.eu/eli/dir/2019/1158/oj/eng). No supranational mandate exists for the others, so the policy regime genuinely differs |
 | Alternative subset rejected | Split by initial leave generosity | The median initial father-specific entitlement in the 26-country panel is 0, so all countries fell into one group (checked on the built CSV) |
 | Keep the weak non-European column | **Keep it**, with an explicit warning | Deleting it would break the explicit three-column requirement (10 pts) and the overlapping subset histogram (6 pts), which uses the same split. The column has 6 country groups and 102 observations; its coefficient 23.576 is a small-sample artifact. The table note now states it must not be read as a policy effect, and the paper should base conclusions on the all-countries and European columns only |
-| Controls in the subset table | Core controls (`lag_fatherweeks10 lag_lngdp lag_gdp_growth`), i.e. `build3` | `leave_gdp` (SOCX) is sparse outside Europe; using the full control set would leave only 33 observations in the non-European column. Using the same core specification in all three columns keeps the comparison like-for-like. The full-variable specification is reported separately as the fourth column of `tables/results_buildup_261109.docx` (N=333) |
+| Controls in the subset table | Core controls (`lag_fatherweeks10 lag_lngdp lag_gdp_growth`), estimated once for all countries and once per subset | `leave_gdp` (SOCX) is sparse outside Europe; using the full control set would leave only 33 observations in the non-European column. The all-countries column is estimated on the full 443 observations (not on the 333-observation build-up sample) so that 341 + 102 adds back to 443 and the denominator closes |
+| Estimation sample in the build-up table | All four columns fixed at the 333 observations with complete data on every variable | Previously the first three columns used 443 and only the fourth used 333 because `leave_gdp` is missing for 110 country-years. Comparing coefficients across columns then mixed the effect of an added control with a change of sample. `4_tables_261109.do` now builds one `same_sample` flag with `generate` then one `replace ... if missing()` per covariate and applies `if same_sample==1` to all four regressions. This is the stricter reading of "a series of regressions with one variable added at a time" (15 pts) |
 | Histogram | Two overlapping histograms of `lag_fatherweeks10` by the same two subsets | Rubric item 10 asks for histograms for the subsets chosen above; `figures/histogram_leave_byregion_261109.png` |
 
 **Net assessment.** The non-European column is the weakest part of the
@@ -56,7 +57,9 @@ together, and the whole chain must be rerun.
 
 | Decision | Rationale |
 |---|---|
-| Five numbered do-files, four numbered logs | Adding six regressions pushed `3_results` past 25 pages. Workflow Guide 18 §18.2.2 permits a separate do-file for tables |
+| Five numbered do-files, four numbered logs | Added regressions repeatedly pushed a single log past 25 pages. Workflow Guide 18 §18.2.2 permits a separate do-file for tables. On 15 Nov the quadratic specification, the full winsorized repeat and their robustness table moved from `3_results_261109.do` into `4_tables_261109.do`; conservative page estimates are now 14.8 / 7.3 / 17.4 / 22.6 |
+| Full 1/99 winsorized repeat | Rubric item 7 says "with all variables winsorized". The repeat now winsorizes all five continuous variables; country and year dummies keep their coding. Measured changes: outcome 4, lagged leave weeks 0, lagged log GDP 4, lagged GDP growth 5, leave spending 5 observations. The main coefficient moves +0.560 -> +0.571 with the same sign and significance, so the unwinsorized model stays preferred |
+| 2019 summary table as Word | Rubric p.4 requires "an Excel or Word document" while Canvas file types exclude `.xlsx`. `2_descriptive_261109.do` now exports a `.docx` alongside the existing `.xlsx` and `.csv`; the CSV remains the byte-for-byte content authority |
 | Frozen snapshots in `data_raw/`, no live endpoint reads | A live-revision source would make the submitted log irreproducible. Measured failures: ILOSTAT HTTP 200 with 0 bytes for `.csv` and `.csv.gz`; Eurostat SDMX 3.0 response 12.7 MB and unfinished after 20 s. Official sites are cited as provenance only |
 | `global proj_main "."` plus one editable `cd` line | Portable across machines without breaking the Workflow 18 structure |
 | Only demonstrated Stata syntax; `L1.` / `F1.` after `encode` + `xtset` + `sort` | Course handout constraint; see `HANDOVER.md` §6 and the two command indexes in `docs/` |
@@ -70,7 +73,10 @@ together, and the whole chain must be rerun.
   instructor's verbal "OECD only" suggestion.
 - Whether to keep or drop the non-European column after seeing TA feedback
   (current answer: keep).
-- Whether to ask the TA about the two minor command extensions
-  (`egen min()/max()` and the three-step double-precision construction).
+- Whether to ask the TA about the three minor command extensions
+  (`egen min()/max()`, the three-step double-precision construction, and the
+  `dtable, continuous() statistic()` options used for the Word summary table).
+  All three are option-level extensions of commands literally shown in the
+  course handouts, not banned add-on packages; see `docs/PITFALLS_AND_CORRECTIONS.md`.
 - Whether `format %10.0g` is acceptable in the final paper tables.
 - Exact wording in the paper for the 23-cluster limitation.

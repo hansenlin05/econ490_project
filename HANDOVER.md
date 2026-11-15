@@ -60,10 +60,10 @@ retired — never roll a specification back to obtain stars.
 
 ---
 
-## 3. Current state and progress (as of 14 Nov 2026, evening)
+## 3. Current state and progress (as of 15 Nov 2026)
 
 The OneDrive submission package contains exactly nine delivery directories:
-`do_files/` (5), `log_files/` (4), `tables/` (9), `figures/` (5),
+`do_files/` (5), `log_files/` (4), `tables/` (10), `figures/` (5),
 `data_raw/` (8), `data_final/` (10), plus empty `literature/`, `paper/`,
 `slides/`. Nothing else is allowed at the project root — no changelogs, no
 handover files, no Chinese notes.
@@ -76,16 +76,25 @@ everything from raw inputs. Each numbered do-file opens and closes its own
 numbered log. The fifth do-file exists only to keep every log under the
 assignment's 25-page limit (see `docs/COURSE_REQUIREMENTS.md`).
 
-Latest verification (14 Nov 2026, full rerun from `data_raw`):
+Latest verification (15 Nov 2026, full rerun from `data_raw`):
 no `r()` errors anywhere; all four analysis CSVs and the 2019 summary-table
-CSV keep their md5; all 2396 floating-point numbers in `3_results_261109.log` unchanged;
-log sizes 739 / 330 / 1113 / 560 lines (about 15 / 7 / 22 / 11 pages).
+CSV keep their md5; every headline coefficient, SE, p-value and N in
+`3_results_261109.log` is unchanged. Log sizes are 739 / 354 / 834 / 1087
+lines. With 80-character wrapping and a conservative 50 display lines per page
+that is about 14.8 / 7.3 / 17.4 / 22.6 pages, all under 25. The quadratic and
+winsorized checks were moved from `3_results_261109.do` into
+`4_tables_261109.do` to keep both logs under the page limit, so the older
+"2396 floats in `3_results`" figure no longer applies; those numbers now live
+in `log_files/4_tables_261109.log`.
 
 All 100-point rubric gaps on the code side are closed: five official data
-citations in the do-file, a 2019 single-year summary table restricted to rows
-with the main regressor, a four-column build-up table, a three-column subset
-table, an overlapping two-subset histogram, and the required comments on
-unmatched merges, winsorization preference and non-linearity.
+citations in the do-file; a 2019 single-year summary table restricted to rows
+with the main regressor, exported as `.csv`, `.xlsx` and `.docx`; a four-column
+build-up table with all columns on the same 333 observations; a three-column
+subset table whose all-countries column uses 443 observations so 341 + 102
+closes; an overlapping two-subset histogram; a full 1/99 winsorized repeat of
+all five continuous variables; and the required comments on unmatched merges,
+winsorization preference and non-linearity.
 
 **What is still open is human work, not code work** — see
 `docs/SUBMISSION_STATUS.md`. In short: the actual Canvas upload, the Canvas
@@ -111,6 +120,11 @@ Country-clustered standard errors are the reference inference, because the
 course note `Preparing for Panel Data Analysis` says to always cluster standard
 errors. With only 23 country clusters — below the same note's rough 30-50 floor —
 even p=0.065 is optimistic; PCSE is a sensitivity check, not the headline.
+Note that both p=0.054 and p=0.065 are country-clustered: `xtreg ..., fe
+vce(robust)` is automatically clustered by the panel variable once `xtset` is
+set (SE 0.329, p=0.054), while the explicit LSDV `regress ..., vce(cluster
+country_id)` gives SE 0.344, p=0.065. The difference is the estimator and
+degrees-of-freedom correction, not a clustered-versus-unclustered distinction.
 Any document whose numbers disagree with these logs is wrong. Subset and
 build-up table numbers live in `log_files/4_tables_261109.log`.
 
@@ -229,6 +243,20 @@ lecture notes. They are easy to miss and have caused real rework.
 - **Canvas file types exclude `.xlsx` and `.dta`.** The summary table is
   exported as both `.csv` and `.docx`; data are uploaded as `.csv`.
 
+- **The build-up table mixed two estimation samples.** The first three columns
+  used 443 observations and the fourth 333, because `leave_gdp` is missing for
+  110 country-years. Interpreting the coefficient changes as the effect of
+  adding controls was therefore invalid. All four columns now use one 333-observation
+  sample; the subset table keeps a separate 443-observation all-countries column
+  so its two subsets still add up.
+- **"All variables winsorized" was only half done.** The original repeat
+  winsorized the outcome and lagged log GDP only. The current repeat covers all
+  five continuous variables and records that lagged leave weeks changes 0
+  observations under a 1/99 rule (its distribution has a mass at zero).
+- **Canvas comments quoted N=295 next to a 272-observation coefficient.** 295 is
+  the input panel (and the DiD / event-study N); every main FE regression uses
+  272. The draft now separates the two.
+
 Full list with evidence: `docs/PITFALLS_AND_CORRECTIONS.md`.
 
 ---
@@ -245,7 +273,10 @@ Full list with evidence: `docs/PITFALLS_AND_CORRECTIONS.md`.
 | Subset table uses the core controls without `leave_gdp` | SOCX coverage is sparse outside Europe; full controls would leave 33 observations there |
 | Unwinsorized specification preferred | 1/99 winsorization changes only 4 outcome + 4 lagged-GDP rows and does not move the main coefficient |
 | No quadratic or interaction term in the main model | Neither improves fit; the assignment permits non-linearity only when it does |
-| Fifth numbered do-file | Keeps every log under 25 pages |
+| Fifth numbered do-file | Keeps every log under 25 pages; the quadratic and winsorized checks also live there so `3_results` stays short |
+| Build-up table on one fixed sample | All four columns use the same 333 observations; the subset table keeps its own 443-observation all-countries column so 341 + 102 closes |
+| 2019 summary table as `.docx` | Rubric says "Excel or Word document" but Canvas rejects `.xlsx`; the `.csv` and `.xlsx` remain as the content authority |
+| Full 1/99 winsorized repeat | Covers all five continuous variables; changes 4 / 0 / 4 / 5 / 5 observations and moves the main coefficient +0.560 -> +0.571 without changing sign or significance |
 | Access date 14 November 2026 for all five data sources | Set by the team on the day the final citations were written |
 
 Full rationale: `docs/RESEARCH_DECISIONS.md`. Citation strings and the official
@@ -279,11 +310,12 @@ team's literature PDFs are listed by filename in `docs/LITERATURE_SOURCES.md`;
 only those file names, not their full text, are available here.
 
 Open items: Canvas upload and comments; post-export editing of the Word tables
-(especially adding explicit "Year FE yes / Country FE yes" rows); written group
-freeze of the final model including the instructor's verbal "OECD only"
-suggestion; empty `literature/` and `paper/` folders; wording for the 23-cluster
-limitation in the paper; whether to ask the TA about two minor command
-extensions; 2 Dec and 7 Dec poster requirements; 11 Dec final paper.
+(especially adding explicit "Year FE yes / Country FE yes" rows); opening each
+log in Word to confirm the rendered page count; a written group freeze of the
+final model including the instructor's verbal "OECD only" suggestion; empty
+`literature/` and `paper/` folders; wording for the 23-cluster limitation in
+the paper; whether to ask the TA about three minor command extensions; 2 Dec
+and 7 Dec poster requirements; 11 Dec final paper.
 
 See `docs/SUBMISSION_STATUS.md` for the actionable checklist and the ready-to-
 paste Canvas comments.

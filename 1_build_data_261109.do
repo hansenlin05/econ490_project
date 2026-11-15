@@ -57,7 +57,7 @@ encode iso, generate(pid)
 xtset pid year, yearly
 sort pid year
 
-* Apply the previously documented legal effective-date corrections.
+* Correct the policy series to the legal effective years
 generate timing_note = ""
 replace total_paid_raw = "2.6" if iso=="FRA" & year==2014
 replace timing_note = "PreParE effective 2015, not 2014" if iso=="FRA" & year==2014

@@ -58,42 +58,6 @@ xtpcse employment_gap lag_fatherweeks10 ${controls} i.year i.country_id, ///
     het corr(ar1)
 estimates store pcse
 
-* Quadratic specification
-xtpcse employment_gap c.lag_fatherweeks10##c.lag_fatherweeks10 ///
-    ${controls} i.year i.country_id, het corr(ar1)
-estimates store pcse_quad
-* The quadratic term does not improve the fit, so the linear specification is kept.
-
-* 1/99 winsorization; record how many observations actually change
-summarize employment_gap, detail
-local p1_gap = r(p1)
-local p99_gap = r(p99)
-generate employment_gap_winsor = employment_gap
-recast double employment_gap_winsor
-replace employment_gap_winsor = employment_gap
-label variable employment_gap_winsor "Employment gap, winsorized 1/99 (pp)"
-replace employment_gap_winsor = `p1_gap' if employment_gap_winsor < `p1_gap' & employment_gap_winsor != .
-replace employment_gap_winsor = `p99_gap' if employment_gap_winsor > `p99_gap' & employment_gap_winsor != .
-count if employment_gap_winsor != employment_gap & employment_gap != .
-display "Observations changed by outcome winsorization = " r(N)
-
-summarize lag_lngdp, detail
-local p1_gdp = r(p1)
-local p99_gdp = r(p99)
-generate lag_lngdp_winsor = lag_lngdp
-recast double lag_lngdp_winsor
-replace lag_lngdp_winsor = lag_lngdp
-label variable lag_lngdp_winsor "Lagged log real GDP per capita, winsorized 1/99"
-replace lag_lngdp_winsor = `p1_gdp' if lag_lngdp_winsor < `p1_gdp' & lag_lngdp_winsor != .
-replace lag_lngdp_winsor = `p99_gdp' if lag_lngdp_winsor > `p99_gdp' & lag_lngdp_winsor != .
-count if lag_lngdp_winsor != lag_lngdp & lag_lngdp != .
-display "Observations changed by log GDP winsorization = " r(N)
-
-xtpcse employment_gap_winsor lag_fatherweeks10 lag_lngdp_winsor ///
-    lag_gdp_growth leave_gdp i.year i.country_id, het corr(ar1)
-estimates store pcse_winsor
-* The unwinsorized specification is preferred; the winsorized model is a robustness check.
-
 * Event study; k=-1 omitted, endpoints binned at -2 and +2
 generate time_entering_treatment = reform_year if treated==1
 replace time_entering_treatment = . if treated==0
@@ -123,13 +87,6 @@ etable, estimates(fixed robust clustered did pcse eventstudy) ///
          lag_lngdp lag_gdp_growth leave_gdp) ///
     mstat(N) mstat(r2) showstars showstarsnote varlabel column(dvlabel) ///
     export("${tabledir}/results_europe_261109.docx", replace)
-
-* Robustness table kept separate: quadratic and winsorized models
-etable, estimates(pcse_quad pcse_winsor) ///
-    keep(lag_fatherweeks10 c.lag_fatherweeks10#c.lag_fatherweeks10 ///
-         lag_lngdp lag_lngdp_winsor lag_gdp_growth leave_gdp) ///
-    mstat(N) mstat(r2) showstars showstarsnote varlabel column(dvlabel) ///
-    export("${tabledir}/results_europe_robust_261109.docx", replace)
 
 * OECD extension: leave_gdp coverage limits the sample; third column drops that covariate
 use "${datadir_final}/oecd_analysis_261109.dta", clear

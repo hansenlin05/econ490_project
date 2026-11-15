@@ -86,6 +86,12 @@ preserve
     use "${datadir_final}/oecd_analysis_261109.dta", clear
     keep if year==2019 & lag_fatherweeks10!=.
     count
+    * Export the same 2019 summary table as a Word document
+    dtable employment_gap lag_fatherweeks10 lag_lngdp lag_gdp_growth leave_gdp, ///
+        continuous(employment_gap lag_fatherweeks10 lag_lngdp lag_gdp_growth leave_gdp, ///
+        statistic(n mean sd min max)) ///
+        title("Summary statistics, 2019 OECD sample; each row reports N, mean (sd), minimum and maximum") ///
+        export("${tabledir}/descriptive_2019_oecd_261109.docx", replace)
     collapse ///
         (mean) mean_gap=employment_gap (sd) sd_gap=employment_gap ///
         (min) min_gap=employment_gap (max) max_gap=employment_gap ///
