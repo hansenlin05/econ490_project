@@ -23,7 +23,7 @@ Nothing here is optional for an assistant that will touch the code.
 | 3 | `docs/COURSE_REQUIREMENTS.md` | Every graded item and point value for 18 Nov, allowed upload types, the 11 Dec gates, and the rules that are implied rather than stated | Grading is the binding constraint on every change |
 | 4 | `docs/RESEARCH_DECISIONS.md` | Why each sample, control set, subset and specification was chosen, and which decisions are closed | Prevents re-litigating settled choices |
 | 5 | `docs/PITFALLS_AND_CORRECTIONS.md` | Mistakes already made and what replaced them | Read before proposing a fix; most "improvements" have already been tried and rejected |
-| 6 | `docs/CODE_CONVENTIONS.md` | The permitted command set, the comment rules, the coding level expected, and the three documented exceptions | The gate any code change must pass |
+| 6 | `docs/CODE_CONVENTIONS.md` | The permitted command set, the comment rules, the coding level expected, and the four documented exceptions | The gate any code change must pass |
 | 7 | `docs/DATA_CITATIONS.md` | Official citation formats with URLs and the five citation strings in the do-file | Any citation edit must match these |
 | 8 | `docs/SUBMISSION_STATUS.md` | Done / manual / blocked, plus the ready-to-paste Canvas comments | Tells you what is actually left |
 | 9 | `docs/LITERATURE_SOURCES.md` | The ten article PDFs by filename, and the paper-writing format rules | Needed only for the 11 Dec paper |

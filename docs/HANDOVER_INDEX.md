@@ -12,7 +12,7 @@ document collection.
 |---|---|
 | `../README.md` | Reading order, what each document is for, closed decisions, pre-edit checklist, collaboration rules |
 | `../HANDOVER.md` | Full project state: research direction, progress, results, explicit and implicit course rules, pitfalls, frozen decisions, open items, reproduction |
-| `CODE_CONVENTIONS.md` | Permitted command set, banned commands, the three documented exceptions, comment rules, coding level, pre-commit checks |
+| `CODE_CONVENTIONS.md` | Permitted command set, banned commands, the four documented exceptions, comment rules, coding level, pre-commit checks |
 | `COURSE_REQUIREMENTS.md` | All 18 Nov rubric items with point values, allowed file types, 12 Dec gates, implicit course conventions |
 | `SUBMISSION_STATUS.md` | What is done, the manual Canvas checklist, ready-to-paste Canvas comments |
 | `AI_HANDOFF_NOTES.md` | Short rules for a newly joining assistant: what it may and may not decide |
