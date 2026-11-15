@@ -3,7 +3,7 @@
        log:  C:\Users\Hansen\UBC\ECON 490 003 2026W1 Seminar in Applied Economi
 > cs - 2_Team\econ490_project\log_files/1_build_data_261109.log
   log type:  text
- opened on:  14 Nov 2026, 22:50:17
+ opened on:  15 Nov 2026, 02:57:01
 . }
 
 . 
@@ -46,7 +46,7 @@
 . tempfile country_codes euro_codes policy
 
 . save `country_codes'
-file C:\Users\Hansen\AppData\Local\Temp\ST_6558_000001.tmp saved as .dta
+file C:\Users\Hansen\AppData\Local\Temp\ST_6270_000001.tmp saved as .dta
     format
 
 . preserve
@@ -55,7 +55,7 @@ file C:\Users\Hansen\AppData\Local\Temp\ST_6558_000001.tmp saved as .dta
 (15 observations deleted)
 
 . save `euro_codes'
-file C:\Users\Hansen\AppData\Local\Temp\ST_6558_000002.tmp saved as .dta
+file C:\Users\Hansen\AppData\Local\Temp\ST_6270_000002.tmp saved as .dta
     format
 
 . restore
@@ -104,7 +104,7 @@ Panel variable: pid (strongly balanced)
 . sort pid year
 
 . 
-. * Apply the previously documented legal effective-date corrections.
+. * Correct the policy series to the legal effective years
 . generate timing_note = ""
 (2,090 missing values generated)
 
@@ -255,7 +255,7 @@ variable timing_note was str47 now str63
 (1,140 observations deleted)
 
 . save `policy'
-file C:\Users\Hansen\AppData\Local\Temp\ST_6558_000003.tmp saved as .dta
+file C:\Users\Hansen\AppData\Local\Temp\ST_6270_000003.tmp saved as .dta
     format
 
 . 

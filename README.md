@@ -66,8 +66,9 @@ provenance only; access date for all five sources is **14 November 2026**.
 - `do_files/` and root — the same five numbered do-files (`0_master`,
   `1_build_data`, `2_descriptive`, `3_results`, `4_tables`).
 - `log_files/` — four numbered logs, each created by its do-file and each under
-  the assignment's 25-page limit (about 15 / 7 / 22 / 11 pages).
-- `tables/` — nine exported tables; `figures/` — five PNG figures.
+  the assignment's 25-page limit (conservative estimates 14.8 / 7.3 / 17.4 /
+  22.6 pages).
+- `tables/` — ten exported tables; `figures/` — five PNG figures.
 - `data_raw/`, `data_final/` — frozen inputs and built panels.
 - `docs/` — the English handover set plus older background notes.
 - `CHANGELOG.md` — dated change record.

@@ -3,6 +3,61 @@
 All entries describe the local OneDrive project; this repository only mirrors
 them for teammate / AI handoff. Dates are local (MST).
 
+## 2026-11-15 (early morning) — complete winsorization, one estimation sample, Word summary table
+
+Four gaps raised by an external review of commit `2995794` were checked against
+the rubric PDF and the current logs and then fixed.
+
+**Full winsorized repeat (rubric item 7).** `4_tables_261109.do` now winsorizes
+all five continuous variables at 1/99, not just the outcome and log GDP. Country
+and year dummies keep their coding. Observations actually changed: outcome 4,
+lagged leave weeks 0, log GDP 4, GDP growth 5, leave spending 5. Lagged leave
+weeks has p1=0 and p99=2.86, so no row moves; the count is printed to the log so
+the zero change is on record rather than implied. The winsorized PCSE coefficient
+is +0.571 (SE 0.206, p=0.005) against +0.560 (p=0.007) unwinsorized: same sign,
+same significance, slightly larger magnitude, so the unwinsorized model remains
+the preferred specification.
+
+**One estimation sample across the build-up table (rubric item 8).** The four
+columns previously used 443 / 443 / 443 / 333 observations, which confounds
+"added a control" with "changed the sample". All four now use the same 333
+observations, built with `generate` + `missing()` on the full control set. The
+table note states this. The `3_results` OECD table keeps its own 443 / 443 / 333
+design because those columns are descriptive, not a build-up.
+
+**Word version of the 2019 summary table (rubric item 6).** Rubric asks for
+"an Excel or Word document" and the Canvas upload list has no `.xlsx`, so
+`2_descriptive_261109.do` now also writes
+`tables/descriptive_2019_oecd_261109.docx` with
+`dtable ..., continuous(... statistic(n mean sd min max)) export(...)`. The N is
+reported per variable, not once for the table: `leave_gdp` covers 20 of the 23
+rows, the other four cover all 23. The Excel and CSV versions are unchanged,
+byte for byte.
+
+**Column headers.** The build-up and subset tables now use `column(index)`, the
+form shown in the Stata cheat sheet, instead of `column(dvlabel)`, which
+repeated the dependent-variable name once per column. A build-up table with four
+identical headers is unreadable on export.
+
+**Canvas comments draft corrected.** The draft said N=295 next to the main
+regression; 295 is the input panel, while every Europe regression is estimated
+on 272 rows. It also now separates the two kinds of observation loss (rows that
+never matched, and rows that matched but drop because `leave_gdp` is missing) and
+records both country-clustered p-values: `xtreg, fe vce(robust)` gives p=0.054
+and explicit LSDV clustering gives p=0.065, with the same conclusion.
+
+**Where the new code went.** The quadratic and winsorized checks were moved from
+`3_results` to `4_tables`: with the extra code `3_results` reached 1257 lines
+(~26 pages), over the 25-page limit. Sizes after the move: 739 / 354 / 834 /
+1087 lines (14.8 / 7.3 / 17.4 / 22.6 pages at a conservative 80-character wrap).
+Five do-files and four logs are unchanged; tables are now ten.
+
+**Verification.** Full rerun from `data_raw`: no `r()` errors, four logs close
+normally, all four analysis CSVs and the 2019 summary CSV keep their md5, and
+every coefficient, SE, p-value and N in `3_results_261109.log` is unchanged. The
+headline results still read +0.668 (cluster p=0.065), AR(1) PCSE +0.560
+(p=0.007), DiD -0.626 (p=0.653), OECD p=0.352 / 0.583 / 0.746.
+
 ## 2026-11-14 (evening) — English handover, exact citation dates, subset decision
 
 **Repository reorganised for an English-only reader.** Added `HANDOVER.md` at

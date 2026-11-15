@@ -3,7 +3,7 @@
        log:  C:\Users\Hansen\UBC\ECON 490 003 2026W1 Seminar in Applied Economi
 > cs - 2_Team\econ490_project\log_files/2_descriptive_261109.log
   log type:  text
- opened on:  14 Nov 2026, 22:50:25
+ opened on:  15 Nov 2026, 02:57:06
 . }
 
 . 
@@ -242,6 +242,30 @@ file ./figures/trend_gap_261109.png saved as PNG format
 
 .     count
   23
+
+.     * Export the same 2019 summary table as a Word document
+.     dtable employment_gap lag_fatherweeks10 lag_lngdp lag_gdp_growth leave_gd
+> p, ///
+>         continuous(employment_gap lag_fatherweeks10 lag_lngdp lag_gdp_growth 
+> leave_gdp, ///
+>         statistic(n mean sd min max)) ///
+>         title("Summary statistics, 2019 OECD sample; each row reports N, mean
+>  (sd), minimum and maximum") ///
+>         export("${tabledir}/descriptive_2019_oecd_261109.docx", replace)
+
+Summary statistics, 2019 OECD sample; each row reports N, mean (sd), minimum and maximum
+--------------------------------------------------------------------------------------------
+                                                                         Summary            
+--------------------------------------------------------------------------------------------
+N                                                                                         23
+employment_gap                                               23 29.404 (15.022) 9.281 58.573
+Lagged father-specific paid leave, per 10 weeks                 23 0.508 (0.776) 0.000 2.860
+Lagged log real GDP per capita                                23 10.092 (0.628) 8.757 11.212
+Lagged real GDP growth, percent                                 23 3.183 (1.706) 0.827 7.689
+Public maternity and parental leave spending, percent of GDP    20 0.372 (0.302) 0.021 1.207
+--------------------------------------------------------------------------------------------
+(collection DTable exported to file
+ ./tables/descriptive_2019_oecd_261109.docx)
 
 .     collapse ///
 >         (mean) mean_gap=employment_gap (sd) sd_gap=employment_gap ///
