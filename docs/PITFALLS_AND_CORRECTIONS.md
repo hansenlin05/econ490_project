@@ -41,7 +41,7 @@ the file or log where the correction can be verified.
 | `bin()` and `subtitle()` in the two-group histogram | Neither option appears in the course handouts. Removed, and `lcolor(black)` added from the handouts' literal two-histogram example so both overlaid series remain visible |
 | `quietly` suggested to shorten logs | Zero occurrences in the course handouts; not used |
 | `split parse()`, `egen rowmin/rowmax/rownonmiss`, `cond()`, `[_n-1]` subscripts | Replaced with `generate` / `replace` / `real()` / `missing()` and the course-taught `L1.` / `F1.` operators after `encode` + `xtset` + `sort` |
-| Live official-endpoint imports (PR #1, commit `8efda45`) | Rejected. ILOSTAT `GED_PEPR_SEX_HHT_CHL_RT_A` returns HTTP 200 with 0 bytes for `.csv` and `.csv.gz`; Eurostat SDMX 3.0 returns 12.7 MB and did not finish in 20 s; and live revisions would break log reproducibility |
+| Live official-endpoint imports (PR #1, commit `8efda45`) | Rejected, on reproducibility rather than availability. The ILOSTAT API endpoint returns HTTP 200 with 0 bytes for `.csv` and `.csv.gz` and the Eurostat SDMX 3.0 call did not finish in 20 s, but the ILOSTAT bulk download works: a 15 November re-download was byte-identical to the snapshot. The decisive reason is that a live revision would change the numbers the submitted log reports |
 | Do-file comments that read like AI delivery notes | Removed change logs, date/version tags, module numbers, course-checklist references, paper-writing hints and syntax justifications. One short `* ` line per block now. `display` is kept only for two `r()` counts |
 
 ## D. Submission-format traps

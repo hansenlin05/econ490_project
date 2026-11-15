@@ -242,9 +242,13 @@ lecture notes. They are easy to miss and have caused real rework.
 - **Six added regressions pushed a log past 25 pages.** The table work moved to
   a fifth numbered do-file with its own log; Workflow Guide 18 §18.2.2 allows a
   separate do-file for tables.
-- **Live endpoint reads fail in practice.** ILOSTAT returned HTTP 200 with 0
-  bytes for both `.csv` and `.csv.gz`; the Eurostat SDMX 3.0 response was
-  12.7 MB and did not finish in 20 s.
+- **Live endpoint reads are unreliable and would break reproducibility.** The
+  ILOSTAT API endpoint returned HTTP 200 with 0 bytes for both `.csv` and
+  `.csv.gz`, and the Eurostat SDMX 3.0 response was 12.7 MB and did not finish
+  in 20 s. The ILOSTAT bulk download does work — a 15 November re-download was
+  byte-identical to the snapshot — so the reason to ship frozen snapshots is
+  that a live revision would change the reported numbers, not that the sources
+  cannot be fetched.
 - **The non-European subset column is weak** (6 country groups, 102
   observations, coefficient 23.576). It is kept because the rubric requires
   three columns and the split is theory-driven; the table note says explicitly
