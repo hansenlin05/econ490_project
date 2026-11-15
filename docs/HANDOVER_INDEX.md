@@ -1,7 +1,8 @@
 # Document index
 
-The single authoritative handover is **`HANDOVER.md` at the repository root**.
-Read it first, then use this index. All documents listed in sections 1-3 are
+The entry point is **`../README.md`**: it carries the reading order, the closed
+decisions and the pre-edit checklist. The detailed handover is
+**`HANDOVER.md` at the repository root**. Read both, then use this index. All documents listed in sections 1-3 are
 English and self-contained: they cite filenames and URLs, not a private
 document collection.
 
@@ -9,7 +10,9 @@ document collection.
 
 | File | What it answers |
 |---|---|
+| `../README.md` | Reading order, what each document is for, closed decisions, pre-edit checklist, collaboration rules |
 | `../HANDOVER.md` | Full project state: research direction, progress, results, explicit and implicit course rules, pitfalls, frozen decisions, open items, reproduction |
+| `CODE_CONVENTIONS.md` | Permitted command set, banned commands, the three documented exceptions, comment rules, coding level, pre-commit checks |
 | `COURSE_REQUIREMENTS.md` | All 18 Nov rubric items with point values, allowed file types, 12 Dec gates, implicit course conventions |
 | `SUBMISSION_STATUS.md` | What is done, the manual Canvas checklist, ready-to-paste Canvas comments |
 | `AI_HANDOFF_NOTES.md` | Short rules for a newly joining assistant: what it may and may not decide |

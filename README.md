@@ -1,90 +1,172 @@
-# ECON 490 Team Project — English handoff mirror
+# ECON 490 Team Project — read this file first
 
-**Read `HANDOVER.md` first.** It is the single authoritative, self-contained
-project handover in English. This README is only a map.
+This repository is the **information-sync mirror** between three teammates and
+their AI assistants. It is **not** the course submission: the 18 Nov 2026
+"Econometric Files" and the 11 Dec 2026 paper are uploaded to Canvas from the
+team's OneDrive project. Changes go to OneDrive by default; this mirror is
+updated only when the team says so.
 
-This repository is an information-sync mirror between the teammates and their
-AI assistants. It is **not** a course submission. The 18 Nov 2026 "Econometric
-Files" and the 11 Dec 2026 final paper are uploaded from the team's OneDrive
-project to Canvas. By standing instruction, changes are synced to OneDrive by
-default; GitHub is updated only when the user explicitly asks.
+Everything below is written so that a reader who has **only this repository**
+can work safely. Rules are justified by a filename or a web URL that anyone can
+check. If a source is missing, ask the team — do not guess.
 
-Everything in `HANDOVER.md` and `docs/*.md` is written for a reader who has
-only this repository: rules are justified with **filenames or web URLs** that
-anyone can check. If you cannot find a source, ask the team instead of guessing.
+---
 
-## Start here
+## 1. Read in this order
 
-| File | What it answers |
-|---|---|
-| `HANDOVER.md` | Current research direction, progress, results, explicit and implicit course rules, pitfalls, frozen decisions, open items |
-| `docs/COURSE_REQUIREMENTS.md` | Every 18 Nov rubric item and point value, allowed file types, 12 Dec checklist gates, implicit conventions |
-| `docs/RESEARCH_DECISIONS.md` | Why each sample, subset, control set and specification was chosen — including why the weak non-European column is kept |
-| `docs/PITFALLS_AND_CORRECTIONS.md` | Mistakes already made, and what replaced them. Read before proposing a fix |
-| `docs/DATA_CITATIONS.md` | Official "How to cite" rules with URLs, and the five citation strings used in the do-file |
-| `docs/SUBMISSION_STATUS.md` | What is done, the manual Canvas checklist, and the ready-to-paste Canvas comments |
-| `docs/LITERATURE_SOURCES.md` | The ten article PDFs by filename and the paper-writing format rules |
-| `docs/HANDOVER_INDEX.md` | Full document map, including which older files are legacy background |
+Nothing here is optional for an assistant that will touch the code.
 
-## Research in one paragraph
+| # | File | What it gives you | Why the order matters |
+|---|---|---|---|
+| 1 | `README.md` (this file) | Current state, frozen decisions, reading path, collaboration rules | One page of orientation before any detail |
+| 2 | `HANDOVER.md` | The authoritative handover: research question, samples, current results, what is finished and what is not | The only document that describes the project as a whole |
+| 3 | `docs/COURSE_REQUIREMENTS.md` | Every graded item and point value for 18 Nov, allowed upload types, the 11 Dec gates, and the rules that are implied rather than stated | Grading is the binding constraint on every change |
+| 4 | `docs/RESEARCH_DECISIONS.md` | Why each sample, control set, subset and specification was chosen, and which decisions are closed | Prevents re-litigating settled choices |
+| 5 | `docs/PITFALLS_AND_CORRECTIONS.md` | Mistakes already made and what replaced them | Read before proposing a fix; most "improvements" have already been tried and rejected |
+| 6 | `docs/CODE_CONVENTIONS.md` | The permitted command set, the comment rules, the coding level expected, and the three documented exceptions | The gate any code change must pass |
+| 7 | `docs/DATA_CITATIONS.md` | Official citation formats with URLs and the five citation strings in the do-file | Any citation edit must match these |
+| 8 | `docs/SUBMISSION_STATUS.md` | Done / manual / blocked, plus the ready-to-paste Canvas comments | Tells you what is actually left |
+| 9 | `docs/LITERATURE_SOURCES.md` | The ten article PDFs by filename, and the paper-writing format rules | Needed only for the 11 Dec paper |
+| 10 | `docs/HANDOVER_INDEX.md` | Full document map, and which older files are legacy background only | Stops you reading superseded material by mistake |
+
+## 2. Before you review or edit any do-file
+
+Work through these six checks. They exist because each one has already gone
+wrong at least once.
+
+1. **Read** items 1–6 above. Skipping item 6 is the most common cause of a
+   rejected change.
+2. **Find the current number** in `log_files/`, never in a summary document.
+   `3_results_261109.log` holds the main estimates; `4_tables_261109.log` holds
+   the build-up, subset, quadratic and winsorized estimates.
+3. **Check whether the decision is closed.** Section 5 lists them. A patch that
+   reopens a closed decision is declined regardless of how clean it is.
+4. **Check the command against `docs/CODE_CONVENTIONS.md`.** If a command there
+   is not listed, it is not allowed. Do not substitute a package command such as
+   `reghdfe`, `csdid`, `eventdd`, `bacondecomp`, `winsor2`, `outreg2` or
+   `esttab`.
+5. **Check the comment rules** in the same file, section 3. Comments describe
+   what a block of code does. They do not record who changed what, do not cite
+   course material, do not instruct the paper's author, and do not defend a
+   command choice.
+6. **After editing, rerun `0_master` from `data_raw`.** The logs must be
+   produced by the do-files they belong to, so a do-file edit without a rerun
+   leaves the submission inconsistent.
+
+## 3. What each file type is for
+
+| Folder | Role | Rule |
+|---|---|---|
+| `do_files/` (and byte-identical copies at the root) | The five numbered do-files that produce everything else | Root copies exist because the course workflow expects a project root; never edit one without the other |
+| `log_files/` | Four logs, one per numbered do-file, each generated by that do-file | This is the evidence base. A number not present in a log does not exist |
+| `tables/` | Ten exported tables | Regenerated by the do-files; never hand-edited except the post-export Word formatting the assignment explicitly asks for |
+| `figures/` | Five PNG figures | Regenerated by the do-files |
+| `data_raw/` | Eight frozen source snapshots | Never overwritten. Official portals are cited as provenance, not read at run time |
+| `data_final/` | Ten built panels and CSV copies | Rebuilt from `data_raw` by `1_build_data_261109.do` |
+
+## 4. Research in one paragraph
 
 Question: does longer father-specific paid leave reduce the male-minus-female
-employment gap? Primary panel: 23 European OECD countries, 2006-2019, N=295
-(Eurostat). Extension: 26 OECD countries, 2000-2024, N=477 (ILOSTAT). The two
-are never pooled because their outcome definitions differ. Two-way fixed
-effects with lagged log GDP per capita in every regression; country-clustered
-standard errors are the reference inference. Main coefficient +0.668
-(cluster p=0.065), DiD -0.626 (p=0.653), OECD p=0.352 / 0.583 / 0.746.
-**Conclusion: no robustly significant policy effect, only a conditional
-association.** All historically significant p-values are retired; do not roll
-back a specification to obtain stars.
+employment gap? Primary panel: 23 European OECD countries, 2006–2019, 295
+country-years (Eurostat). Extension: 26 OECD countries, 2000–2024, 477
+country-years (ILOSTAT). The two are never pooled because the outcome
+definitions differ. Two-way fixed effects with lagged log GDP per capita in
+every regression; country-clustered standard errors are the reference
+inference. Main coefficient +0.668 (cluster p = 0.065; the within estimator
+gives p = 0.054), DiD −0.626 (p = 0.653), OECD columns p = 0.352 / 0.583 /
+0.746, AR(1) PCSE +0.560 (p = 0.007), full winsorized repeat +0.571 (p = 0.005).
 
-## Reproduce
+**Conclusion: no robustly significant policy effect, only a conditional
+association.** All historically significant p-values are retired and must not
+be reinstated by rolling back a specification.
+
+## 5. Closed decisions — do not reopen
+
+Full reasoning and evidence in `docs/RESEARCH_DECISIONS.md`.
+
+1. **Europe is the primary sample; OECD is the extension.** Never pooled, never
+   swapped. A patch that makes the OECD panel the main analysis is a change of
+   research design, not a code improvement.
+2. **The Test7 `weeks × pay_c` interaction is not in the model.** It is a
+   different question with a much smaller sample; see §7 below.
+3. **Five do-files and four logs.** Each numbered do-file writes its own log.
+4. **No live downloads at run time.** `data_raw/` snapshots are the inputs.
+5. **The 2019 summary table is restricted to the main regressor, and the
+   non-European subset column is kept** although it is imprecise.
+6. **The build-up table uses one 333-observation sample in all four columns.**
+7. **Winsorization is a robustness check, not the preferred specification.**
+8. **Comments and command choice follow `docs/CODE_CONVENTIONS.md`.**
+9. **No `reghdfe` or any other package estimator**, including in a "just for
+   robustness" form.
+
+## 6. Pitfalls worth knowing before you read the code
+
+The eight that have already caused damage; the full list with evidence is in
+`docs/PITFALLS_AND_CORRECTIONS.md`.
+
+- A significant interaction in Test7 was once read as support for the
+  hypothesis. `pay_c = pay_pct − 100` is never positive, so that reading is
+  wrong and the conclusion is retired.
+- OECD N is 443 without public leave spending and 333 with it; dropping a
+  control does not restore 477.
+- `xtreg, fe vce(robust)` is already clustered at the panel level after `xtset`;
+  the printed p-value is 0.054, not an unclustered one.
+- The 2019 table has 23 rows on the main regressor but only 20 on leave
+  spending. A single table-level N hides that.
+- Log page limits are measured after 80-character wrapping, not by line count.
+- `dtable` rejects a bare `statistic()`; it must sit inside `continuous()`.
+- A build-up table with different samples per column cannot be read as the
+  effect of adding controls.
+- Live official-source imports fail or drift; frozen snapshots do not.
+
+## 7. Why there is no `pay_c` term
+
+Asked often enough to be answered here. The interaction was built and tested in
+the earlier Test7 specification, then deliberately dropped. Five reasons, in the
+order they mattered:
+
+1. **It is a different research question.** `c.weeks##c.pay_c` makes the
+   marginal effect depend on the replacement rate; the coefficient on weeks
+   becomes a conditional slope, no longer the average association.
+2. **The data cost is prohibitive.** Joining Test7's `policy.dta` to the current
+   panels leaves about 62 European and 71 OECD usable rows, against 272 and 333
+   in the current models.
+3. **Collinearity.** Weeks, the replacement rate and their product move
+   together; standard errors inflate and coefficients become unstable.
+4. **Bad-control risk.** Leave length and replacement rate are both chosen by
+   the same policy design, so the rate can absorb part of the treatment.
+5. **Support is degenerate.** `pay_c` is never positive, so the interaction
+   cannot identify the hypothesized direction.
+
+`docs/RESEARCH_DECISIONS.md` records the decision; the Test7 do-file is kept
+only as a reproducible artifact for a possible appendix.
+
+## 8. Reproduce
 
 Set Stata's working directory to the project root and run
-`do do_files/0_master_261109.do`. The root copies of the five do-files are
-byte-identical to the `do_files/` copies; `do_files/` mirrors the folder
-structure expected by `18 - Stata Workflow Guide – COMET.pdf`. The master calls
-the four numbered do-files in order; `1_build_data` rebuilds both panels from
-the frozen files in `data_raw/`. No network access is used at run time.
+`do do_files/0_master_261109.do`. The master calls the four numbered do-files in
+order; `1_build_data` rebuilds both panels from `data_raw/`. No network access
+is used at run time.
 
-Requirements: Stata 17 or newer (developed on StataNow/SE 19), plus the
-user-written `xttest3`, `xtserial` and `coefplot`. On a new machine only the
-single `capture noisily cd "..."` line in `0_master_261109.do` needs editing.
-Use `clear`, not `clear all`: the master defines globals that the numbered
-do-files need.
+Requirements: Stata 17 or newer (developed on StataNow/SE 19) with `xttest3`,
+`xtserial` and `coefplot` installed. On a new machine only the single
+`capture noisily cd "..."` line in `0_master_261109.do` needs editing. Use
+`clear`, not `clear all`: the master defines globals that the numbered do-files
+need.
 
-**Inputs are frozen local snapshots.** A change that read five official
-endpoints at run time was reverted (PR #1 / commit `8efda45`): ILOSTAT returned
-HTTP 200 with 0 bytes for both `.csv` and `.csv.gz`, the Eurostat SDMX 3.0
-response was 12.7 MB and unfinished after 20 s, and live source revisions
-would make the submitted log irreproducible. Official sites are cited as
-provenance only; access date for all five sources is **14 November 2026**.
+## 9. How this repository is maintained
 
-## Layout
-
-- `do_files/` and root — the same five numbered do-files (`0_master`,
-  `1_build_data`, `2_descriptive`, `3_results`, `4_tables`).
-- `log_files/` — four numbered logs, each created by its do-file and each under
-  the assignment's 25-page limit (conservative estimates 14.8 / 7.3 / 17.4 /
-  22.6 pages).
-- `tables/` — ten exported tables; `figures/` — five PNG figures.
-- `data_raw/`, `data_final/` — frozen inputs and built panels.
-- `docs/` — the English handover set plus older background notes.
-- `CHANGELOG.md` — dated change record.
-
-## Where the authoritative numbers live
-
-`log_files/3_results_261109.log` holds the main estimates; build-up and subset
-estimates are in `log_files/4_tables_261109.log`. Any number in a teammate
-document that disagrees with these logs is wrong. Evidence order: primary
-course PDFs > original logs and data > official web sources > conclusions from
-any earlier AI conversation (verify each one).
-
-## Division of labour
-
-Hansen and Neal own the Stata code. Sultana owns the paper text and the
-formatted tables. An assistant without the course's own Stata handouts should
-not judge which commands are permitted, should not propose `reghdfe`, `csdid`,
-`eventdd` or `bacondecomp`, and should not reinterpret p-value conventions —
-see `docs/AI_HANDOFF_NOTES.md`.
+- One driver produces everything: `0_master` → four numbered do-files. Any
+  manual edit to a log, table or figure is a defect.
+- After a do-file change, the whole chain is rerun from `data_raw`, then the
+  analysis CSVs are checksummed against the previous run. A change that moves a
+  number must be explained, not just committed.
+- Root do-file copies and `do_files/` copies must stay byte-identical.
+- Pull requests are reviewed against §2 and §5. A pull request that flips the
+  primary sample, restores live source imports, merges the four logs into one
+  unlogged chain, or relaxes the command rules is closed with a written reason
+  rather than merged.
+- Hansen and Neal own the code; Sultana owns the paper text and the formatted
+  tables. An assistant without the course's own Stata handouts must not decide
+  which commands are permitted, and must not reinterpret p-value conventions —
+  see `docs/AI_HANDOFF_NOTES.md`.

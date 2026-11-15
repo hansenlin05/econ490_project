@@ -31,8 +31,8 @@ was the only grading document. Both statements are now wrong:
 ## Latest verification (15 Nov 2026)
 
 A full rerun from `data_raw` after the rubric-compliance edits produced: no
-`r()` errors; logs of 739 / 354 / 834 / 1087 lines (conservative page estimates
-14.8 / 7.3 / 17.4 / 22.6, all under 25); all four analysis CSVs and the 2019
+`r()` errors; logs of 737 / 354 / 858 / 1087 lines (conservative page estimates
+14.7 / 7.3 / 17.9 / 22.6, all under 25); all four analysis CSVs and the 2019
 summary CSV with unchanged md5; every headline coefficient, SE, p-value and N
 in `3_results_261109.log` unchanged. The quadratic and winsorized checks moved
 into `4_tables_261109.do` so neither log exceeds the page limit; their numbers

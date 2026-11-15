@@ -42,6 +42,8 @@ estimates store robust
 regress employment_gap lag_fatherweeks10 ${controls} i.year i.country_id, ///
     vce(cluster country_id)
 estimates store clustered
+* Test the main coefficient against zero
+test lag_fatherweeks10 = 0
 
 * Hausman: FE vs RE
 xtreg employment_gap lag_fatherweeks10 ${controls} i.year, re
@@ -57,6 +59,8 @@ estimates store did
 xtpcse employment_gap lag_fatherweeks10 ${controls} i.year i.country_id, ///
     het corr(ar1)
 estimates store pcse
+* Test the main coefficient against zero
+test lag_fatherweeks10 = 0
 
 * Event study; k=-1 omitted, endpoints binned at -2 and +2
 generate time_entering_treatment = reform_year if treated==1
@@ -97,6 +101,8 @@ estimates store oecd_fe
 xtpcse employment_gap lag_fatherweeks10 ${controls} i.year i.country_id, ///
     het corr(ar1)
 estimates store oecd_pcse
+* Test the main coefficient against zero
+test lag_fatherweeks10 = 0
 xtreg employment_gap lag_fatherweeks10 lag_lngdp lag_gdp_growth i.year, ///
     fe vce(robust)
 estimates store oecd_fe_nospend

@@ -1,7 +1,13 @@
 # Notes for a teammate's AI assistant
 
-Read `HANDOVER.md` first. This page is the short version for an assistant that
-is joining the project with only this repository.
+Read `README.md` first for the reading order and the closed decisions, then
+`HANDOVER.md`. This page is the short version for an assistant that is joining
+the project with only this repository.
+
+Before reviewing or editing any do-file, read `CODE_CONVENTIONS.md`. It lists
+the permitted commands, the banned ones, the three documented exceptions and
+the comment rules. A patch that violates it is declined even if the numbers are
+correct.
 
 ## What this repository is
 

@@ -10,8 +10,8 @@ finished and verified; everything left is a manual team action.
 - Full rerun from `data_raw` on 15 Nov: no `r()` errors; all four analysis CSVs
   and the summary-table CSV keep their md5; every headline coefficient, SE,
   p-value and N in `3_results_261109.log` is unchanged. Logs are
-  739 / 354 / 834 / 1087 lines. With 80-character wrapping and a conservative
-  50 display lines per page that is about 14.8 / 7.3 / 17.4 / 22.6 pages, all
+  737 / 354 / 858 / 1087 lines. With 80-character wrapping and a conservative
+  50 display lines per page that is about 14.7 / 7.3 / 17.9 / 22.6 pages, all
   under the 25-page limit.
 - The quadratic and winsorized checks moved from `3_results_261109.do` to
   `4_tables_261109.do` so neither log exceeds the page limit. Their numbers now
@@ -37,6 +37,10 @@ finished and verified; everything left is a manual team action.
 - Overlapping two-subset histogram: `figures/histogram_leave_byregion_261109.png`.
 - Comments in the do-files about unmatched merges, the preferred unwinsorized
   specification, and why the non-linear term is not used.
+- Three `test lag_fatherweeks10 = 0` lines in `3_results_261109.do` print the
+  exact p-values behind the quoted numbers: Europe LSDV clustered
+  `F(1,22) = 3.77`, `p = 0.0651`; Europe AR(1) PCSE `chi2(1) = 7.29`,
+  `p = 0.0069`; OECD AR(1) PCSE `chi2(1) = 0.30`, `p = 0.5832`.
 
 ## 2. Manual actions still required
 

@@ -26,7 +26,7 @@ global paperdir      "${proj_main}/paper"          // paper path
 /* Project settings: such as global variables and other macros */
 ********************* * Project Settings ***********************
 
-global run_build = 1                // 0 = skip build step; 1 = run build.do
+global run_build = 1                // 0 = skip the build step; 1 = run it
 global store_log_build = 1          // 0 = don't save log file; 1 = save log file
 global run_descriptive = 1          // 0 = skip; 1 = run
 global store_log_descriptive = 1    // 0 = don't save log file; 1 = save log file

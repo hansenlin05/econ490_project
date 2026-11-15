@@ -3,11 +3,11 @@
        log:  C:\Users\Hansen\UBC\ECON 490 003 2026W1 Seminar in Applied Economi
 > cs - 2_Team\econ490_project\log_files/1_build_data_261109.log
   log type:  text
- opened on:  15 Nov 2026, 02:57:01
+ opened on:  15 Nov 2026, 14:09:29
 . }
 
 . 
-. * Data sources, author-date form; local copies are frozen in data_raw
+. * Data sources; the copies used here are in data_raw
 . * Eurostat. 2026. "Adults by number of children, age of youngest child and
 . *   labour status" [lfst_hhacwnc] (dataset). DOI 10.2908/lfst_hhacwnc,
 . *   last update 10/09/2026 15:00. Luxembourg: European Commission, Eurostat.
@@ -36,7 +36,7 @@
 > en
 . *   (accessed 14 November 2026).
 . 
-. * Step 0: build both locked panels from the raw source files
+. * Build both panels from the raw source files
 . * Europe: Eurostat lfst_hhacwnc, 23 OECD countries, 2006-2019, N=295
 . * Import the original OECD policy workbook.
 . import delimited "${datadir_raw}/country_codes.csv", clear varnames(1)
@@ -46,7 +46,7 @@
 . tempfile country_codes euro_codes policy
 
 . save `country_codes'
-file C:\Users\Hansen\AppData\Local\Temp\ST_6270_000001.tmp saved as .dta
+file C:\Users\Hansen\AppData\Local\Temp\ST_7b7c_000001.tmp saved as .dta
     format
 
 . preserve
@@ -55,7 +55,7 @@ file C:\Users\Hansen\AppData\Local\Temp\ST_6270_000001.tmp saved as .dta
 (15 observations deleted)
 
 . save `euro_codes'
-file C:\Users\Hansen\AppData\Local\Temp\ST_6270_000002.tmp saved as .dta
+file C:\Users\Hansen\AppData\Local\Temp\ST_7b7c_000002.tmp saved as .dta
     format
 
 . restore
@@ -255,7 +255,7 @@ variable timing_note was str47 now str63
 (1,140 observations deleted)
 
 . save `policy'
-file C:\Users\Hansen\AppData\Local\Temp\ST_6270_000003.tmp saved as .dta
+file C:\Users\Hansen\AppData\Local\Temp\ST_7b7c_000003.tmp saved as .dta
     format
 
 . 
@@ -343,8 +343,7 @@ xij variables:
 . 
 . * Unmatched rows are policy years outside the panel or countries outside the 
 > sample.
-. * Merge raw outcomes with the policy history and apply the existing sample ru
-> le.
+. * Merge raw outcomes with the policy history and apply the sample rule below.
 . merge 1:1 iso year using `policy'
 
     Result                      Number of obs
@@ -439,8 +438,7 @@ xij variables:
 . 
 . * Unmatched rows are policy years outside the panel or countries outside the 
 > sample.
-. * Merge raw outcomes with the policy history and apply the existing sample ru
-> le.
+. * Merge raw outcomes with the policy history and apply the sample rule below.
 . merge 1:1 iso year using `policy'
 
     Result                      Number of obs
