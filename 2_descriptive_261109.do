@@ -1,5 +1,6 @@
 /* Project info
-   2_descriptive_261109.do | descriptive statistics and figures for the primary Europe sample. */
+   2_descriptive_261109.do | descriptive statistics and figures, primary Europe sample
+   Checklist: one table with mean/sd/min/max/N for all variables, plus formatted graphs. */
 
 //If log setting is activated, we record a log file in the log folder
 if ${store_log_descriptive}==1 {
@@ -7,14 +8,15 @@ if ${store_log_descriptive}==1 {
     capture noisily log using "${log_dir}/2_descriptive_261109.log", text replace
 }
 
-* Load the saved file if the build step was skipped
+* Module 18: load the saved file if the build step was skipped
 if ${run_build}==0 {
     use "${datadir_final}/europe_analysis_261109.dta", clear
 }
 
+display "Primary sample: 23 European OECD countries, 2006-2019"
 summarize year
 
-* Univariate statistics
+* Univariate statistics; detail supplies p1/p99 used later for winsorizing
 summarize employment_gap male_rate female_rate fatherweeks10 ///
     lag_fatherweeks10 lag_lngdp lag_gdp_growth leave_gdp
 summarize employment_gap, detail
@@ -22,7 +24,7 @@ return list
 summarize lag_lngdp, detail
 return list
 
-* Mean, sd, min, max and N for all variables
+* Required mean/sd/min/max/N table (wide layout; transpose for the paper)
 preserve
     collapse ///
         (mean) mean_gap=employment_gap (sd) sd_gap=employment_gap ///

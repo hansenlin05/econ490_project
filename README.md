@@ -11,6 +11,9 @@ Extension: 26 ILO countries, 2000-2024 (N=477). The two panels are never pooled.
 
 ## Reproduce
 
+The team OneDrive project is the reference for the model and submission files.
+The GitHub master uses the same workflow and reads the official data online.
+
 Set the Stata working directory to the repository root and run
 `do 0_master_261109.do`. Use Stata with `dtable` and `etable` support and
 the project's `xttest3`, `xtserial`, and `coefplot` commands installed.

@@ -5,7 +5,7 @@
    OECD extension: ILO household series (HHT_AGGREGATE_K, child under 6); population definition differs, never pooled.
    GAP_it = b1*L1.LEAVE10_it + b2*L1.LNGDP_it + b3*L1.GROWTH_it + b4*SPEND_it + country_i + year_t + e_it
    LEAVE10 is in 10-week units; H1 predicts b1<0. Estimates are associations, not causal effects.
-   */
+   generate + recast double + replace: plain generate stores a float, so the replace refills at double precision. */
 
 //If log setting is activated, we record a log file in the log folder
 if ${store_log_mainresults}==1 {
@@ -13,12 +13,13 @@ if ${store_log_mainresults}==1 {
     capture noisily log using "${log_dir}/3_results_261109.log", text replace
 }
 
-* Load the saved file if both earlier steps were skipped
+* Module 18: load the saved file if both earlier steps were skipped
 if ${run_build}==0 & ${run_descriptive}==0 {
     use "${datadir_final}/europe_analysis_261109.dta", clear
 }
 
 xtset country_id year, yearly
+display "Primary sample: 23 European OECD countries, 2006-2019"
 
 * FE baseline; xttest3 and xtserial need the unadjusted fit
 xtreg employment_gap lag_fatherweeks10 ${controls} i.year, fe
@@ -58,7 +59,7 @@ xtpcse employment_gap lag_fatherweeks10 ${controls} i.year i.country_id, ///
     het corr(ar1)
 estimates store pcse
 
-* Quadratic specification
+* Quadratic specification; the paper must explain why theory predicts nonlinearity
 xtpcse employment_gap c.lag_fatherweeks10##c.lag_fatherweeks10 ///
     ${controls} i.year i.country_id, het corr(ar1)
 estimates store pcse_quad
@@ -114,7 +115,9 @@ coefplot, keep(event_time_*) vertical graphregion(color(white)) yline(0) ///
     xtitle("Years since first expansion, k = -1 omitted")
 graph export "${figdir}/event_study_261109.png", as(png) replace
 
-* Formal tables; keep() drops the country and year dummies
+* Formal tables; keep() drops the country and year dummies, so these are not direct Stata output
+* DiD/event-study columns use N=295; the others keep N=272 because of the lagged leave regressor
+* R2 is within-R2 for xtreg,fe and overall for xtpcse; label the two separately in the paper
 etable, estimates(fixed robust clustered did pcse eventstudy) ///
     keep(lag_fatherweeks10 1.treated#1.post ///
          event_time_dummy1 event_time_dummy3 event_time_dummy4 event_time_dummy5 ///
@@ -132,6 +135,7 @@ etable, estimates(pcse_quad pcse_winsor) ///
 * OECD extension: leave_gdp coverage limits the sample; third column drops that covariate
 use "${datadir_final}/oecd_analysis_261109.dta", clear
 xtset country_id year, yearly
+display "Extension sample: 26 countries, 2000-2024"
 
 xtreg employment_gap lag_fatherweeks10 ${controls} i.year, fe vce(robust)
 estimates store oecd_fe

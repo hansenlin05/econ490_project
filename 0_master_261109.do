@@ -2,6 +2,7 @@
    ECON 490 team project | 0_master_261109.do | 13 Nov 2026
    Father-specific paid leave and the gender employment gap.
    Primary: 23 European OECD countries, 2006-2019. Extension: 26 ILO countries, 2000-2024.
+   Run from the GitHub repository root. The build reads official data online.
    Run this file first: it sets the paths and calls the three numbered do-files in order. */
 
 clear
@@ -44,3 +45,4 @@ if ${run_mainresults}==1 {
     do "${do_dir}/3_results_261109.do"
 }
 
+display "Master do-file finished."
