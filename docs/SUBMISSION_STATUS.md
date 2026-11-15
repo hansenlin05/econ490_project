@@ -1,5 +1,8 @@
 # Submission status — 18 Nov 2026 Econometric Files
 
+The checklist below records the earlier European-primary package. For the current
+OECD-first version and submission log, follow the repository README.
+
 Last updated 15 November 2026. This is the actionable checklist. Code work is
 finished and verified; everything left is a manual team action.
 
