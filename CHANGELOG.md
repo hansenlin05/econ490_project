@@ -21,8 +21,14 @@ frozen snapshots.
   World Bank metadata columns, and rebuilding it would change bytes without
   changing a number.
 - **Eurostat** `lfst_hhacwnc` still reports `updated: 2026-09-10`, so no newer
-  release exists. **ILOSTAT** returns HTTP 200 with `Content-Length: 0` and
-  cannot be re-downloaded at all. **SOCX** has no public version stamp.
+  release exists. **SOCX** has no public version stamp.
+- **ILOSTAT** `GED_PEPR_SEX_HHT_CHL_RT_A` was fetched again on 15 November
+  through the ILOSTAT bulk download. The decompressed file is 18,854,904 bytes
+  and 169,679 rows covering 2000-2026, and it is **byte-for-byte identical** to
+  the snapshot, md5 `e45765c52e64a428dc28819e9d06e5a0` on both. The API endpoint
+  still answers HTTP 200 with `Content-Length: 0`; only the bulk route works.
+  Earlier notes that called this source impossible to re-download described the
+  API route and were wrong about the bulk one.
 
 After the PF2.5 replacement the whole chain was rerun from `data_raw`: all four
 analysis CSVs and both table CSVs kept their md5, the four logs kept their line
