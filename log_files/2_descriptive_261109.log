@@ -3,7 +3,7 @@
        log:  C:\Users\Hansen\UBC\ECON 490 003 2026W1 Seminar in Applied Economi
 > cs - 2_Team\econ490_project\log_files/2_descriptive_261109.log
   log type:  text
- opened on:  14 Nov 2026, 20:56:29
+ opened on:  14 Nov 2026, 22:50:25
 . }
 
 . 
@@ -307,12 +307,11 @@ file ./tables/descriptive_2019_oecd_261109.csv saved
 .     replace european = 1 if inlist(iso,"POL","PRT","SVN")
 (43 real changes made)
 
-.     twoway (histogram lag_fatherweeks10 if european==1, bin(10) color(navy)) 
-> ///
->         (histogram lag_fatherweeks10 if european==0, bin(10) color(maroon)), 
-> ///
+.     twoway (histogram lag_fatherweeks10 if european==1, color(navy) lcolor(bl
+> ack)) ///
+>         (histogram lag_fatherweeks10 if european==0, color(maroon) lcolor(bla
+> ck)), ///
 >         title("Father-specific paid leave by region") ///
->         subtitle("26 OECD countries, 2000-2024") ///
 >         xtitle("Lagged father-specific paid leave, per 10 weeks") ///
 >         ytitle("Density") ///
 >         legend(label(1 "European OECD (19)") label(2 "Non-European OECD (7)")

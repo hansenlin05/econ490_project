@@ -10,17 +10,26 @@ if ${store_log_build}==1 {
     capture noisily log using "${log_dir}/1_build_data_261109.log", text replace
 }
 
-* Data sources, AER author-date form; local copies are frozen in data_raw
-* Eurostat. 2026. Employment by sex, age and youngest child's age (lfst_hhacwnc). Luxembourg: Eurostat.
-* https://ec.europa.eu/eurostat/databrowser/view/lfst_hhacwnc/default/table (accessed October 2026).
-* OECD. 2026. PF2.5 Trends in leave entitlements around childbirth. OECD Family Database. Paris: OECD.
-* https://webfs.oecd.org/els-com/Family_Database/PF2_5_Trends_in_leave_entitlements_around_childbirth.xlsx (accessed October 2026).
-* International Labour Organization. 2026. Employment rate by sex and household composition, GED_PEPR_SEX_HHT_CHL_RT_A. ILOSTAT. Geneva: ILO.
-* https://rplumber.ilo.org/data/indicator?id=GED_PEPR_SEX_HHT_CHL_RT_A (accessed October 2026).
-* World Bank. 2026. World Development Indicators, NY.GDP.PCAP.KD and NY.GDP.MKTP.KD.ZG. Washington, DC: World Bank.
-* https://data.worldbank.org/indicator/NY.GDP.PCAP.KD (accessed October 2026).
-* OECD. 2026. Social Expenditure Database (SOCX), public maternity and parental leave spending. Paris: OECD.
-* https://www.oecd.org/en/data/datasets/social-expenditure-database-socx.html (accessed October 2026).
+* Data sources, author-date form; local copies are frozen in data_raw
+* Eurostat. 2026. "Adults by number of children, age of youngest child and
+*   labour status" [lfst_hhacwnc] (dataset). DOI 10.2908/lfst_hhacwnc,
+*   last update 10/09/2026 15:00. Luxembourg: European Commission, Eurostat.
+*   https://ec.europa.eu/eurostat/databrowser/view/lfst_hhacwnc/default/table
+*   (accessed 14 November 2026).
+* OECD. 2026. "PF2.5 Trends in leave entitlements around childbirth" (dataset),
+*   OECD Family Database, updated November 2026. Paris: OECD.
+*   https://webfs.oecd.org/els-com/Family_Database/PF2_5_Trends_in_leave_entitlements_around_childbirth.xlsx
+*   (accessed 14 November 2026).
+* International Labour Organization. 2026. "Employment rate by sex and household
+*   composition" [GED_PEPR_SEX_HHT_CHL_RT_A] (database), ILOSTAT. Geneva: ILO.
+*   https://ilostat.ilo.org/data/ (accessed 14 November 2026).
+* World Bank. 2026. World Development Indicators (dataset), NY.GDP.PCAP.KD and
+*   NY.GDP.MKTP.KD.ZG, last updated 11 November 2026. Washington, DC: World Bank.
+*   https://databank.worldbank.org/source/world-development-indicators
+*   (accessed 14 November 2026).
+* OECD. 2026. Social Expenditure Database (SOCX) (dataset), public maternity and
+*   parental leave spending. Paris: OECD. https://doi.org/10.1787/data-00167-en
+*   (accessed 14 November 2026).
 
 * Step 0: build both locked panels from the raw source files
 * Europe: Eurostat lfst_hhacwnc, 23 OECD countries, 2006-2019, N=295

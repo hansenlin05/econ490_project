@@ -1,39 +1,50 @@
-# Sync status - 14 Nov 2026
+# Sync status — 14 Nov 2026 (evening update)
 
-## Current state
+Companion to `HANDOVER.md` and `docs/SUBMISSION_STATUS.md`; this page only
+explains what is in this mirror versus what stays in OneDrive.
 
-The root do-files are the 14 Nov versions (275-line `1_build_data_261109.do`).
-All do-file commands are in the course whitelist: the two import options,
-`cond()`, panel subscripts, no-op `destring` lines and the duplicated
-policy-build block were removed. A full rerun keeps all 2396 numbers in
-`3_results_261109.log` unchanged apart from float/double storage precision in
-three rate columns; all reported coefficients, standard errors, p-values and
-sample sizes are identical.
+## What is mirrored here
 
-As of the second 14 Nov sync, do-file derivatives ARE mirrored here:
-`tables/` (5), `figures/` (4), `data_raw/` (8), `data_final/` (10) and the
-three numbered logs. This makes the repository a complete working mirror for
-teammate and AI handoff. It is still a mirror only: Canvas submissions come
-from the OneDrive project, not from GitHub.
+The complete 18 Nov deliverable package: five numbered do-files, four numbered
+logs, nine tables, five PNG figures, eight `data_raw` inputs and ten
+`data_final` outputs, plus the English handover set (`HANDOVER.md`,
+`README.md`, `CHANGELOG.md`, `docs/*.md`). Root-level do-file copies are
+byte-identical to the `do_files/` copies.
 
-## Submission state
+This is a **mirror only**. Canvas submissions come from the team's OneDrive
+project, never from GitHub. A GitHub commit is not evidence of a submission.
 
-The OneDrive project has 4 do-files, 3 numbered logs, 5 tables, 4 PNG figures,
-8 `data_raw` and 10 `data_final` items. Against the single course checklist
-(Final Paper Checklist), the Stata Files requirements are met: do/log uploaded
-by the deadline (pending the manual Canvas upload), logs created by do-files,
-fully annotated sections, and all reported work present in do and log.
+## Corrections to earlier versions of this page
 
+An earlier version said the OneDrive project had 4 do-files, 3 logs, 5 tables
+and 4 figures, and that "the single course checklist (Final Paper Checklist)"
+was the only grading document. Both statements are now wrong:
 
-## 20:55 update (commit 9598fc6)
+- The current package has **5 do, 4 logs, 9 tables, 5 figures, 8 `data_raw`,
+  10 `data_final`**.
+- There are **two different documents**: `Econometric Files for Final Paper.pdf`
+  (18 Nov, 100-point rubric, allowed file types) and
+  `Final Paper Checklist_ ECON_V 490 003 2026W1 Seminar in Applied Economics.pdf`
+  (11 Dec, 50-point paper rubric plus four Stata Files gates). See
+  `docs/COURSE_REQUIREMENTS.md` §0.
 
-The 18 Nov Canvas assignment rubric is now covered in code: AER data
-citations, 2019 single-year summary table, build-up regression table,
-three-column subset table, overlapping histograms, and the required
-specification comments. A fifth numbered do-file (4_tables) and a fourth
-log keep every log under the 25-page limit. Final package: 5 do, 4 logs,
-9 tables, 5 figures, 8 data_raw, 10 data_final. All 2396 original result
-floats and all four analysis CSV md5 are unchanged.
+## Latest verification (14 Nov 2026, 22:30 MST)
 
-Live official-endpoint imports from PR #1 were reverted in favour of frozen
-snapshots; see README.md and CHANGELOG.md for the measured reasons.
+A full rerun from `data_raw` after the citation and subset-note edits produced:
+no `r()` errors; logs of 739 / 330 / 1113 / 560 lines (about 15 / 7 / 22 / 11
+pages, all under 25); all four analysis CSVs and the summary CSV with unchanged
+md5; all 2396 result floats in `3_results_261109.log` unchanged. Only the
+citation block in `1_build_data_261109.log` and the subset comment/note in
+`4_tables_261109.log` differ from the previous run.
+
+All five data citations now carry the exact access date **14 November 2026**.
+The Chinese-language handover previously uploaded to the root and to `docs/`
+has been removed from this mirror; `HANDOVER.md` replaces it.
+
+## Still only in OneDrive / local
+
+- The actual Canvas upload and Canvas comments.
+- The team's course PDFs and the ten article PDFs (only their filenames are
+  listed in `docs/LITERATURE_SOURCES.md`).
+- Working notes, changelogs in Chinese, and archived superseded do-files; these
+  are deliberately kept out of the submission root and out of this mirror.
