@@ -4,12 +4,6 @@
    Inputs: country_codes.csv, oecd_leave_history.xlsx, eurostat_employment_raw.csv,
    ilo_household_raw.csv, wdi_raw.dta, oecd_policy_donor.dta. */
 
-//If log setting is activated, we record a log file in the log folder
-if ${store_log_build}==1 {
-    cap log close
-    capture noisily log using "${log_dir}/1_build_data_261109.log", text replace
-}
-
 * Data sources, author-date form; local copies are frozen in data_raw
 * Eurostat. 2026. "Adults by number of children, age of youngest child and
 *   labour status" [lfst_hhacwnc] (dataset). DOI 10.2908/lfst_hhacwnc,
@@ -119,6 +113,10 @@ keep if freq=="A" & age=="Y25-54" & unit=="THS_PER"
 keep if n_child=="TOTAL" & agechild=="Y_LT6"
 keep if inlist(sex,"M","F") & inlist(wstatus,"EMP","POP")
 merge m:1 geo using `euro_codes'
+count if _merge==1
+global unmatched_euro_map_master = r(N)
+count if _merge==2
+global unmatched_euro_map_using = r(N)
 keep if _merge==3 & geo!=""
 drop _merge
 * Retain the established 23-country Eurostat sample, all OECD members.
@@ -141,6 +139,10 @@ keep iso year male_rate female_rate source_flags
 * Unmatched rows are policy years outside the panel or countries outside the sample.
 * Merge raw outcomes with the policy history and apply the existing sample rule.
 merge 1:1 iso year using `policy'
+count if _merge==1
+global unmatched_euro_policy_master = r(N)
+count if _merge==2
+global unmatched_euro_policy_using = r(N)
 keep if _merge==3 & known_policy==1
 drop _merge
 drop if missing(male_rate,female_rate)
@@ -176,6 +178,10 @@ generate source_flags = ""
 * Unmatched rows are policy years outside the panel or countries outside the sample.
 * Merge raw outcomes with the policy history and apply the existing sample rule.
 merge 1:1 iso year using `policy'
+count if _merge==1
+global unmatched_oecd_policy_master = r(N)
+count if _merge==2
+global unmatched_oecd_policy_using = r(N)
 keep if _merge==3 & known_policy==1
 drop _merge
 drop if missing(male_rate,female_rate)
@@ -264,6 +270,11 @@ foreach s in europe oecd {
     keep if _merge==3
     drop _merge
 
+    count if !missing(employment_gap, lag_fatherweeks10, lag_lngdp, lag_gdp_growth, leave_gdp)
+    global complete_`s' = r(N)
+    count
+    global total_`s' = r(N)
+
     * Lagged log GDP per capita is required in every regression
     label variable leave_gdp "Public maternity and parental leave spending, percent of GDP"
 
@@ -291,8 +302,3 @@ foreach s in europe oecd {
 
 * Leave the primary sample in memory for the next do-file.
 use "${datadir_final}/europe_analysis_261109.dta", clear
-
-//Close log if needed
-if ${store_log_build}==1 {
-    cap log close
-}

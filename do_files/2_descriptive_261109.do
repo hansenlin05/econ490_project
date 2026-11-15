@@ -1,16 +1,7 @@
 /* Project info
-   2_descriptive_261109.do | descriptive statistics and figures for the primary Europe sample. */
+   2_descriptive_261109.do | descriptive statistics and figures for the main OECD ILO sample. */
 
-//If log setting is activated, we record a log file in the log folder
-if ${store_log_descriptive}==1 {
-    cap log close
-    capture noisily log using "${log_dir}/2_descriptive_261109.log", text replace
-}
-
-* Load the saved file if the build step was skipped
-if ${run_build}==0 {
-    use "${datadir_final}/europe_analysis_261109.dta", clear
-}
+use "${datadir_final}/oecd_analysis_261109.dta", clear
 
 summarize year
 
@@ -75,7 +66,7 @@ graph export "${figdir}/histogram_gap_261109.png", as(png) replace
 * Figure 3: average gap over time
 bysort year: egen mean_gap = mean(employment_gap)
 twoway (connected mean_gap year), ///
-    title("Average employment gap, 23 European OECD countries") ///
+    title("Average employment gap, OECD ILO panel") ///
     ytitle("Male minus female employment rate, percentage points") ///
     xtitle("Year") ///
     graphregion(color(white))
@@ -129,8 +120,3 @@ preserve
         graphregion(color(white))
     graph export "${figdir}/histogram_leave_byregion_261109.png", as(png) replace
 restore
-
-//Close log if needed
-if ${store_log_descriptive}==1 {
-    cap log close
-}
