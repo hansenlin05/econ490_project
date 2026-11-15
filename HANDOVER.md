@@ -193,7 +193,7 @@ lecture notes. They are easy to miss and have caused real rework.
    numbers, paper-writing advice, or justifications of command syntax.
    `display` is not a workflow requirement; it survives only where an `r()`
    count must be written into the log. The full restatement, with the permitted
-   command list and the three documented exceptions, is
+   command list and the four documented exceptions, is
    `docs/CODE_CONVENTIONS.md`.
 4. **Reproducibility.** Inputs are frozen local snapshots in `data_raw/`. A
    proposed change that read five official endpoints at run time was rejected:
