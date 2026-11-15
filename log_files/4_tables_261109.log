@@ -3,7 +3,7 @@
        log:  C:\Users\Hansen\UBC\ECON 490 003 2026W1 Seminar in Applied Economi
 > cs - 2_Team\econ490_project\log_files/4_tables_261109.log
   log type:  text
- opened on:  14 Nov 2026, 20:56:52
+ opened on:  14 Nov 2026, 22:51:11
 . }
 
 . 
@@ -374,7 +374,7 @@ Year FE: yes; Country FE: yes in all columns. Main regressor enters first; no no
 (collection ETable exported to file ./tables/results_buildup_261109.docx)
 
 . 
-. * Subsets by region, using the same core specification as build3
+. * Subsets compare countries with and without supranational EU leave mandates
 . generate byte european = 0
 
 . replace european = 1 if inlist(iso,"AUT","BEL","CZE","DEU","ESP","EST","FRA",
@@ -531,9 +531,10 @@ lag_gdp_gr~h |   .2093205   .1228902     1.70   0.089    -.0315398    .4501808
 . etable, estimates(build3 sub_europe sub_noneurope) ///
 >     keep(lag_fatherweeks10 lag_lngdp lag_gdp_growth) ///
 >     mstat(N) mstat(r2) showstars showstarsnote varlabel column(dvlabel) ///
->     note("Year FE: yes; Country FE: yes. European (19) and non-European (7) O
-> ECD members differ in supranational leave mandates. The non-European column h
-> as 6 clusters and 102 observations and is imprecise.") ///
+>     note("Year FE: yes; Country FE: yes. Subsets split the 26 OECD members by
+>  supranational EU leave mandates (19 European, 7 non-European). The non-Europ
+> ean column has 6 groups and 102 observations; report it for the three-column 
+> comparison only, not as a policy effect.") ///
 >     export("${tabledir}/results_subsets_261109.docx", replace)
 
 --------------------------------------------------------------------------------------------
@@ -549,7 +550,8 @@ Number of observations                                443            341        
 R-squared                                            0.91           0.85           0.97     
 --------------------------------------------------------------------------------------------
 ** p<.01, * p<.05
-Year FE: yes; Country FE: yes. European (19) and non-European (7) OECD members differ in supranational leave mandates. The non-European column has 6 clusters and 102 observations and is imprecise.
+Year FE: yes; Country FE: yes. Subsets split the 26 OECD members by supranational EU leave mandates (19 European, 7 non-European). The non-European column has 6 groups and 102 observations; report it
+for the three-column comparison only, not as a policy effect.
 (collection ETable exported to file ./tables/results_subsets_261109.docx)
 
 . 

@@ -114,10 +114,9 @@ preserve
     replace european = 1 if inlist(iso,"AUT","BEL","CZE","DEU","ESP","EST","FRA","GBR")
     replace european = 1 if inlist(iso,"GRC","HUN","IRL","ITA","LTU","LUX","LVA","NLD")
     replace european = 1 if inlist(iso,"POL","PRT","SVN")
-    twoway (histogram lag_fatherweeks10 if european==1, bin(10) color(navy)) ///
-        (histogram lag_fatherweeks10 if european==0, bin(10) color(maroon)), ///
+    twoway (histogram lag_fatherweeks10 if european==1, color(navy) lcolor(black)) ///
+        (histogram lag_fatherweeks10 if european==0, color(maroon) lcolor(black)), ///
         title("Father-specific paid leave by region") ///
-        subtitle("26 OECD countries, 2000-2024") ///
         xtitle("Lagged father-specific paid leave, per 10 weeks") ///
         ytitle("Density") ///
         legend(label(1 "European OECD (19)") label(2 "Non-European OECD (7)")) ///

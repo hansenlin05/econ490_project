@@ -3,6 +3,49 @@
 All entries describe the local OneDrive project; this repository only mirrors
 them for teammate / AI handoff. Dates are local (MST).
 
+## 2026-11-14 (evening) — English handover, exact citation dates, subset decision
+
+**Repository reorganised for an English-only reader.** Added `HANDOVER.md` at
+the root as the single authoritative handover, plus `docs/COURSE_REQUIREMENTS.md`,
+`docs/RESEARCH_DECISIONS.md`, `docs/PITFALLS_AND_CORRECTIONS.md`,
+`docs/DATA_CITATIONS.md`, `docs/SUBMISSION_STATUS.md` and
+`docs/LITERATURE_SOURCES.md`. Rewrote `README.md`, `docs/HANDOVER_INDEX.md`,
+`docs/AI_HANDOFF_NOTES.md`, `docs/SYNC_STATUS_2026-11-14.md` and the Sultana
+task note. All new documents justify rules with filenames or URLs only. The
+Chinese-language handover previously uploaded to the root and to `docs/` was
+removed from this mirror (the team keeps its own Chinese copy locally).
+
+**"How to cite" researched from the publishers' own guidance** and written into
+`1_build_data_261109.do`. Sources: the OECD Style Guide (Fourth Edition)
+"Citing data" section, the ILOSTAT "Dissemination and analysis / Citations"
+page, the World Bank "Summary Terms of Use", the EU data-provider manual's
+"Data citation" page and Eurostat's DOI documentation, plus the SOCX dataset DOI.
+All five data citations now carry the exact access date **14 November 2026**
+(previously "October 2026"), plus version information read from the five saved
+source PDFs: Eurostat DOI 10.2908/lfst_hhacwnc (last update 10/09/2026 15:00),
+OECD PF2.5 updated November 2026, WDI last updated 11 November 2026, and
+https://doi.org/10.1787/data-00167-en for SOCX.
+
+**Non-European subset column: kept.** Rubric item 9 requires three columns and
+rubric item 10 requires overlapping histograms for the same subsets; deleting
+the column would lose both. The split (19 European / 7 non-European OECD
+members) is theory-driven via supranational EU leave mandates. The column has
+6 groups and 102 observations, so `4_tables_261109.do` now states in its note
+that it is shown for the three-column comparison only and must not be read as
+a policy effect. Also corrected a stale "three numbered do-files" phrase in
+`0_master_261109.do`.
+
+**Overlapping histogram cleaned up.** `2_descriptive_261109.do` now uses the
+course's literal two-group histogram syntax: `bin()` and `subtitle()` (neither
+appears in the course handouts) were removed and `lcolor(black)` was added so
+both overlaid series stay visible. The figure still shows the same substantive
+fact — non-European OECD members cluster at zero weeks of father-specific leave.
+
+**Full rerun and verification (two passes).** No `r()` errors; logs
+739 / 330 / 1113 / 560 lines (~15 / 7 / 22 / 11 pages); all four analysis CSVs,
+the 2019 summary-table CSV and all 2396 result floats unchanged.
+`log_files/3_results_261109.log` is byte-identical apart from its header.
+
 ## 2026-11-14 — rubric compliance, official-source decision, fifth numbered do-file
 
 **Official sources: adopted as citations, not as live imports.** Neal's PR #1

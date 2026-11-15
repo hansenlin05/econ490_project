@@ -92,7 +92,7 @@ lag_fatherweeks10 的系数始终是 +0.668，显著性完全取决于标准误�
     vce(cluster 国家)  +0.668，SE 0.344，p = 0.065
     AR1 PCSE           +0.560，SE 0.207，p = 0.007
 
-按知识库「Preparing for Panel Data Analysis」逐字要求「Always cluster
+按课程文件「Preparing for Panel Data Analysis」逐字要求「Always cluster
 your SEs」，且讲义明说「The fix often changes significance more than any
 change to the point estimate does」，课程口径下应以聚类结果为准，
 即 p = 0.065，不显著。23 个聚类还低于讲义 30–50 的经验下限，所以这个
@@ -134,7 +134,7 @@ Final Paper Checklist 逐条核对完成（Stata Files 四条硬门槛全部满�
 组员登录 Canvas 实际上传。此前说的「还差一份 posted checklist 细目」已由
 用户 11/14 澄清取消：课程只有这一份清单，没有另一份 11/18 专用细目。
 论文正文是 12/11 的事，文献综述要用的 10 篇原文 PDF 已经全在 ECON 490
-知识库里，不用再下载。
+课程文件里，不用再下载。
 
 =====================================================================
 六、本轮改动的证据

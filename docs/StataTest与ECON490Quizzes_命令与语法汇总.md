@@ -1,6 +1,6 @@
 # StataTest 与 ECON490Quizzes 命令与语法汇总（下）
 
-> **覆盖范围**：知识库 `/Stata/StataTest` 内 Test One – Test Seven；ECON490Quizzes2 – Quizzes15 系列（含 `econ490_quiz_14` 配套 log）；并按授权补充了 `StataCheatSheet_analysis_19.pdf` 的相关命令（见附录 A）。
+> **覆盖范围**：课程 Stata 资料 `/Stata/StataTest` 内 Test One – Test Seven；ECON490Quizzes2 – Quizzes15 系列（含 `econ490_quiz_14` 配套 log）；并按授权补充了 `StataCheatSheet_analysis_19.pdf` 的相关命令（见附录 A）。
 > **编写原则**：只收录这些文件中**展示过**的命令与写法；评分标准中给出的写法优先采用；文件未展示写法处已注明；**不提供示例**；**不使用表格**。
 > **格式约定**：`代码` 表示命令或语法；【】内为说明；"（评分标准）"表示写法取自测验评分表，"（题目描述）"表示仅由题目文字归纳。
 
@@ -208,7 +208,7 @@
 
 ## 九、附录 A：StataCheatSheet_analysis_19.pdf 相关命令参考（允许使用的补充资料）
 
-> 以下条目摘自知识库中的 Stata 速查表；部分因原文件排版/OCR 显示不完整，已按可辨认内容列出。速查表还覆盖时间序列（`arima`、`tsline` 等）、生存分析（`stset`、`stcox`）、调查数据（`svyset`、`svy:`）、PCA/因子分析、计数模型、动态面板、PSM、合成控制、断点回归等主题，如需可另行整理。
+> 以下条目摘自课程 Stata 资料中的 Stata 速查表；部分因原文件排版/OCR 显示不完整，已按可辨认内容列出。速查表还覆盖时间序列（`arima`、`tsline` 等）、生存分析（`stset`、`stcox`）、调查数据（`svyset`、`svy:`）、PCA/因子分析、计数模型、动态面板、PSM、合成控制、断点回归等主题，如需可另行整理。
 
 ### 【11-11 补录】以下逐字来自 `StataCheatSheet_analysis_19.pdf` 原文，前文附录 A 遗漏
 
@@ -236,7 +236,7 @@
 
 ### 【11-14 更新一】边界项从 4 类收敛到 2 类；另补录图形选项
 
-2026-11-14 再次对照知识库 `/Stata/` 下的 COMET（28 项）、Cometquiz（14 项）、StataTest（7 项）、Regression Course Material（8 项）与 `StataCheatSheet_analysis_19.pdf`，并把本地 COMET Notebook 全部 18 份 `.qmd` 的 Stata 代码块与 `UsedDoFiles` 全部 29 份 `.do` 逐行抽出命令首词比对，共得到 102 个课程命令 token。除下列 7 个非命令英文词外全部已收录：`assignment`、`comments`、`like`、`name_of_command`、`student`、`xlabel`、`ylabel`。其中 `xlabel()` / `ylabel()` 是 COMET Notebook 图形示例里逐字出现的轴标签选项（本汇总此前只记了 `xtitle()`、`ytitle()`、`ylab()`、`xline()`），现补录：`xlabel(#(#)#)` / `ylabel(#(#)#)` 用于指定轴刻度标签，与 `xtitle()` / `ytitle()` 并列。
+2026-11-14 再次对照课程 Stata 资料 `/Stata/` 下的 COMET（28 项）、Cometquiz（14 项）、StataTest（7 项）、Regression Course Material（8 项）与 `StataCheatSheet_analysis_19.pdf`，并把本地 COMET Notebook 全部 18 份 `.qmd` 的 Stata 代码块与 `UsedDoFiles` 全部 29 份 `.do` 逐行抽出命令首词比对，共得到 102 个课程命令 token。除下列 7 个非命令英文词外全部已收录：`assignment`、`comments`、`like`、`name_of_command`、`student`、`xlabel`、`ylabel`。其中 `xlabel()` / `ylabel()` 是 COMET Notebook 图形示例里逐字出现的轴标签选项（本汇总此前只记了 `xtitle()`、`ytitle()`、`ylab()`、`xline()`），现补录：`xlabel(#(#)#)` / `ylabel(#(#)#)` 用于指定轴刻度标签，与 `xtitle()` / `ytitle()` 并列。
 
 **已用白名单命令等价替换、且验证整体结果一致的 2 类**（11-13 曾列为边界项，现已不再使用）：
 

@@ -12,7 +12,7 @@ ECON 490 团队项目 · 11/11 决策记录
 设定；GDP 滞后按你和 Neal 已确认的方向修好。交互项只作为「已评估、不纳入」留档。
 
 
-二、课程一手依据（逐字原文，来自 @ima:"ECON 490"）
+二、课程一手依据（逐字原文，来自 课程一手文件）
 
 COMET 13《Using Dummy Variables and Interactions》13.4：
     "Warning: Whenever we do this, it is very important that we also include both
@@ -144,7 +144,7 @@ OECD 交互项由正转负、p=0.757，因此「适合报告为补充分析，�
 
 七、资料边界（如实写明，不要把没读到的当证据）
 
-- 本轮两次 IMA 知识库检索分别返回 126,310 与 108,461 字符，超出工具上限并落盘为
+- 本轮两次 课程文件检索分别返回 126,310 与 108,461 字符，超出工具上限并落盘为
   txt。这两份检索结果**未被完整逐字通读**，本记录只用了其中定向命中的标题、
   media_id 与高亮片段，并据此取回 COMET 13、COMET 14 两份原文；这两份原文已完整
   读取。课程硬要求另以本机先前从一手 PDF 提取的 `.workbuddy/pdf_extract/checklist.md`
