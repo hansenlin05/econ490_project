@@ -1,112 +1,68 @@
-/* Project info
-   3_results_261109.do | regressions, diagnostics and tables
-   Primary: 23 Eurostat countries, 2006-2019. Extension: 26 ILO countries, 2000-2024, reported separately.
-   GAP = male minus female employment rate, pp. Eurostat: ages 25-54, youngest child under 6; no couple restriction.
-   OECD extension: ILO household series (HHT_AGGREGATE_K, child under 6); population definition differs, never pooled.
-   GAP_it = b1*L1.LEAVE10_it + b2*L1.LNGDP_it + b3*L1.GROWTH_it + b4*SPEND_it + country_i + year_t + e_it
-   LEAVE10 is in 10-week units; H1 predicts b1<0. Estimates are associations, not causal effects.
-   */
+/* Main analysis uses the OECD ILO household employment panel, 2000-2024.
+   The dependent variable is male minus female employment in percentage points.
+   The key regressor is lagged father-specific paid leave per 10 weeks. */
 
-//If log setting is activated, we record a log file in the log folder
-if ${store_log_mainresults}==1 {
-    cap log close
-    capture noisily log using "${log_dir}/3_results_261109.log", text replace
-}
-
-* Load the saved file if both earlier steps were skipped
-if ${run_build}==0 & ${run_descriptive}==0 {
-    use "${datadir_final}/europe_analysis_261109.dta", clear
-}
-
+use "${datadir_final}/oecd_analysis_261109.dta", clear
 xtset country_id year, yearly
 
-* FE baseline; xttest3 and xtserial need the unadjusted fit
+* Year effects, panel effects and residual diagnostics for the full specification.
 xtreg employment_gap lag_fatherweeks10 ${controls} i.year, fe
-estimates store fixed
-
-* Joint test of the year dummies
 testparm i.year
-
-* Heteroskedasticity (modified Wald)
 xttest3
-
-* Serial correlation (Wooldridge)
 capture noisily xtserial employment_gap lag_fatherweeks10 lag_lngdp ///
     lag_gdp_growth leave_gdp
 
-* Robust standard errors
+* Main specification includes country/year effects and corrects for AR(1)
+* and heteroskedasticity. Country-clustered TWFE provides a second inference check.
+xtpcse employment_gap lag_fatherweeks10 ${controls} i.year i.country_id, het corr(ar1)
+estimates store oecd_pcse
+test lag_fatherweeks10 = 0
+
 xtreg employment_gap lag_fatherweeks10 ${controls} i.year, fe vce(robust)
-estimates store robust
+estimates store oecd_fe
+test lag_fatherweeks10 = 0
 
-* Country-clustered SEs, LSDV with explicit country and year dummies
-regress employment_gap lag_fatherweeks10 ${controls} i.year i.country_id, ///
-    vce(cluster country_id)
-estimates store clustered
+etable, estimates(oecd_pcse oecd_fe) ///
+    keep(lag_fatherweeks10 lag_lngdp lag_gdp_growth leave_gdp) ///
+    mstat(N) showstars showstarsnote varlabel column(index) ///
+    note("OECD ILO sample. Column 1: AR(1) PCSE. Column 2: country-clustered TWFE. Both include country and year effects.") ///
+    export("${tabledir}/results_oecd_261109.docx", replace)
 
-* Hausman: FE vs RE
-xtreg employment_gap lag_fatherweeks10 ${controls} i.year, re
-estimates store random
-capture noisily hausman fixed random
+* OECD robustness: quadratic and fully winsorized specifications.
+display "OECD robustness: quadratic and fully winsorized specifications"
+display "Quadratic term, p = " ${quadratic_p}
+display "Winsorized week coefficient, p = " ${winsor_p}
+display "Winsorization counts (gap, weeks, log GDP, growth, spending): " ///
+    ${winsor_changed_gap} " / " ${winsor_changed_leave} " / " ${winsor_changed_gdp} " / " ///
+    ${winsor_changed_growth} " / " ${winsor_changed_spend}
+etable, estimates(pcse_quad pcse_winsor) ///
+    keep(lag_fatherweeks10 c.lag_fatherweeks10#c.lag_fatherweeks10 ///
+         lag_fatherweeks10_winsor lag_lngdp lag_lngdp_winsor ///
+         lag_gdp_growth lag_gdp_growth_winsor leave_gdp leave_gdp_winsor) ///
+    mstat(N) mstat(r2) showstars showstarsnote varlabel column(dvlabel) ///
+    export("${tabledir}/results_oecd_robust_261109.docx", replace)
 
-* DiD on the first verified expansion
-regress employment_gap 1.treated#1.post ${controls} i.year i.country_id, ///
-    vce(cluster country_id)
-estimates store did
+* OECD build-up: all columns use the same complete cases.
+display "OECD build-up: all columns use the same complete cases"
+etable, estimates(build1 build2 build3 oecd_pcse) ///
+    keep(lag_fatherweeks10 lag_lngdp lag_gdp_growth leave_gdp) ///
+    mstat(N) mstat(r2) showstars showstarsnote varlabel column(index) ///
+    note("Year FE: yes; Country FE: yes in all columns. Main regressor enters first; no non-linear term is added. All four columns use the same 333 observations with complete data on every variable.") ///
+    export("${tabledir}/results_buildup_261109.docx", replace)
 
-* Prais-Winsten AR(1); xtpcse does not absorb FE, so dummies are explicit
-xtpcse employment_gap lag_fatherweeks10 ${controls} i.year i.country_id, ///
-    het corr(ar1)
-estimates store pcse
+* Further analysis: geographic subsets of the OECD ILO sample.
+display "Further analysis: geographic subsets of the OECD ILO sample"
+etable, estimates(all_countries sub_europe sub_noneurope) ///
+    keep(lag_fatherweeks10 lag_lngdp lag_gdp_growth) ///
+    mstat(N) mstat(r2) showstars showstarsnote varlabel column(index) ///
+    note("Year FE: yes; Country FE: yes. Subsets use the geographic groups defined for this study. The non-European column has 6 groups and 102 observations; report it for the three-column comparison only, not as a policy effect.") ///
+    export("${tabledir}/results_subsets_261109.docx", replace)
 
-* Event study; k=-1 omitted, endpoints binned at -2 and +2
-generate time_entering_treatment = reform_year if treated==1
-replace time_entering_treatment = . if treated==0
-generate event_time = year - time_entering_treatment
-replace event_time = -1 if treated==0
-replace event_time = -2 if event_time<-2 & treated==1 & event_time!=.
-replace event_time =  2 if event_time> 2 & treated==1 & event_time!=.
-tabulate event_time, missing
-tabulate event_time, gen(event_time_dummy)
-regress employment_gap event_time_dummy1 event_time_dummy3 ///
-    event_time_dummy4 event_time_dummy5 ${controls} i.year i.country_id, ///
-    vce(cluster country_id)
-estimates store eventstudy
-
-coefplot, keep(event_time_*) vertical graphregion(color(white)) yline(0) ///
-    rename(event_time_dummy1="k=-2" event_time_dummy3="k=0" ///
-           event_time_dummy4="k=+1" event_time_dummy5="k=+2") ///
-    title("Event study: father-specific paid leave expansions") ///
-    ytitle("Employment gap, male minus female (percentage points)") ///
-    xtitle("Years since first expansion, k = -1 omitted")
-graph export "${figdir}/event_study_261109.png", as(png) replace
-
-* Formal tables; keep() drops the country and year dummies
-etable, estimates(fixed robust clustered did pcse eventstudy) ///
+* Further analysis: European Eurostat panel, DiD and event study.
+display "Further analysis: European Eurostat panel, DiD and event study"
+etable, estimates(europe_fe pcse did eventstudy) ///
     keep(lag_fatherweeks10 1.treated#1.post ///
          event_time_dummy1 event_time_dummy3 event_time_dummy4 event_time_dummy5 ///
          lag_lngdp lag_gdp_growth leave_gdp) ///
     mstat(N) mstat(r2) showstars showstarsnote varlabel column(dvlabel) ///
     export("${tabledir}/results_europe_261109.docx", replace)
-
-* OECD extension: leave_gdp coverage limits the sample; third column drops that covariate
-use "${datadir_final}/oecd_analysis_261109.dta", clear
-xtset country_id year, yearly
-
-xtreg employment_gap lag_fatherweeks10 ${controls} i.year, fe vce(robust)
-estimates store oecd_fe
-xtpcse employment_gap lag_fatherweeks10 ${controls} i.year i.country_id, ///
-    het corr(ar1)
-estimates store oecd_pcse
-xtreg employment_gap lag_fatherweeks10 lag_lngdp lag_gdp_growth i.year, ///
-    fe vce(robust)
-estimates store oecd_fe_nospend
-
-etable, estimates(oecd_fe oecd_pcse oecd_fe_nospend) ///
-    keep(lag_fatherweeks10 lag_lngdp lag_gdp_growth leave_gdp) ///
-    mstat(N) mstat(r2) showstars showstarsnote varlabel column(dvlabel) ///
-    export("${tabledir}/results_oecd_261109.docx", replace)
-
-//Close log if needed
-if ${store_log_mainresults}==1 {
-    cap log close
-}

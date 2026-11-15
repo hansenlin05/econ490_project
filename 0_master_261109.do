@@ -1,16 +1,13 @@
 /* Project info
    ECON 490 team project | 0_master_261109.do
    Father-specific paid leave and the gender employment gap.
-   Primary: 23 European OECD countries, 2006-2019. Extension: 26 ILO countries, 2000-2024.
-   Run this file first: it sets the paths and calls the four numbered do-files in order. */
+   Main: OECD ILO panel, 2000-2024. Further analysis: European Eurostat panel, 2006-2019.
+   From the repository root, run this file to produce one annotated project log. */
 
 clear
 
 /* Directory settings: paths to folders, defined as globals */
 ********************* * Directory Settings ***********************
-
-capture noisily cd "C:/Users/Hansen/UBC/ECON 490 003 2026W1 Seminar in Applied Economics - 2_Team/econ490_project"
-capture noisily dir
 
 global proj_name "econ490_project"                 // project name
 global proj_main "."
@@ -23,32 +20,32 @@ global figdir        "${proj_main}/figures"        // figures path
 global literature    "${proj_main}/literature"     // literature path
 global paperdir      "${proj_main}/paper"          // paper path
 
-/* Project settings: such as global variables and other macros */
-********************* * Project Settings ***********************
-
-global run_build = 1                // 0 = skip build step; 1 = run build.do
-global store_log_build = 1          // 0 = don't save log file; 1 = save log file
-global run_descriptive = 1          // 0 = skip; 1 = run
-global store_log_descriptive = 1    // 0 = don't save log file; 1 = save log file
-global run_mainresults = 1          // 0 = skip; 1 = run
-global store_log_mainresults = 1    // 0 = don't save log file; 1 = save log file
-global run_tables = 1              // 0 = skip; 1 = run
-global store_log_tables = 1        // 0 = don't save log file; 1 = save log file
-
-* Lagged log GDP per capita is in every regression
+* Shared controls for the main model.
 global controls "lag_lngdp lag_gdp_growth leave_gdp"
 
-/* Run the do-files: runs all of the do-files for the project */
-if ${run_build}==1 {
-    capture noisily do "${do_dir}/1_build_data_261109.do"
-}
-if ${run_descriptive}==1 {
-    capture noisily do "${do_dir}/2_descriptive_261109.do"
-}
-if ${run_mainresults}==1 {
-    capture noisily do "${do_dir}/3_results_261109.do"
-}
-if ${run_tables}==1 {
-    capture noisily do "${do_dir}/4_tables_261109.do"
-}
+* Build data and fit the supplementary models. The log prints compact
+* tables of those estimates while retaining the main diagnostics in full.
+capture log close
+do "${do_dir}/1_build_data_261109.do"
+do "${do_dir}/4_tables_261109.do"
 
+log using "${log_dir}/econ490_oecd_261109.log", text replace
+
+* Raw-source provenance and sample checks from 1_build_data_261109.do.
+* OECD PF2.5 leave history, ILOSTAT household employment, Eurostat employment,
+* World Bank WDI macro controls and OECD SOCX leave spending.
+display "OECD ILO panel rows: " ${total_oecd} "; main complete cases: " ${complete_oecd}
+display "European Eurostat panel rows: " ${total_europe} "; complete cases: " ${complete_europe}
+display "Eurostat lookup: rows outside the selected geography = " ${unmatched_euro_map_master}
+display "European employment/policy merge: master-only / using-only = " ///
+    ${unmatched_euro_policy_master} " / " ${unmatched_euro_policy_using}
+display "OECD employment/policy merge: master-only / using-only = " ///
+    ${unmatched_oecd_policy_master} " / " ${unmatched_oecd_policy_using}
+
+display "Descriptive statistics and figures"
+do "${do_dir}/2_descriptive_261109.do"
+
+display "Main regression: OECD ILO panel"
+do "${do_dir}/3_results_261109.do"
+
+log close
