@@ -177,3 +177,50 @@ Run these before any push. All six are cheap and each has caught a real defect.
 5. Recheck the four log lengths after 80-character wrapping against the
    assignment's 25-page limit.
 6. Confirm the root do-file copies and the `do_files/` copies are identical.
+
+## 7. Where each permitted command is demonstrated
+
+This table replaces the two Chinese-language command indexes that used to sit in
+`docs/`. It records, for every command this project uses, the course material
+that demonstrates it. If a command is not in this table and not in §2, it is not
+permitted.
+
+**COMET Notebook modules 02–18** (`02 - Working with Do-Files` through
+`18 - Stata Workflow Guide`):
+
+| Area | Commands used here |
+|---|---|
+| 02 Do-files and logs | `do`, `log using ..., text replace`, `log close`, `capture noisily`, `*` comments, `//` comments |
+| 03 Stata essentials | `use`, `describe`, `list`, `summarize`, `summarize, detail`, `tabulate`, `count`, `keep`, `drop`, `sort`, `clear`, `missing()`, `inlist()`, `inrange()`, `foreach`, `forvalues` |
+| 04 Locals and globals | `local`, `global`, `` `local' ``, `$global` |
+| 05 Opening data | `import delimited ..., varnames(1)`, `import excel ..., sheet() cellrange() clear`, `export excel using ..., firstrow(variables)`, `save` |
+| 06 Generating variables | `generate`, `replace`, `label variable`, `rename`, `encode`, `xtset`, arithmetic and comparison operators |
+| 07 Within-group analysis | `bysort`, `collapse (mean) (sd) (min) (max) (count)`, `preserve`, `restore`, `keep if`, `egen ... = mean()` |
+| 08 Combining datasets | `merge m:1`, `merge 1:1`, `duplicates report`, `isid` |
+| 09 Visuals | `twoway (scatter) (lfit) (connected) (histogram)`, `histogram`, `title()`, `xtitle()`, `ytitle()`, `legend()`, `graphregion(color(white))`, `graph export ..., as(png) replace` |
+| 11 Regression | `regress`, `i.var`, `c.var`, `#`, `##`, `predict` |
+| 12 Exporting output | `etable, estimates() mstat(N) mstat(r2) showstars showstarsnote varlabel column() keep() export()`, `coefplot`, `export delimited` |
+| 13 Dummies and interactions | `i.` and `c.` notation, `##` adding both main effects and the product |
+| 14 Good regression practice | `testparm`, omitted base categories, collinearity warnings, `test coef = 0` |
+| 15 Panel data | `xtset`, `xtreg ..., fe`, `xtreg ..., re`, `xtreg ..., fe vce(robust)`, `hausman`, `xttest3`, `xtserial`, `xtpcse ..., het corr(ar1)`, `L1.` / `F1.` |
+| 16 Differences-in-differences | `1.treated#1.post`, event-time dummies built with `generate` + `replace` |
+| 18 Stata Workflow Guide | `/* Project info */` header, directory globals, `capture noisily do` in a fixed order, `clear` rather than `clear all` |
+
+**`StataCheatSheet_analysis_19.pdf` and the `StataTest` / `ECON490Quizzes`
+sets** — these are the only sources for the commands below, which is why each
+one is explained in the review notes rather than assumed:
+
+| Command | What it adds |
+|---|---|
+| `isid varlist` | stops the run if the key is not unique, before a merge can duplicate rows |
+| `tempfile` + `` `name' `` | a session-scoped path, so the policy history is built once and merged twice without leaving files behind |
+| `recast double` | storage type; used only in the three-step `generate` + `recast double` + `replace` pattern (see §2) |
+| `dtable` | descriptive-statistics table; see §2 for the `continuous(...)` form |
+| `test coef = 0` | exact p-value for a single coefficient, printed into the log |
+| `column(index)` | numbers the columns of a multi-model `etable` instead of repeating the dependent-variable name |
+| `note()` | see §2, fourth exception |
+
+**Not used, and not to be introduced:** `reghdfe`, `csdid`, `eventdd`,
+`bacondecomp`, `winsor2`, `outreg2`, `estout`, `esttab`, `putdocx`, `collect
+style`, `quietly`, `split parse()`, `egen rowmin/rowmax/rownonmiss`, `cond()`,
+subscript arithmetic such as `[_n-1]`, `generate double`.

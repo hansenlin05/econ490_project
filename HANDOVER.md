@@ -53,7 +53,7 @@ Specification: two-way (country and year) fixed effects, with heteroskedasticity
 and serial-correlation correction; DiD and an event study are supplementary
 checks inside the same framework. Estimates are associations, not causal
 effects. The `weeks x pay_c` interaction is deliberately **not** in the main
-model (see `docs/ECON490_DECISION_2026-11-11.txt`).
+model (the five reasons are in `README.md` section 7).
 
 **Conclusion to write up:** no robustly significant policy effect; report a
 conditional association only. All historically significant p-values are
@@ -180,8 +180,8 @@ lecture notes. They are easy to miss and have caused real rework.
    `18 - Stata Workflow Guide – COMET.pdf`), the Stata Test do-files
    (Test One-Seven) and the quiz do-files. Banned examples: `reghdfe`,
    `csdid`, `eventdd`, `bacondecomp`. The two local indexes are
-   `docs/COMET_Notebook_命令与语法汇总.md` and
-   `docs/StataTest与ECON490Quizzes_命令与语法汇总.md`. Panel lags/leads use
+   `docs/CODE_CONVENTIONS.md` §7, which records the course module or
+   handout in which each permitted command is demonstrated. Panel lags/leads use
    `L1.` / `F1.` after `encode` + `xtset` + `sort`.
 2. **Workflow 18 structure.** Master starts with `/* Project info */`, then
    `clear`, directory settings, project settings, and ordered
@@ -299,8 +299,9 @@ Full rationale: `docs/RESEARCH_DECISIONS.md`. Citation strings and the official
    commands `xttest3`, `xtserial`, `coefplot`.
 2. Copy the whole `econ490_project` folder, including `data_raw/` — the chain
    does not download anything.
-3. In `do_files/0_master_261109.do`, edit the single `capture noisily cd "..."`
-   line to the new absolute path. All other paths are relative globals.
+3. Set the working directory to the project root. There is no `cd` line to
+   edit: the master uses `global proj_main "."` and every path is relative, so
+   the folder can be renamed or moved without touching the code.
 4. From the project root run the master; it calls the four numbered do-files.
 5. Compare `log_files/` with this repository. Any differing coefficient means
    the reproduction failed.
