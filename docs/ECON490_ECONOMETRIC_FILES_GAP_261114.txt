@@ -1,0 +1,208 @@
+ECON 490 · 11/18 Econometric Files 逐条缺口核查
+生成时点：2026-11-14 19:00 MST
+一手依据：E:\Hansen\Downloads\Econometric Files for Final Paper.pdf
+          （Canvas assignment 页面导出，含 100 分 rubric；提取文本存
+          .workbuddy/pdf_extract/econometric_files.md）
+          Course Outline p.14：Econometric Files (10%) November 18；
+          "One set of do, log, data, and image files will be uploaded per team
+          to Canvas according to the posted checklist."
+对照对象：OneDrive 项目 econ490_project，当前
+          4 do / 3 编号 log / 5 tables / 4 figures / 8 data_raw / 10 data_final
+
+
+一、必须先更正的一条旧结论
+
+此前本项目记录写着「课程 checklist 只有 Final Paper Checklist 一份，不存在
+另一份 11/18 专用 posted checklist，不要再列为待办」。这个推演不成立。
+用户那句话指的是评分清单文件只有一份；但 Course Outline 逐字提到的
+"posted checklist" 就是本次附的 Canvas assignment 页面（页面含
+"Start Assignment"、"File Types"、"Points 100" 与 rubric 表格），它是一份
+独立的作业说明 + 100 分评分细则，不是 Final Paper Checklist 的重复。
+把用户那句话理解为「11/18 没有其他要求」，导致此前把这一待办取消，
+并漏掉了本文件第二、三节列出的全部细目。此后以本 PDF 为 11/18 交付
+要求的一手依据，Final Paper Checklist 仍作为 12/11 论文评分依据。
+
+日期冲突：本 PDF 正文写 "before March 23rd at midnight"，页眉写
+"Due No Due Date"，与 Course Outline 的 November 18 不一致，判断为
+Canvas 复用旧学期 assignment 文本。截止日以 Course Outline 11/18
+与 Canvas 实际显示为准；内容要求与 rubric 仍按本 PDF 执行。
+
+
+二、逐条对照（按 rubric 顺序，分值为该 PDF 第 3–4 页原值）
+
+ 要求                                  分值  现状          证据
+ ---------------------------------------------------------------------------
+ Hypothesis：Canvas comments 写明结果     5   缺            提交动作，非文件；
+ 是否支持假设                                              当前无任何草稿
+ Log file：组织清楚、有注释、≤25 页      15   满足/注意     3 log 分别 716 /
+                                                           244 / 1115 行，
+                                                           约 14 / 5 / 22 页；
+                                                           log 内可见 `* ` 注释。
+                                                           若被要求合并为单一
+                                                           log，合计约 41 页会超
+ Citation：所有数据集在注释里正确引用     4   缺            1_build_data 的
+                                                           Project info 只列了
+                                                           文件名，正文只有
+                                                           "Eurostat lfst_hhacwnc"
+                                                           一处；无 URL、机构、
+                                                           访问日期
+ Merge：do 内完成，未匹配观测要在       8   部分           merge 全在 do 内
+ Canvas comments 说明原因                                   ✅；但 do 无未匹配
+                                                           说明注释，comments
+                                                           无草稿。log 里确有
+                                                           568 / 631 / 855 /
+                                                           430 条未匹配
+ Variable names 清晰                    5   满足          employment_gap、
+                                                           lag_fatherweeks10、
+                                                           lag_lngdp 等
+ Heteroskedasticity 检验                 2   满足          xttest3，
+                                                           Prob>chi2=0.0000
+ Serial correlation 检验                2   满足          xtserial，
+                                                           Prob>F=0.0028
+ 年份与面板固定效应检验                 3   满足          testparm i.year、
+                                                           F test u_i=0、
+                                                           Hausman
+ 单一完整设定回归（含 year+panel FE、   10   部分          xtpcse ..., het
+ convergence variable、修正异方差与                        corr(ar1) 具备；
+ 序列相关）                                                但主表把 6 个不同
+                                                           设定并列，未单独
+                                                           呈现"唯一首选设定"
+ 完整回归结果表：一次加一个变量、主     15   缺            当前
+ 解释变量第一、导出 Word、含系数/SE/                       results_europe_261109
+ 显著性/N、含 FE yes/no 行、不含                          .docx 是 FE/robust/
+ FE 估计结果                                               cluster/DiD/PCSE/
+                                                           event study 六列，
+                                                           不是逐变量嵌套序列；
+                                                           无 FE yes/no 行。
+                                                           keep() 已去掉
+                                                           虚拟变量 ✅
+ 子集结果表：全样本 + 两个子集共三列， 10   缺            现有 Europe 与 OECD
+ 导出 Word，子集选择须有经济理论依据                       是两个独立样本，
+                                                           不是"全样本+子集"
+ 直方图：至少两个重叠直方图在同一      6   缺            现有
+ 张图，上传 PNG                                            histogram_gap_261109
+                                                           .png 是单一总体分布
+ 描述统计表：单一个代表年份、只含主    3   口径不符       descriptive_261109
+ 解释变量非缺失、Excel 或 Word                            .xlsx 是 2006–2019
+                                                           全样本 295 行，未按
+                                                           年份或主解释变量筛选；
+                                                           且 .xlsx 不在 Canvas
+                                                           允许类型内
+ Winsorized：重复单一设定回归并注明    5   部分           pcse_winsor 在
+ 是否首选                                                   robustness 表 ✅，
+                                                           但 do/log 无"是否
+                                                           首选"说明
+ 图：多张、出版级、上传 PNG            7   满足          4 张 PNG，均有标题与
+                                                           轴标签
+ ---------------------------------------------------------------------------
+ 明确满足约 39 分；明确缺或口径不符约 43 分；部分满足约 18 分。
+ 按该 rubric 现状大约只有一半分数。Canvas 显示 100 分，折算总成绩 10%。
+ 另 PDF 第 5 条：交互项/非线性"只有改善拟合且有经济理论解释时才纳入"。
+ 现有二次项稳健性两系数均不显著，未入主模型，方向正确；但需一句说明
+ （Final Paper Checklist 脚注 [2] 同样要求解释非线性理论依据）。
+
+
+三、Canvas 文件类型与交付形态的两个坑
+
+本 PDF 页首："File Types log, csv, png, do, docx, and jpeg"；正文
+"submit your final econometrics work (log, do, doc and png files)"。
+因此：
+  - .xlsx 不在允许列表，descriptive_261109.xlsx 可能被拒。描述统计表应
+    另导出 .docx（或 .csv）再交；rubric 允许 "Excel or Word document"。
+  - .dta 不在允许列表。data_raw / data_final 里请传 .csv 版本；.dta 只
+    作本机复现用，不必上传。
+  - 三份编号 log 各自 <25 页，按 Workflow 18 的多 do/log 结构提交即可；
+    若 TA 要求单一 log，需先精简 do（3_results 的重复诊断输出最多），
+    否则合并约 41 页会超 25 页限制。
+
+
+四、可直接复制的 Canvas comments 英文草稿
+
+Our results do not support the hypothesis. In the primary sample of 23
+European OECD countries (2006-2019, N=295), the coefficient on lagged
+father-specific paid leave is +0.668 (country-clustered SE 0.344, p=0.065)
+in the two-way fixed effects specification: wrong-signed relative to H1
+and not significant at 5 percent once standard errors are clustered by
+country. The DiD estimate is -0.626 (p=0.653), the event-study leads and
+lags are all insignificant, and the OECD extension columns give
+p=0.352 / 0.583 / 0.746. We therefore report no robust evidence of a
+policy effect, only a conditional association. Course guidance in
+"Preparing for Panel Data Analysis" is to always cluster standard errors,
+and with 23 clusters our inference is itself optimistic.
+
+Merge note: all merges are performed inside 1_build_data_261109.do.
+Unmatched observations are not errors. The Eurostat source contains
+country groups outside the 23-country OECD sample (568 rows dropped), and
+the OECD policy workbook contains country-years outside the 2006-2019
+research window or without verified entitlement values (631 rows from the
+using file in the Europe merge; 855/430 in the OECD merge). These are
+excluded by design. WDI GDP controls cover all 295 European and all 477
+OECD country-years. In the OECD extension, public leave spending
+(leave_gdp) is sparse, so the three reported columns use 333 / 333 / 443
+observations; the third column drops that covariate to show the loss.
+
+Preferred specification: the unwinsorized AR(1) PCSE model with country
+and year fixed effects. The 1/99 winsorized repetition changes 4 outcome
+observations and 4 lagged-GDP observations and does not alter the sign,
+magnitude or significance of the main coefficient, so we do not prefer it.
+The quadratic term is insignificant and does not improve fit, so it is
+reported only as robustness, consistent with the assignment instruction
+to add non-linearity only when it improves the model and has a theoretical
+justification.
+
+
+五、可直接粘进 do 文件的数据引用草稿（每个源一行 `* ` 注释）
+
+* Data: Eurostat lfst_hhacwnc, employment by sex, age and youngest child's age,
+  https://ec.europa.eu/eurostat/databrowser/view/lfst_hhacwnc/default/table
+* Data: OECD Family Database PF2.5, Trends in leave entitlements around
+  childbirth, https://webfs.oecd.org/Els-com/Family_Database/PF2_5_Trends_in_leave_entitlements_around_childbirth.xlsx
+* Data: World Bank World Development Indicators, NY.GDP.PCAP.KD and
+  NY.GDP.MKTP.KD.ZG, https://databank.worldbank.org/source/world-development-indicators
+* Data: ILOSTAT HHT_AGGREGATE_K, households with children under 6,
+  https://rplumber.ilo.org/data/indicator/?id=HHT_AGGREGATE_K
+* Data: OECD Social Expenditure Database, public spending on maternity and
+  parental leave, percent of GDP (donor file oecd_policy_donor.dta)
+
+注意：这与用户 11-14 定的「注释只说明这一段代码做什么、禁止引用课程
+资料」有边界冲突，但数据集引用是本 assignment 明列的 4 分评分项，属课程
+要求而非 AI 交付痕迹。建议只加数据源名称 + URL 一行，不写 Module、
+Checklist、白名单或改动记录。是否加需用户点头。
+
+
+六、补法分工
+
+A. 不需要组内决策、我可独立完成（改 do 后整链重跑一次，并复验数值）：
+   1. 单一年份 + 仅主解释变量非缺失的描述统计表，导出 docx/csv；
+   2. 逐变量嵌套回归表：第 1 列只有 lag_fatherweeks10 + FE，
+      之后逐列加 lag_lngdp / lag_gdp_growth / leave_gdp，
+      etable 导出 results_buildup_261109.docx，导出后手工补
+      "Year FE yes / Country FE yes" 两行（assignment 明说导出后需编辑）；
+   3. 一张至少两个重叠直方图的 PNG（建议按 treated 分组画主解释变量
+      或结果变量分布，不需要引入新子集定义）；
+   4. 缩尾"是否首选"的一行注释与对应 log 记录；
+   5. 二次项为何不纳入的一行注释；
+   6. 数据引用注释（第五节草稿）。
+
+B. 必须组内/用户拍板：
+   1. 子集怎么划（rubric 原文 "You will need to choose the appropriate
+      subsets, as a team" 且要有经济理论依据）。候选：北欧 vs 大陆欧洲、
+      EU15 vs 2004 后入盟国、高 vs 低假期待遇、有 vs 无政策扩张。
+      还需先定"全样本"是 23 国 Europe 还是 26 国 OECD；
+   2. "一个代表年份"选哪一年（建议 2019，末期且 23 国齐全）；
+   3. 三份 log 分交还是合并成一份（合并需精简 do 才不超 25 页）；
+   4. 截止日以 11/18 还是 Canvas 显示的 March 23 为准（建议 11/18）。
+
+C. 只能由组员完成的提交动作：
+   1. Canvas 上传（只传 log/csv/png/do/docx 类型）；
+   2. 粘贴第四节 comments（Hypothesis 5 分 + Merge 8 分的一部分）；
+   3. 确认 do/log 由同一条 0_master 链生成、无手改。
+
+
+七、当前不需要改的（已满足）
+
+4 份 do 的 workflow 结构与课程白名单、3 份 log 由 do 生成且注释可见、
+所有回归含滞后人均 GDP、异方差/序列相关/FE 检验、聚类稳健标准误、
+Hausman、winsorized 重复回归、4 张出版级 PNG、master 一条链从 raw 跑通、
+四个 CSV 的 md5 与 2396 个结果浮点数的复现验证。这些均无需为本次
+新要求重做。

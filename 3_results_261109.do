@@ -62,6 +62,7 @@ estimates store pcse
 xtpcse employment_gap c.lag_fatherweeks10##c.lag_fatherweeks10 ///
     ${controls} i.year i.country_id, het corr(ar1)
 estimates store pcse_quad
+* The quadratic term does not improve the fit, so the linear specification is kept.
 
 * 1/99 winsorization; record how many observations actually change
 summarize employment_gap, detail
@@ -91,6 +92,7 @@ display "Observations changed by log GDP winsorization = " r(N)
 xtpcse employment_gap_winsor lag_fatherweeks10 lag_lngdp_winsor ///
     lag_gdp_growth leave_gdp i.year i.country_id, het corr(ar1)
 estimates store pcse_winsor
+* The unwinsorized specification is preferred; the winsorized model is a robustness check.
 
 * Event study; k=-1 omitted, endpoints binned at -2 and +2
 generate time_entering_treatment = reform_year if treated==1
