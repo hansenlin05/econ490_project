@@ -1,9 +1,9 @@
 -------------------------------------------------------------------------------
       name:  <unnamed>
-       log:  C:/Users/Hansen/UBC/ECON 490 003 2026W1 Seminar in Applied Economi
-> cs - 2_Team/econ490_project/log_files/3_results_261109.log
+       log:  C:\Users\Hansen\UBC\ECON 490 003 2026W1 Seminar in Applied Economi
+> cs - 2_Team\econ490_project\log_files/3_results_261109.log
   log type:  text
- opened on:  14 Nov 2026, 11:30:34
+ opened on:  14 Nov 2026, 20:56:44
 . }
 
 . 
@@ -516,6 +516,8 @@ lag_gdp_gr~h |   .0797746   .0557673     1.43   0.153    -.0295273    .1890765
 
 . estimates store pcse_quad
 
+. * The quadratic term does not improve the fit, so the linear specification is
+>  kept.
 . 
 . * 1/99 winsorization; record how many observations actually change
 . summarize employment_gap, detail
@@ -678,6 +680,8 @@ lag_gdp_gr~h |   .0860548   .0555553     1.55   0.121    -.0228317    .1949412
 
 . estimates store pcse_winsor
 
+. * The unwinsorized specification is preferred; the winsorized model is a robu
+> stness check.
 . 
 . * Event study; k=-1 omitted, endpoints binned at -2 and +2
 . generate time_entering_treatment = reform_year if treated==1
@@ -798,8 +802,7 @@ lag_gdp_gr~h |   .1091504    .109955     0.99   0.332    -.1188823    .3371831
 >     xtitle("Years since first expansion, k = -1 omitted")
 
 . graph export "${figdir}/event_study_261109.png", as(png) replace
-file C:/Users/Hansen/UBC/ECON 490 003 2026W1 Seminar in Applied Economics -
-    2_Team/econ490_project/figures/event_study_261109.png saved as PNG format
+file ./figures/event_study_261109.png saved as PNG format
 
 . 
 . * Formal tables; keep() drops the country and year dummies
@@ -837,9 +840,7 @@ Number of observations                                               272        
 R-squared                                                           0.45            0.45           0.97          0.96           0.95            0.96    
 --------------------------------------------------------------------------------------------------------------------------------------------------------
 ** p<.01, * p<.05
-(collection ETable exported to file C:/Users/Hansen/UBC/ECON 490 003 2026W1
- Seminar in Applied Economics -
- 2_Team/econ490_project/tables/results_europe_261109.docx)
+(collection ETable exported to file ./tables/results_europe_261109.docx)
 
 . 
 . * Robustness table kept separate: quadratic and winsorized models
@@ -874,9 +875,8 @@ Number of observations                                                          
 R-squared                                                                                              0.95                      0.95                
 -----------------------------------------------------------------------------------------------------------------------------------------------------
 ** p<.01, * p<.05
-(collection ETable exported to file C:/Users/Hansen/UBC/ECON 490 003 2026W1
- Seminar in Applied Economics -
- 2_Team/econ490_project/tables/results_europe_robust_261109.docx)
+(collection ETable exported to file
+ ./tables/results_europe_robust_261109.docx)
 
 . 
 . * OECD extension: leave_gdp coverage limits the sample; third column drops th
@@ -1105,9 +1105,7 @@ Number of observations                                              333         
 R-squared                                                          0.57           0.93          0.54     
 ---------------------------------------------------------------------------------------------------------
 ** p<.01, * p<.05
-(collection ETable exported to file C:/Users/Hansen/UBC/ECON 490 003 2026W1
- Seminar in Applied Economics -
- 2_Team/econ490_project/tables/results_oecd_261109.docx)
+(collection ETable exported to file ./tables/results_oecd_261109.docx)
 
 . 
 . //Close log if needed

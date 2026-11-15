@@ -1,11 +1,33 @@
 -------------------------------------------------------------------------------
       name:  <unnamed>
-       log:  C:/Users/Hansen/UBC/ECON 490 003 2026W1 Seminar in Applied Economi
-> cs - 2_Team/econ490_project/log_files/1_build_data_261109.log
+       log:  C:\Users\Hansen\UBC\ECON 490 003 2026W1 Seminar in Applied Economi
+> cs - 2_Team\econ490_project\log_files/1_build_data_261109.log
   log type:  text
- opened on:  14 Nov 2026, 11:30:22
+ opened on:  14 Nov 2026, 20:56:27
 . }
 
+. 
+. * Data sources, AER author-date form; local copies are frozen in data_raw
+. * Eurostat. 2026. Employment by sex, age and youngest child's age (lfst_hhacw
+> nc). Luxembourg: Eurostat.
+. * https://ec.europa.eu/eurostat/databrowser/view/lfst_hhacwnc/default/table (
+> accessed October 2026).
+. * OECD. 2026. PF2.5 Trends in leave entitlements around childbirth. OECD Fami
+> ly Database. Paris: OECD.
+. * https://webfs.oecd.org/els-com/Family_Database/PF2_5_Trends_in_leave_entitl
+> ements_around_childbirth.xlsx (accessed October 2026).
+. * International Labour Organization. 2026. Employment rate by sex and househo
+> ld composition, GED_PEPR_SEX_HHT_CHL_RT_A. ILOSTAT. Geneva: ILO.
+. * https://rplumber.ilo.org/data/indicator?id=GED_PEPR_SEX_HHT_CHL_RT_A (acces
+> sed October 2026).
+. * World Bank. 2026. World Development Indicators, NY.GDP.PCAP.KD and NY.GDP.M
+> KTP.KD.ZG. Washington, DC: World Bank.
+. * https://data.worldbank.org/indicator/NY.GDP.PCAP.KD (accessed October 2026)
+> .
+. * OECD. 2026. Social Expenditure Database (SOCX), public maternity and parent
+> al leave spending. Paris: OECD.
+. * https://www.oecd.org/en/data/datasets/social-expenditure-database-socx.html
+>  (accessed October 2026).
 . 
 . * Step 0: build both locked panels from the raw source files
 . * Europe: Eurostat lfst_hhacwnc, 23 OECD countries, 2006-2019, N=295
@@ -17,7 +39,7 @@
 . tempfile country_codes euro_codes policy
 
 . save `country_codes'
-file C:\Users\Hansen\AppData\Local\Temp\ST_6db8_000001.tmp saved as .dta
+file C:\Users\Hansen\AppData\Local\Temp\ST_477c_000001.tmp saved as .dta
     format
 
 . preserve
@@ -26,7 +48,7 @@ file C:\Users\Hansen\AppData\Local\Temp\ST_6db8_000001.tmp saved as .dta
 (15 observations deleted)
 
 . save `euro_codes'
-file C:\Users\Hansen\AppData\Local\Temp\ST_6db8_000002.tmp saved as .dta
+file C:\Users\Hansen\AppData\Local\Temp\ST_477c_000002.tmp saved as .dta
     format
 
 . restore
@@ -226,7 +248,7 @@ variable timing_note was str47 now str63
 (1,140 observations deleted)
 
 . save `policy'
-file C:\Users\Hansen\AppData\Local\Temp\ST_6db8_000003.tmp saved as .dta
+file C:\Users\Hansen\AppData\Local\Temp\ST_477c_000003.tmp saved as .dta
     format
 
 . 
@@ -312,6 +334,8 @@ xij variables:
 . keep iso year male_rate female_rate source_flags
 
 . 
+. * Unmatched rows are policy years outside the panel or countries outside the 
+> sample.
 . * Merge raw outcomes with the policy history and apply the existing sample ru
 > le.
 . merge 1:1 iso year using `policy'
@@ -349,12 +373,10 @@ xij variables:
 . sort country_id year
 
 . save "${datadir_final}/europe_twfe.dta", replace
-file C:/Users/Hansen/UBC/ECON 490 003 2026W1 Seminar in Applied Economics -
-    2_Team/econ490_project/data_final/europe_twfe.dta saved
+file ./data_final/europe_twfe.dta saved
 
 . export delimited using "${datadir_final}/europe_twfe.csv", replace
-file C:/Users/Hansen/UBC/ECON 490 003 2026W1 Seminar in Applied Economics - 2_T
-> eam/econ490_project/data_final/europe_twfe.csv saved
+file ./data_final/europe_twfe.csv saved
 
 . 
 . * OECD extension: ILO household series, 26 countries, 2000-2024, N=477
@@ -408,6 +430,8 @@ xij variables:
 (1,375 missing values generated)
 
 . 
+. * Unmatched rows are policy years outside the panel or countries outside the 
+> sample.
 . * Merge raw outcomes with the policy history and apply the existing sample ru
 > le.
 . merge 1:1 iso year using `policy'
@@ -445,12 +469,10 @@ xij variables:
 . sort country_id year
 
 . save "${datadir_final}/oecd_twfe.dta", replace
-file C:/Users/Hansen/UBC/ECON 490 003 2026W1 Seminar in Applied Economics -
-    2_Team/econ490_project/data_final/oecd_twfe.dta saved
+file ./data_final/oecd_twfe.dta saved
 
 . export delimited using "${datadir_final}/oecd_twfe.csv", replace
-file C:/Users/Hansen/UBC/ECON 490 003 2026W1 Seminar in Applied Economics - 2_T
-> eam/econ490_project/data_final/oecd_twfe.csv saved
+file ./data_final/oecd_twfe.csv saved
 
 . 
 . 
@@ -531,8 +553,7 @@ Panel variable: wdi_id (strongly balanced)
 >  lag_gdp_growth
 
 .     save "${datadir_final}/wdi_controls.dta", replace
-file C:/Users/Hansen/UBC/ECON 490 003 2026W1 Seminar in Applied Economics -
-    2_Team/econ490_project/data_final/wdi_controls.dta saved
+file ./data_final/wdi_controls.dta saved
 
 . restore
 
@@ -556,8 +577,7 @@ Duplicates in terms of iso year
 --------------------------------------
 
 .     save "${datadir_final}/policy_controls.dta", replace
-file C:/Users/Hansen/UBC/ECON 490 003 2026W1 Seminar in Applied Economics -
-    2_Team/econ490_project/data_final/policy_controls.dta saved
+file ./data_final/policy_controls.dta saved
 
 . restore
 
@@ -654,8 +674,7 @@ Panel variable: country_id (unbalanced)
   69
   295
   295
-file C:/Users/Hansen/UBC/ECON 490 003 2026W1 Seminar in Applied Economics -
-    2_Team/econ490_project/data_final/europe_analysis_261109.dta saved
+file ./data_final/europe_analysis_261109.dta saved
 
 Panel variable: country_id (unbalanced)
  Time variable: year, 2000 to 2024, but with gaps
@@ -691,8 +710,7 @@ Panel variable: country_id (unbalanced)
   122
   477
   362
-file C:/Users/Hansen/UBC/ECON 490 003 2026W1 Seminar in Applied Economics -
-    2_Team/econ490_project/data_final/oecd_analysis_261109.dta saved
+file ./data_final/oecd_analysis_261109.dta saved
 
 . 
 . * CSV copies of the analysis files
@@ -701,10 +719,8 @@ file C:/Users/Hansen/UBC/ECON 490 003 2026W1 Seminar in Applied Economics -
   3.     export delimited using "${datadir_final}/`s'_analysis_261109.csv", rep
 > lace
   4. }
-file C:/Users/Hansen/UBC/ECON 490 003 2026W1 Seminar in Applied Economics - 2_T
-> eam/econ490_project/data_final/europe_analysis_261109.csv saved
-file C:/Users/Hansen/UBC/ECON 490 003 2026W1 Seminar in Applied Economics - 2_T
-> eam/econ490_project/data_final/oecd_analysis_261109.csv saved
+file ./data_final/europe_analysis_261109.csv saved
+file ./data_final/oecd_analysis_261109.csv saved
 
 . 
 . * Leave the primary sample in memory for the next do-file.

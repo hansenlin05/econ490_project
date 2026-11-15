@@ -81,6 +81,50 @@ twoway (connected mean_gap year), ///
     graphregion(color(white))
 graph export "${figdir}/trend_gap_261109.png", as(png) replace
 
+* Summary for one representative year, keeping only rows with the main regressor
+preserve
+    use "${datadir_final}/oecd_analysis_261109.dta", clear
+    keep if year==2019 & lag_fatherweeks10!=.
+    count
+    collapse ///
+        (mean) mean_gap=employment_gap (sd) sd_gap=employment_gap ///
+        (min) min_gap=employment_gap (max) max_gap=employment_gap ///
+        (count) n_gap=employment_gap ///
+        (mean) mean_leave=lag_fatherweeks10 (sd) sd_leave=lag_fatherweeks10 ///
+        (min) min_leave=lag_fatherweeks10 (max) max_leave=lag_fatherweeks10 ///
+        (count) n_leave=lag_fatherweeks10 ///
+        (mean) mean_lngdp=lag_lngdp (sd) sd_lngdp=lag_lngdp ///
+        (min) min_lngdp=lag_lngdp (max) max_lngdp=lag_lngdp ///
+        (count) n_lngdp=lag_lngdp ///
+        (mean) mean_growth=lag_gdp_growth (sd) sd_growth=lag_gdp_growth ///
+        (min) min_growth=lag_gdp_growth (max) max_growth=lag_gdp_growth ///
+        (count) n_growth=lag_gdp_growth ///
+        (mean) mean_spend=leave_gdp (sd) sd_spend=leave_gdp ///
+        (min) min_spend=leave_gdp (max) max_spend=leave_gdp ///
+        (count) n_spend=leave_gdp
+    list
+    export excel using "${tabledir}/descriptive_2019_oecd_261109.xlsx", firstrow(variables) replace
+    export delimited using "${tabledir}/descriptive_2019_oecd_261109.csv", replace
+restore
+
+* Overlapping histograms for the two country subsets
+preserve
+    use "${datadir_final}/oecd_analysis_261109.dta", clear
+    generate byte european = 0
+    replace european = 1 if inlist(iso,"AUT","BEL","CZE","DEU","ESP","EST","FRA","GBR")
+    replace european = 1 if inlist(iso,"GRC","HUN","IRL","ITA","LTU","LUX","LVA","NLD")
+    replace european = 1 if inlist(iso,"POL","PRT","SVN")
+    twoway (histogram lag_fatherweeks10 if european==1, bin(10) color(navy)) ///
+        (histogram lag_fatherweeks10 if european==0, bin(10) color(maroon)), ///
+        title("Father-specific paid leave by region") ///
+        subtitle("26 OECD countries, 2000-2024") ///
+        xtitle("Lagged father-specific paid leave, per 10 weeks") ///
+        ytitle("Density") ///
+        legend(label(1 "European OECD (19)") label(2 "Non-European OECD (7)")) ///
+        graphregion(color(white))
+    graph export "${figdir}/histogram_leave_byregion_261109.png", as(png) replace
+restore
+
 //Close log if needed
 if ${store_log_descriptive}==1 {
     cap log close
