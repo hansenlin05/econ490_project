@@ -39,36 +39,24 @@ document collection.
 | `SYNC_STATUS_2026-11-14.md` | What is mirrored here versus what stays in OneDrive |
 | `NEAL_HANDOFF_USABLE_261113.txt` | Which files in Neal's old handoff folder are still usable (provenance only) |
 
-## 4. Permitted-command indexes (reference tables)
+## 4. Where the Chinese material went
 
-| File | What it answers |
+Earlier versions of this mirror carried Chinese working notes and two
+Chinese-language command indexes. Their content now lives in the English
+documents and the files themselves were removed, so the repository has one
+language:
+
+| Removed file | Now covered by |
 |---|---|
-| `COMET_Notebook_命令与语法汇总.md` | Stata syntax literally shown in the COMET notebooks |
-| `StataTest与ECON490Quizzes_命令与语法汇总.md` | Syntax from Tests One-Seven, quizzes and `StataCheatSheet_analysis_19.pdf`; boundary items and their resolution |
+| `COMET_Notebook_命令与语法汇总.md`, `StataTest与ECON490Quizzes_命令与语法汇总.md` | `CODE_CONVENTIONS.md` §1 (permitted set), §2 (documented exceptions), §7 (module-by-module provenance) |
+| `ECON490_DECISION_2026-11-11.txt` (interaction term) | `README.md` §7 and `RESEARCH_DECISIONS.md` |
+| `ECON490_SAMPLE_SCOPE_NOTE_261112.txt` (Europe stays primary) | `RESEARCH_DECISIONS.md` |
+| `ECON490_PRECISION_STYLE_DECISION_261114.txt` (float vs double) | `RESEARCH_DECISIONS.md` §4 |
+| `ECON490_ECONOMETRIC_FILES_GAP_261114.txt` (rubric gap audit) | `COURSE_REQUIREMENTS.md` and `SUBMISSION_STATUS.md` |
+| `ECON490_NEAL_REPORT_261113_CN.txt` (status report) | `HANDOVER.md` §3 and `CHANGELOG.md` |
+| `NEAL_HANDOFF_USABLE_261113.txt` (old file provenance) | retired with the files it described |
 
-These two are Chinese-language reference tables. They are only needed when
-checking whether a command is permitted; paper writing does not need them.
-
-## 5. Legacy background — not authoritative
-
-The following older files are kept for provenance only. They are in Chinese,
-some of them contain conclusions that have since been retired, and they must
-**not** be used as the current state:
-
-- `ECON490_ECONOMETRIC_FILES_GAP_261114.txt` — the original 18 Nov gap audit;
-  its status note says the code gaps have been closed, but the item-by-item
-  body describes the pre-fix state. Use `COURSE_REQUIREMENTS.md` and
-  `SUBMISSION_STATUS.md` instead.
-- `ECON490_NEAL_REPORT_261113_CN.txt` — Chinese status report from 13 Nov.
-- `ECON490_SULTANA_TASKS_261111.txt` — kept for the ready-to-paste message to
-  Sultana, but its "Notes for Hansen" section predates the 18 Nov rubric.
-- `COMET_Notebook_命令与语法汇总.md`, `StataTest与...汇总.md` — see §4.
-
-The Chinese-language handover that had been uploaded to the repository root
-and to `docs/` has been removed; `HANDOVER.md` replaces it. The team keeps its
-own Chinese copy in the local working folder, outside this mirror.
-
-## 6. Authoritative outputs elsewhere in this repository
+## 5. Authoritative outputs elsewhere in this repository
 
 - `log_files/3_results_261109.log` — all main regression numbers. Highest authority.
 - `log_files/4_tables_261109.log` — build-up and subset table estimates.

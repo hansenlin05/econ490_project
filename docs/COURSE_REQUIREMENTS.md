@@ -114,8 +114,8 @@ Stata Test do-files (Test One-Seven), quiz do-files,
   shown in those handouts. `reghdfe`, `csdid`, `eventdd`, `bacondecomp` and
   similar commands from general Stata practice are out of bounds. Two local
   indexes record the permitted vocabulary:
-  `docs/COMET_Notebook_命令与语法汇总.md` and
-  `docs/StataTest与ECON490Quizzes_命令与语法汇总.md`.
+  `docs/CODE_CONVENTIONS.md`, which lists the permitted command set and the
+  material each command comes from.
 - **Always cluster standard errors.** The lecture note gives a rough floor of
   30-50 clusters; 23 country clusters is below it, so inference is optimistic
   and PCSE is only a sensitivity check.

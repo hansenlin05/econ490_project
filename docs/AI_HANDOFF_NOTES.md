@@ -35,8 +35,8 @@ The course restricts Stata syntax to what is literally demonstrated in the
 team's own Stata handouts: `StataCheatSheet_analysis_19.pdf`, the COMET
 notebooks (including `18 - Stata Workflow Guide – COMET.pdf`), the Stata Test
 do-files (Test One-Seven) and the quiz do-files. Two local indexes record that
-vocabulary: `docs/COMET_Notebook_命令与语法汇总.md` and
-`docs/StataTest与ECON490Quizzes_命令与语法汇总.md`.
+vocabulary: `docs/CODE_CONVENTIONS.md` lists every permitted command and where
+the course demonstrates it.
 
 If you do not have those source files, do **not** judge whether a command is
 allowed, do not propose `reghdfe` / `csdid` / `eventdd` / `bacondecomp` or any

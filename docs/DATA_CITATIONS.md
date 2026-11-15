@@ -80,3 +80,26 @@ unemployment, total fertility) are **not** cited as used sources.
   (see `docs/RESEARCH_DECISIONS.md` §4).
 - If a citation changes, the do-file changes, so the whole chain must be rerun
   to keep the log consistent with the do-file.
+
+## 8. Snapshot vintages and the 15 November refresh check
+
+The five sources in `data_raw/` are frozen files, so their vintage matters as
+much as the citation string. On 15 November every source was queried again to
+see whether a newer release changed anything we use.
+
+| Source | Publisher version on 15 Nov 2026 | Local snapshot | Outcome |
+|---|---|---|---|
+| Eurostat `lfst_hhacwnc` | dataset `updated: 2026-09-10` (Eurostat API metadata) | 4 Nov 2026 | no newer release exists; unchanged |
+| OECD PF2.5 | file `Last-Modified: 5 Nov 2026 08:56 GMT`, 272,022 bytes | **replaced with the 5 Nov file** | 2,128 overlapping country-years, **0 changed cells** in `total_all_raw` and `total_paid_raw`; the new file only adds 2025 rows, which `keep if inrange(year,1970,2024)` drops |
+| ILOSTAT `GED_PEPR_SEX_HHT_CHL_RT_A` | endpoint returns HTTP 200 with `Content-Length: 0` | 4 Nov 2026 | not re-downloadable; snapshot is the only copy, and this is also why the do-file never reads it at run time |
+| World Bank WDI | API `lastupdated: 2026-11-11` | 4 Nov 2026 `.dta` | 14,561 overlapping cells for GDP per capita and 14,388 for GDP growth, **0 differences above 1e-9**. The file is kept as is: it carries 14 variables including the World Bank metadata columns, and rebuilding it would change bytes without changing a single number |
+| OECD SOCX donor | no public version stamp on the donor extract | 9 Nov 2026 | unchanged |
+
+After replacing the PF2.5 workbook the whole chain was rerun from `data_raw`:
+all four analysis CSVs and both table CSVs kept their md5, the four logs kept
+their line counts, and no `r()` error appeared. So the two November releases are
+value-neutral for this project, and the numbers in the paper are unaffected.
+
+The practical rule this establishes: a source update is adopted only if it
+changes a value we use. If it does not, the snapshot stays and the citation
+continues to describe the dataset, not the day the file was copied.

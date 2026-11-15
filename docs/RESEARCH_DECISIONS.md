@@ -20,7 +20,8 @@ better p-value, and do not reintroduce a retired result.
 |---|---|
 | Two-way country + year FE; heteroskedasticity and AR(1) serial-correlation correction; DiD and event study are supplements, not separate research designs | One coherent framework keeps the paper's "all work in do and log" gate satisfiable |
 | Country-clustered SEs are the reference inference; AR(1) PCSE is a sensitivity check | `Preparing for Panel Data Analysis` says "always cluster your SEs"; with 23 clusters, below the note's rough 30-50 floor, even p=0.065 is optimistic |
-| No `weeks x pay_c` interaction, no quadratic term in the main model | The assignment only permits non-linearity if it improves fit and has a theory; the quadratic pair is insignificant and does not improve fit. See `docs/ECON490_DECISION_2026-11-11.txt` and `tables/results_europe_robust_261109.docx` |
+| No `weeks x pay_c` interaction in the main model | Five reasons, in order: (i) an interaction is a different question — the coefficient on weeks becomes a conditional slope, not an average association; (ii) the data cost is prohibitive — joining Test7's `policy.dta` to the current panels leaves about 62 European and 71 OECD usable rows against 272 and 333; (iii) weeks, the replacement rate and their product are highly collinear; (iv) bad-control risk — leave length and replacement rate are both set by the same policy design; (v) `pay_c = pay_pct - 100` is never positive, so the interaction cannot identify the hypothesised direction. Test7 is kept as a reproducible artifact only |
+| No quadratic term in the main model | The assignment permits non-linearity only if it improves fit and theory predicts it; both coefficients are insignificant (linear -1.299, squared +0.653, cluster p>0.05) and the fit does not improve. Reported as a robustness column in `tables/results_europe_robust_261109.docx` |
 | Unwinsorized specification preferred | 1/99 winsorization changes only 4 outcome and 4 lagged-GDP observations; sign, magnitude and significance of the main coefficient are unchanged |
 | Conclusion: no robustly significant policy effect, only a conditional association | Clustered p=0.065, DiD p=0.653, OECD p=0.352/0.583/0.746, all event-study leads/lags insignificant |
 
@@ -61,9 +62,9 @@ together, and the whole chain must be rerun.
 | Full 1/99 winsorized repeat | Rubric item 7 says "with all variables winsorized". The repeat now winsorizes all five continuous variables; country and year dummies keep their coding. Measured changes: outcome 4, lagged leave weeks 0, lagged log GDP 4, lagged GDP growth 5, leave spending 5 observations. The main coefficient moves +0.560 -> +0.571 with the same sign and significance, so the unwinsorized model stays preferred |
 | 2019 summary table as Word | Rubric p.4 requires "an Excel or Word document" while Canvas file types exclude `.xlsx`. `2_descriptive_261109.do` now exports a `.docx` alongside the existing `.xlsx` and `.csv`; the CSV remains the byte-for-byte content authority |
 | Frozen snapshots in `data_raw/`, no live endpoint reads | A live-revision source would make the submitted log irreproducible. Measured failures: ILOSTAT HTTP 200 with 0 bytes for `.csv` and `.csv.gz`; Eurostat SDMX 3.0 response 12.7 MB and unfinished after 20 s. Official sites are cited as provenance only |
-| `global proj_main "."` plus one editable `cd` line | Portable across machines without breaking the Workflow 18 structure |
-| Only demonstrated Stata syntax; `L1.` / `F1.` after `encode` + `xtset` + `sort` | Course handout constraint; see `HANDOVER.md` §6 and the two command indexes in `docs/` |
-| Prefer whitelist compliance over byte-identical CSVs when only storage precision changes | Removing two import options changed at most 1.03e-05 percentage points in three rate columns; all coefficients, SEs, p-values and N unchanged. See `docs/ECON490_PRECISION_STYLE_DECISION_261114.txt` |
+| `global proj_main "."` with **no** `cd` line | The team folder was renamed on 15 November; an absolute `cd` under `capture` fails silently and every later path resolves against the wrong directory. With a relative `proj_main`, the folder can be renamed, moved, or opened on another machine (macOS included) without touching the code. The cost is that the working directory must be set to the project root before running, which the header states |
+| Only demonstrated Stata syntax; `L1.` / `F1.` after `encode` + `xtset` + `sort` | Course handout constraint; the permitted list, the banned list and the four documented exceptions are in `docs/CODE_CONVENTIONS.md` |
+| Prefer whitelist compliance over byte-identical CSVs when only storage precision changes | Removing the two import options (`stringcols(_all)`, `allstring`) changed at most 1.03e-05 percentage points in three rate columns (Europe) and 7.08e-06 (OECD); every coefficient, standard error, p-value and sample size was unchanged, and the only discrete side effect was that outcome winsorization changed 4 instead of 5 observations. The rule that follows: if a change affects only float/double storage, take the fully permitted syntax |
 | All five data sources "accessed 14 November 2026" | Team decision on the day the final citations were written; see `docs/DATA_CITATIONS.md` |
 | OneDrive is the submission source; GitHub is a mirror | Standing instruction. GitHub is updated only on explicit request |
 
@@ -73,10 +74,11 @@ together, and the whole chain must be rerun.
   instructor's verbal "OECD only" suggestion.
 - Whether to keep or drop the non-European column after seeing TA feedback
   (current answer: keep).
-- Whether to ask the TA about the three minor command extensions
-  (`egen min()/max()`, the three-step double-precision construction, and the
-  `dtable, continuous() statistic()` options used for the Word summary table).
-  All three are option-level extensions of commands literally shown in the
-  course handouts, not banned add-on packages; see `docs/PITFALLS_AND_CORRECTIONS.md`.
+- Whether to ask the TA about the four documented command extensions
+  (`egen min()/max()`, the three-step double-precision construction, the
+  `dtable, continuous() statistic()` options used for the Word summary table, and
+  `etable`'s `note()` used to carry the fixed-effects statement). All four are
+  option-level and cannot change a coefficient; none is a banned add-on package.
+  See `docs/CODE_CONVENTIONS.md` §2.
 - Whether `format %10.0g` is acceptable in the final paper tables.
 - Exact wording in the paper for the 23-cluster limitation.

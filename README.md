@@ -149,10 +149,16 @@ order; `1_build_data` rebuilds both panels from `data_raw/`. No network access
 is used at run time.
 
 Requirements: Stata 17 or newer (developed on StataNow/SE 19) with `xttest3`,
-`xtserial` and `coefplot` installed. On a new machine only the single
-`capture noisily cd "..."` line in `0_master_261109.do` needs editing. Use
-`clear`, not `clear all`: the master defines globals that the numbered do-files
-need.
+`xtserial` and `coefplot` installed. Use `clear`, not `clear all`: the master
+defines globals that the numbered do-files need.
+
+There is **no absolute path anywhere in the do-files**. The master starts with
+`capture noisily dir` and `global proj_main "."`, so every path is relative to
+the working directory. This is deliberate: the team folder was renamed once
+already, and a hard-coded `cd` fails silently under `capture` while every later
+path resolves to the wrong place. Set the working directory to the project root
+before running; the first `use` in `1_build_data` names the missing file if you
+did not.
 
 ## 9. How this repository is maintained
 

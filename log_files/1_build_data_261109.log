@@ -1,9 +1,9 @@
 -------------------------------------------------------------------------------
       name:  <unnamed>
        log:  C:\Users\Hansen\UBC\ECON 490 003 2026W1 Seminar in Applied Economi
-> cs - 2_Team\econ490_project\log_files/1_build_data_261109.log
+> cs - econ490_project\log_files/1_build_data_261109.log
   log type:  text
- opened on:  15 Nov 2026, 14:09:29
+ opened on:  15 Nov 2026, 15:51:07
 . }
 
 . 
@@ -46,7 +46,7 @@
 . tempfile country_codes euro_codes policy
 
 . save `country_codes'
-file C:\Users\Hansen\AppData\Local\Temp\ST_7b7c_000001.tmp saved as .dta
+file C:\Users\Hansen\AppData\Local\Temp\ST_9a60_000001.tmp saved as .dta
     format
 
 . preserve
@@ -55,7 +55,7 @@ file C:\Users\Hansen\AppData\Local\Temp\ST_7b7c_000001.tmp saved as .dta
 (15 observations deleted)
 
 . save `euro_codes'
-file C:\Users\Hansen\AppData\Local\Temp\ST_7b7c_000002.tmp saved as .dta
+file C:\Users\Hansen\AppData\Local\Temp\ST_9a60_000002.tmp saved as .dta
     format
 
 . restore
@@ -63,7 +63,7 @@ file C:\Users\Hansen\AppData\Local\Temp\ST_7b7c_000002.tmp saved as .dta
 . 
 . import excel "${datadir_raw}/oecd_leave_history.xlsx", sheet("Time-Series") c
 > ellrange(A9) clear
-(20 vars, 2,128 obs)
+(20 vars, 2,166 obs)
 
 . rename A country
 
@@ -76,7 +76,7 @@ file C:\Users\Hansen\AppData\Local\Temp\ST_7b7c_000002.tmp saved as .dta
 . keep country year total_all_raw total_paid_raw
 
 . keep if inrange(year,1970,2024)
-(38 observations deleted)
+(76 observations deleted)
 
 . merge m:1 country using `country_codes'
 
@@ -255,7 +255,7 @@ variable timing_note was str47 now str63
 (1,140 observations deleted)
 
 . save `policy'
-file C:\Users\Hansen\AppData\Local\Temp\ST_7b7c_000003.tmp saved as .dta
+file C:\Users\Hansen\AppData\Local\Temp\ST_9a60_000003.tmp saved as .dta
     format
 
 . 

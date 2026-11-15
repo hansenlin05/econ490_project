@@ -3,6 +3,56 @@
 All entries describe the local OneDrive project; this repository only mirrors
 them for teammate / AI handoff. Dates are local (MST).
 
+## 2026-11-15 (evening) — source refresh check, portable master, Chinese content merged
+
+**Source vintages checked against the publishers.** Two of the five sources had a
+November release; both were downloaded again and compared cell by cell with the
+frozen snapshots.
+
+- **OECD PF2.5** (`Last-Modified: 5 Nov 2026 08:56 GMT`, 272,022 bytes against
+  the 4 Nov file's 279,582). The new workbook has 2,166 rows instead of 2,128,
+  the extra rows being 2025; across the 2,128 overlapping country-years the
+  `total_all_raw` and `total_paid_raw` cells are **identical**, zero changes.
+  The file was replaced, and `keep if inrange(year,1970,2024)` drops the new
+  2025 rows.
+- **World Bank WDI** (`lastupdated: 2026-11-11`). Over 14,561 country-years for
+  GDP per capita and 14,388 for GDP growth, **no value differs by more than
+  1e-9**. The `.dta` snapshot was kept: it carries 14 variables including the
+  World Bank metadata columns, and rebuilding it would change bytes without
+  changing a number.
+- **Eurostat** `lfst_hhacwnc` still reports `updated: 2026-09-10`, so no newer
+  release exists. **ILOSTAT** returns HTTP 200 with `Content-Length: 0` and
+  cannot be re-downloaded at all. **SOCX** has no public version stamp.
+
+After the PF2.5 replacement the whole chain was rerun from `data_raw`: all four
+analysis CSVs and both table CSVs kept their md5, the four logs kept their line
+counts (737 / 354 / 858 / 1087), and no `r()` error appeared. The two November
+releases are therefore value-neutral for this project. `docs/DATA_CITATIONS.md`
+§8 records the check.
+
+**Master is now portable.** The SharePoint library was renamed on 15 November
+(`... - 2_Team` became `... - econ490_project`), which left the single
+`capture noisily cd "<absolute path>"` line pointing at a directory that no
+longer exists. An edit had already been made in OneDrive to the new absolute
+path, with backslashes, which would break again on the next rename and on any
+other machine. The line was removed instead. `0_master_261109.do` now opens with
+`capture noisily dir` and `global proj_main "."`, so every path is relative to
+the working directory and the folder can be renamed, moved, or opened on macOS
+without touching the code. The header states that the file must be run from the
+project root, and the first `use` in `1_build_data` names the missing file if it
+is not.
+
+**Chinese material merged into English and removed.** Eight Chinese files were
+deleted from `docs/`, with their content folded into the English set:
+the two command indexes into `docs/CODE_CONVENTIONS.md` §7 (module-by-module
+provenance) and §2 (documented exceptions); the interaction-term decision into
+`README.md` §7 and `RESEARCH_DECISIONS.md`; the sample-scope note and the
+float/double note into `RESEARCH_DECISIONS.md`; the rubric gap audit into
+`COURSE_REQUIREMENTS.md` and `SUBMISSION_STATUS.md`; the 13 November status
+report into `HANDOVER.md`. `docs/HANDOVER_INDEX.md` §4 records where each one
+went. The repository now contains one Chinese-free document set; only the file
+names of the removed documents remain, in that table.
+
 ## 2026-11-15 (afternoon) — PR triage, README as entry point, code conventions
 
 **Two open pull requests reviewed and both declined.**
