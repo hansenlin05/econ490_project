@@ -1,0 +1,176 @@
+# Code conventions — permitted commands, comment rules, and coding level
+
+This file is the gate for any change to the do-files. It restates what the
+course materials themselves demonstrate, so that a reader who has only this
+repository can check a patch without owning the handouts.
+
+Sources, by filename: `StataCheatSheet_analysis_19.pdf`, the COMET Notebook
+modules 02–18 (including `18 - Stata Workflow Guide – COMET.pdf`), and the
+`StataTest` / `ECON490Quizzes` question sets. A command is permitted when one of
+those materials shows or explains it.
+
+## 1. Permitted command set
+
+If a command is not on this list, it is not permitted. Do not substitute a
+package command.
+
+**Data input and output**
+
+- `import delimited ..., varnames(1)`, `import excel ..., sheet() cellrange() clear`
+- `use`, `save`, `clear`, `preserve`, `restore`, `tempfile`
+- `export excel using ..., firstrow(variables)`, `export delimited using ...`
+- `log using ..., text replace`, `log close`, `capture noisily`
+- `cd`, `dir`
+
+**Inspection and descriptive work**
+
+- `describe`, `list`, `count`, `summarize varlist` and `summarize v, detail`
+- `tabulate` (one-way and two-way, `missing`, `gen()`)
+- `collapse (mean) (sd) (min) (max) (count)`
+- `sort`, `bysort`, `order`, `drop`, `keep`, `rename`, `label variable`
+- `encode`, `xtset panel time, yearly`
+
+**Variable construction**
+
+- `generate`, `replace`, `recast double`
+- `egen ... = mean()`; see the documented extension below for `min()` / `max()`
+- functions `missing()`, `inlist()`, `inrange()`, `log()`, `real()`
+- operators `== != > < >= <=`, `& | !`
+- factor notation `i.` `c.` `#` `##`; lag and lead operators `L1.` `L2.` `F1.`
+- `foreach`, `forvalues`, `local`, `global`, `if` / `else`
+
+**Estimation**
+
+- `regress`, including `vce(cluster id)` and factor terms
+- `xtreg ..., fe`, `xtreg ..., re`, `xtreg ..., fe vce(robust)`
+- `xtpcse ..., het corr(ar1)`
+- post-estimation: `estimates store`, `testparm`, `test coef = 0`, `lincom`,
+  `hausman`, `predict`, `margins`
+- diagnostics: `xttest3`, `xtserial`
+
+**Tables and figures**
+
+- `etable, estimates(...) keep(...) mstat(N) mstat(r2) showstars showstarsnote`
+  `varlabel column(index) note(...) export(...)`
+- `dtable ..., export(...)`
+- `collect export ...`
+- `twoway (scatter ...) (lfit ...) (connected ...) (histogram ...)`,
+  `histogram ...`
+- graph options `title() xtitle() ytitle() legend() yline() xline()`
+  `graphregion(color(white))`, `graph export ..., as(png) replace`
+- `coefplot, keep(...) vertical rename(...)`
+
+**Banned, with no exceptions**
+
+`reghdfe`, `csdid`, `eventdd`, `bacondecomp`, `winsor2`, `outreg2`, `estout`,
+`esttab`, `quietly`, `split parse()`, `egen rowmin/rowmax/rownonmiss`,
+`cond()`, `[_n±1]` and `[1]` subscripts, `generate double`.
+
+They are either package estimators the course never demonstrates, or
+higher-level idioms that make the code harder to read than the equivalent
+`generate` / `replace` sequence.
+
+## 2. The three documented exceptions
+
+Each is used once, deliberately, and is described here so that it is not treated
+as a violation.
+
+| Exception | Where | Why | What the handouts do show |
+|---|---|---|---|
+| `egen min()` / `egen max()` | `1_build_data_261109.do` | Smallest and largest policy year per country | `egen ... = mean()`; `min()` and `max()` are the same family |
+| `generate` + `recast double` + `replace` | `1_build_data_261109.do` | Country-year keys exceed float precision after a merge on log GDP | `recast double mpg` |
+| `dtable ..., continuous(varlist, statistic(n mean sd min max))` | `2_descriptive_261109.do` | A Word summary table needs N, mean, sd, min and max per variable | `dtable price mpg i.rep78, export(table1.pdf)` |
+
+Stata rejects a bare `statistic()` or `stat()` in `dtable` (error 198); the
+option must sit inside `continuous()`. The cheat sheet's `stat(mean price mpg)`
+line is a condensed form and cannot be copied literally.
+
+## 3. Comment rules
+
+The purpose of a comment is to tell a reader what the next block of code does.
+One short sentence, on its own line, is almost always enough.
+
+**Required**
+
+- Every section of a do-file starts with a comment saying what it does.
+- Data merges carry a comment saying why rows do not match.
+- A specification choice that a reader would question (why the non-linear term
+  is dropped, why the unwinsorized model is preferred, why the sample is fixed)
+  carries one sentence of justification.
+
+**Forbidden**
+
+| Do not write | Example of the problem |
+|---|---|
+| Delivery or version records | "merged from the 13 Nov version", "previously documented", a date-and-version line |
+| Course-material references | "Module 18 requires", "the checklist asks", "as the rubric says" |
+| Instructions to the paper's author | "the paper must explain why theory predicts non-linearity" |
+| Defences of a command choice | "plain `generate` stores a float, so the replace refills at double precision" |
+| Process labels | "Step 0", "locked panels", "apply the existing sample rule" |
+| Decoration | `==========` rules, banner lines, emoji |
+
+The test: a grader who has never seen this project should be able to read the
+comment and learn what the code does — not what the team did last week.
+
+**`display` is not a commenting device.** It is used only where an `r()` result
+has to be written into the log. Currently that is the five winsorization change
+counts in `4_tables_261109.do`. Sample sizes, section headers and "done"
+messages are not printed.
+
+## 4. Coding level
+
+The code is written at the level of an undergraduate who has taken the course's
+Stata sequence, and it is read by a teaching assistant who may run it line by
+line.
+
+- One operation per line where possible; `generate` + `replace` rather than a
+  nested expression.
+- Lagged and leading variables use `L1.` / `F1.` after `encode` + `xtset` +
+  `sort`, not subscript arithmetic.
+- Panel setup is explicit: `encode`, `xtset`, then `sort`.
+- No macro metaprogramming beyond `global` for paths and controls and `local`
+  for percentile cut-offs.
+- One build of each raw source, reused through `tempfile`; no copy-pasted
+  blocks that differ only in a suffix.
+- No no-op commands. A `destring` that prints "already numeric; no replace", or
+  a winsorization step that changes zero observations, must be either removed or
+  recorded with a `count` that shows the zero.
+
+## 5. Structure of a do-file
+
+Every numbered do-file follows the course workflow guide:
+
+```
+/* Project info
+   <file name> | <one line on what this file produces>. */
+
+//If log setting is activated, we record a log file in the log folder
+if ${store_log_<name>}==1 {
+    cap log close
+    capture noisily log using "${log_dir}/<file>.log", text replace
+}
+
+... body ...
+
+//Close log if needed
+if ${store_log_<name>}==1 {
+    cap log close
+}
+```
+
+`0_master` sets the paths and the run/store globals, then calls the four
+numbered files with `capture noisily do`. It uses `clear`, never `clear all`,
+because the numbered files depend on the globals it defines.
+
+## 6. Pre-commit checks
+
+Run these before any push. All six are cheap and each has caught a real defect.
+
+1. `grep` the do-files for the banned list in §1 — expect zero hits.
+2. `grep` the comments for the forbidden categories in §3 — expect zero hits.
+3. Rerun `0_master` from `data_raw`; expect no `r()` error in any log.
+4. Compare the analysis CSV checksums with the previous run; a difference must
+   be explainable.
+5. Recheck the four log lengths after 80-character wrapping against the
+   assignment's 25-page limit.
+6. Confirm the root do-file copies and the `do_files/` copies are identical.

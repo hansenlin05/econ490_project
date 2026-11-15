@@ -2,7 +2,8 @@
 
 Last updated: 14 November 2026 (local time, MST).
 This is the single current handover. It replaces the Chinese-language handover
-that was previously uploaded to this repository. Read this file first; then use
+that was previously uploaded to this repository. `README.md` carries the reading
+order and the closed decisions; this file carries the detail; then use
 `docs/HANDOVER_INDEX.md` for the document map.
 
 Everything here is written for an assistant that has **only this repository**:
@@ -79,9 +80,9 @@ assignment's 25-page limit (see `docs/COURSE_REQUIREMENTS.md`).
 Latest verification (15 Nov 2026, full rerun from `data_raw`):
 no `r()` errors anywhere; all four analysis CSVs and the 2019 summary-table
 CSV keep their md5; every headline coefficient, SE, p-value and N in
-`3_results_261109.log` is unchanged. Log sizes are 739 / 354 / 834 / 1087
+`3_results_261109.log` is unchanged. Log sizes are 737 / 354 / 858 / 1087
 lines. With 80-character wrapping and a conservative 50 display lines per page
-that is about 14.8 / 7.3 / 17.4 / 22.6 pages, all under 25. The quadratic and
+that is about 14.7 / 7.3 / 17.9 / 22.6 pages, all under 25. The quadratic and
 winsorized checks were moved from `3_results_261109.do` into
 `4_tables_261109.do` to keep both logs under the page limit, so the older
 "2396 floats in `3_results`" figure no longer applies; those numbers now live
@@ -108,6 +109,12 @@ folders, and the 11 Dec paper itself.
 
 Europe main table N = 272 / 272 / 272 / 295 / 272 / 295.
 OECD extension N = 333 / 333 / 443.
+
+Three `test lag_fatherweeks10 = 0` lines print the exact p-values in the log, so
+the numbers quoted in the paper and in the Canvas comments are traceable to a
+test rather than read off a table: LSDV clustered `F(1,22) = 3.77`,
+`Prob > F = 0.0651`; Europe AR(1) PCSE `chi2(1) = 7.29`, `p = 0.0069`; OECD
+AR(1) PCSE `chi2(1) = 0.30`, `p = 0.5832`.
 
 - `lag_fatherweeks10` = +0.668; FE p=0.016, robust p=0.054,
   country-clustered p=0.065; AR(1) PCSE +0.560 (p=0.007).
@@ -185,7 +192,9 @@ lecture notes. They are easy to miss and have caused real rework.
    does. No change logs, dates, version notes, references to course module
    numbers, paper-writing advice, or justifications of command syntax.
    `display` is not a workflow requirement; it survives only where an `r()`
-   count must be written into the log.
+   count must be written into the log. The full restatement, with the permitted
+   command list and the three documented exceptions, is
+   `docs/CODE_CONVENTIONS.md`.
 4. **Reproducibility.** Inputs are frozen local snapshots in `data_raw/`. A
    proposed change that read five official endpoints at run time was rejected:
    live revisions would make the submitted log irreproducible, and two of the

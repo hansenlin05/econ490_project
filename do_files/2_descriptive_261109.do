@@ -1,5 +1,6 @@
 /* Project info
-   2_descriptive_261109.do | descriptive statistics and figures for the primary Europe sample. */
+   2_descriptive_261109.do | descriptive statistics and figures for the primary Europe sample,
+   plus the 2019 OECD summary table and the regional comparison. */
 
 //If log setting is activated, we record a log file in the log folder
 if ${store_log_descriptive}==1 {

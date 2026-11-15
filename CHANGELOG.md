@@ -3,6 +3,58 @@
 All entries describe the local OneDrive project; this repository only mirrors
 them for teammate / AI handoff. Dates are local (MST).
 
+## 2026-11-15 (afternoon) — PR triage, README as entry point, code conventions
+
+**Two open pull requests reviewed and both declined.**
+
+PR #2 (`zja42/main`, base `29eb0d3`, `mergeable_state = dirty`) was closed. It
+restores live official-source imports ("the build reads official data online"),
+re-adds `display "Master do-file finished."`, re-adds comments that cite
+"Module 18" and "Checklist", adds a paper-writing instruction inside the do-file
+("the paper must explain why theory predicts non-linearity") and adds a defence
+of the `generate` + `recast double` + `replace` sequence. Those are the four
+categories the team removed on 14 November. Its base is four commits behind main,
+so it could not merge without resolving conflicts anyway.
+
+PR #3 (`oecd-primary`, base `427e040`, clean) was closed with one element
+adopted. The adopted part is `test lag_fatherweeks10 = 0` after the main
+regressions: the course's own post-estimation material shows `test 变量 = 0`, and
+the three lines make the quoted p-values traceable. Everything else was
+declined: it makes the OECD panel the primary analysis, which is a change of
+research design rather than a code improvement; it runs `1_build_data` and
+`4_tables` before `log using` opens, so three of the five do-files produce no log
+at all; it deletes the model equation and the "associations, not causal effects"
+annotation; it removes `cd` and `dir` from the master; it demotes `HANDOVER.md`
+in the README to "records the earlier European-primary version"; and it leaves
+`tables/results_europe_robust_261109.docx` orphaned while adding a second
+robustness table.
+
+**`README.md` rewritten as the single entry point.** It now states the reading
+order, what each document is for and when to read it, the nine closed decisions,
+the eight pitfalls that have already caused damage, what each file type is for,
+why there is no `pay_c` term, and the rules under which pull requests are
+reviewed. The section "Before you review or edit any do-file" is the checklist a
+new assistant should follow before touching code.
+
+**`docs/CODE_CONVENTIONS.md` added.** An English restatement of the permitted
+command set by category, the banned commands, the three documented exceptions
+(`egen min()/max()`, `generate` + `recast double` + `replace`, and
+`dtable ..., continuous(..., statistic(...))`), the comment rules with a
+forbidden-examples table, the expected coding level, the standard do-file
+skeleton and six pre-commit checks. It is the gate any future patch must pass and
+it cites the course handouts by filename only.
+
+**Comment wording fixed in five places.** `1 = run build.do` referred to a file
+that does not exist; "locked panels" and "apply the existing sample rule" are
+internal process language; "author-date form" described a citation style inside
+a data comment. All five were rewritten to say what the code does.
+
+**Verification.** Full rerun from `data_raw`: no `r()` errors; logs 737 / 354 /
+858 / 1087 lines (14.7 / 7.3 / 17.9 / 22.6 pages); all four analysis CSVs and
+the 2019 summary CSV keep their md5. The three new `test` lines print
+`p = 0.0651` (Europe LSDV clustered), `p = 0.0069` (Europe AR(1) PCSE) and
+`p = 0.5832` (OECD AR(1) PCSE), matching the numbers already quoted.
+
 ## 2026-11-15 (early morning) — complete winsorization, one estimation sample, Word summary table
 
 Four gaps raised by an external review of commit `2995794` were checked against

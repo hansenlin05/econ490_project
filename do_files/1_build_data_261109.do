@@ -1,5 +1,5 @@
 /* Project info
-   1_build_data_261109.do | build the two locked panels, then the two analysis files.
+   1_build_data_261109.do | build the two country-year panels, then the two analysis files.
    Europe: 23 Eurostat countries, 2006-2019, N=295. OECD: 26 ILO countries, 2000-2024, N=477. Never pooled.
    Inputs: country_codes.csv, oecd_leave_history.xlsx, eurostat_employment_raw.csv,
    ilo_household_raw.csv, wdi_raw.dta, oecd_policy_donor.dta. */
@@ -10,7 +10,7 @@ if ${store_log_build}==1 {
     capture noisily log using "${log_dir}/1_build_data_261109.log", text replace
 }
 
-* Data sources, author-date form; local copies are frozen in data_raw
+* Data sources; the copies used here are in data_raw
 * Eurostat. 2026. "Adults by number of children, age of youngest child and
 *   labour status" [lfst_hhacwnc] (dataset). DOI 10.2908/lfst_hhacwnc,
 *   last update 10/09/2026 15:00. Luxembourg: European Commission, Eurostat.
@@ -31,7 +31,7 @@ if ${store_log_build}==1 {
 *   parental leave spending. Paris: OECD. https://doi.org/10.1787/data-00167-en
 *   (accessed 14 November 2026).
 
-* Step 0: build both locked panels from the raw source files
+* Build both panels from the raw source files
 * Europe: Eurostat lfst_hhacwnc, 23 OECD countries, 2006-2019, N=295
 * Import the original OECD policy workbook.
 import delimited "${datadir_raw}/country_codes.csv", clear varnames(1)
@@ -139,7 +139,7 @@ generate source_flags = flagF_EMP+";"+flagF_POP+";"+flagM_EMP+";"+flagM_POP
 keep iso year male_rate female_rate source_flags
 
 * Unmatched rows are policy years outside the panel or countries outside the sample.
-* Merge raw outcomes with the policy history and apply the existing sample rule.
+* Merge raw outcomes with the policy history and apply the sample rule below.
 merge 1:1 iso year using `policy'
 keep if _merge==3 & known_policy==1
 drop _merge
@@ -174,7 +174,7 @@ rename obs_valueF female_rate
 generate source_flags = ""
 
 * Unmatched rows are policy years outside the panel or countries outside the sample.
-* Merge raw outcomes with the policy history and apply the existing sample rule.
+* Merge raw outcomes with the policy history and apply the sample rule below.
 merge 1:1 iso year using `policy'
 keep if _merge==3 & known_policy==1
 drop _merge

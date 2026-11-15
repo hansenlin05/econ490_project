@@ -3,7 +3,7 @@
        log:  C:\Users\Hansen\UBC\ECON 490 003 2026W1 Seminar in Applied Economi
 > cs - 2_Team\econ490_project\log_files/3_results_261109.log
   log type:  text
- opened on:  15 Nov 2026, 02:57:29
+ opened on:  15 Nov 2026, 14:09:59
 . }
 
 . 
@@ -220,6 +220,14 @@ lag_gdp_gr~h |   .2154051   .1374345     1.57   0.131    -.0696166    .5004267
 ------------------------------------------------------------------------------
 
 . estimates store clustered
+
+. * Test the main coefficient against zero
+. test lag_fatherweeks10 = 0
+
+ ( 1)  lag_fatherweeks10 = 0
+
+       F(  1,    22) =    3.77
+            Prob > F =    0.0651
 
 . 
 . * Hausman: FE vs RE
@@ -438,6 +446,14 @@ lag_gdp_gr~h |   .0796925   .0555267     1.44   0.151    -.0291378    .1885229
 ------------------------------------------------------------------------------
 
 . estimates store pcse
+
+. * Test the main coefficient against zero
+. test lag_fatherweeks10 = 0
+
+ ( 1)  lag_fatherweeks10 = 0
+
+           chi2(  1) =    7.29
+         Prob > chi2 =    0.0069
 
 . 
 . * Event study; k=-1 omitted, endpoints binned at -2 and +2
@@ -747,6 +763,14 @@ lag_gdp_gr~h |   .1590298   .0669573     2.38   0.018      .027796    .2902637
 ------------------------------------------------------------------------------
 
 . estimates store oecd_pcse
+
+. * Test the main coefficient against zero
+. test lag_fatherweeks10 = 0
+
+ ( 1)  lag_fatherweeks10 = 0
+
+           chi2(  1) =    0.30
+         Prob > chi2 =    0.5832
 
 . xtreg employment_gap lag_fatherweeks10 lag_lngdp lag_gdp_growth i.year, ///
 >     fe vce(robust)
