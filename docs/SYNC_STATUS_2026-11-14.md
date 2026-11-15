@@ -23,3 +23,17 @@ The OneDrive project has 4 do-files, 3 numbered logs, 5 tables, 4 PNG figures,
 (Final Paper Checklist), the Stata Files requirements are met: do/log uploaded
 by the deadline (pending the manual Canvas upload), logs created by do-files,
 fully annotated sections, and all reported work present in do and log.
+
+
+## 20:55 update (commit 9598fc6)
+
+The 18 Nov Canvas assignment rubric is now covered in code: AER data
+citations, 2019 single-year summary table, build-up regression table,
+three-column subset table, overlapping histograms, and the required
+specification comments. A fifth numbered do-file (4_tables) and a fourth
+log keep every log under the 25-page limit. Final package: 5 do, 4 logs,
+9 tables, 5 figures, 8 data_raw, 10 data_final. All 2396 original result
+floats and all four analysis CSV md5 are unchanged.
+
+Live official-endpoint imports from PR #1 were reverted in favour of frozen
+snapshots; see README.md and CHANGELOG.md for the measured reasons.
