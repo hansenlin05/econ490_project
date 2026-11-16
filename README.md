@@ -1,4 +1,4 @@
-# ECON 490 Team Project — OECD childcare spending
+# ECON 490 Team Project — Father’s leave and the OECD employment gap
 
 This repository is the **information-sync mirror** between three teammates and
 their AI assistants. It is **not** the course submission: the 18 Nov 2026
@@ -66,7 +66,7 @@ wrong at least once.
 
 ## 4. Policy, model, and results
 
-**Policy measure.** The key explanatory variable is public spending on early
+**Childcare spending control.** The model controls for public spending on early
 childhood education and care (ECEC) in the previous calendar year, expressed as
 a percentage of GDP. It comes from the OECD Social Expenditure Database (SOCX),
 programme TP521, public expenditure source ES10. The measure covers annual
@@ -78,17 +78,17 @@ with employment data.
 
 **Outcome and model.** The outcome is the male employment rate minus the female
 employment rate, in percentage points, for households with children under six
-in ILOSTAT. The main regression jointly estimates the associations of lagged
-ECEC spending and lagged father-specific paid leave with the gap. It uses PCSE
-with AR(1), country and year fixed effects, and country-specific linear trends.
-Controls include lagged log real GDP per capita, lagged GDP growth, and public
-parental leave spending. The employment gap and lagged log GDP per capita are
+in ILOSTAT. The main explanatory variable is father-specific paid leave in the
+previous calendar year, measured in units of ten weeks. The regression uses
+PCSE with AR(1), country and year fixed effects, and country-specific linear
+trends. It controls for lagged ECEC spending, lagged log real GDP per capita,
+lagged GDP growth, and public parental leave spending. The employment gap and lagged log GDP per capita are
 winsorized at the 1st and 99th percentiles.
 
-| Policy variable | Coefficient | p-value |
-|---|---:|---:|
-| Lagged ECEC spending (% of GDP) | −7.702 | 0.004 |
-| Lagged father-specific paid leave (per 10 weeks) | +0.810 | 0.003 |
+| Variable | Role | Coefficient | p-value |
+|---|---|---:|---:|
+| Lagged father-specific paid leave (per 10 weeks) | Main explanatory variable | +0.810 | 0.003 |
+| Lagged ECEC spending (% of GDP) | Control | −7.702 | 0.004 |
 
 The sample has 347 country-years across 23 OECD countries. The estimates
 describe conditional associations. The separate leave and European Eurostat
@@ -109,7 +109,7 @@ Full reasoning and evidence in `docs/RESEARCH_DECISIONS.md`.
 6. **The supplementary childcare build-up holds its sample fixed across all
    five columns.**
 7. **The main regression uses Test7-style winsorization** of the outcome and
-   lagged log real GDP per capita. Both policy regressors use their original values.
+   lagged log real GDP per capita. Leave weeks and childcare spending use their original values.
 8. **Comments and command choice follow `docs/CODE_CONVENTIONS.md`.**
 9. **No `reghdfe` or any other package estimator**, including in a "just for
    robustness" form.
