@@ -3,6 +3,10 @@
 All entries describe the local OneDrive project; this repository only mirrors
 them for teammate / AI handoff. Dates are local (MST).
 
+## 2026-11-15 (night, second) — guard removed; course-demonstrated cd line restored
+
+The guard added earlier tonight used `confirm file`, `_rc` and `exit`, none of which appears anywhere in the course material, and the team rule is to prefer the fully permitted syntax whenever a change does not affect results. The guard is removed. The master instead opens with `capture noisily cd "<path>"` followed by `capture noisily dir`, which the course index demonstrates verbatim as the prefix-command form of the directory block; the header tells the reader to edit that one line to their own project folder. `docs/RESEARCH_DECISIONS.md` records both the relative-path attempt and this reversal, `docs/CODE_CONVENTIONS.md` is back to four documented exceptions, and a full rerun produced byte-identical numbered logs.
+
 ## 2026-11-15 (night) — wrong-working-directory guard in the master
 
 Running the master from any directory other than the project root printed four

@@ -156,20 +156,7 @@ Requirements: Stata 17 or newer (developed on StataNow/SE 19) with `xttest3`,
 `xtserial` and `coefplot` installed. Use `clear`, not `clear all`: the master
 defines globals that the numbered do-files need.
 
-There is **no absolute path anywhere in the do-files**. The master starts with
-`capture noisily dir` and `global proj_main "."`, so every path is relative to
-the working directory. This is deliberate: the team folder was renamed once
-already, and a hard-coded `cd` fails silently under `capture` while every later
-path resolves to the wrong place. Set the working directory to the project root
-before running:
-
-```stata
-cd "C:\Users\Hansen\UBC\ECON 490 003 2026W1 Seminar in Applied Economics - econ490_project"
-do do_files\0_master_261109.do
-```
-
-If you forget, the master stops at once with a `Wrong working directory`
-message instead of failing silently.
+The master opens with one editable line, `capture noisily cd "<path>"`, which is the form the course itself demonstrates. Edit it to your project folder and run the master; on this team's machine the line already points at the OneDrive folder. Every other path is a global built from `global proj_main "."`, so nothing else needs changing.
 
 ## 9. How this repository is maintained
 
