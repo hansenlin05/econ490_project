@@ -169,7 +169,7 @@ sort country_id year
 save "${datadir_final}/europe_twfe.dta", replace
 export delimited using "${datadir_final}/europe_twfe.csv", replace
 
-* OECD extension: ILO household series, 26 countries, 2000-2024, N=477
+* Main OECD panel: ILO household series, 26 countries, 2000-2024, N=477
 
 * Read the ILO household file.
 import delimited "${datadir_raw}/ilo_household_raw.csv", clear varnames(1)
@@ -293,7 +293,7 @@ foreach s in europe oecd {
 }
 
 * Leave the primary sample in memory for the next do-file.
-use "${datadir_final}/europe_analysis_261109.dta", clear
+use "${datadir_final}/oecd_analysis_261109.dta", clear
 
 //Close log if needed
 if ${store_log_build}==1 {

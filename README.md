@@ -19,7 +19,7 @@ Nothing here is optional for an assistant that will touch the code.
 | # | File | What it gives you | Why the order matters |
 |---|---|---|---|
 | 1 | `README.md` (this file) | Current state, frozen decisions, reading path, collaboration rules | One page of orientation before any detail |
-| 2 | `HANDOVER.md` | The authoritative handover: research question, samples, current results, what is finished and what is not | The only document that describes the project as a whole |
+| 2 | `HANDOVER.md` | The authoritative handover: research question, samples, current results, what is finished and what is not | Research and submission history from the European-primary version |
 | 3 | `docs/COURSE_REQUIREMENTS.md` | Every graded item and point value for 18 Nov, allowed upload types, the 11 Dec gates, and the rules that are implied rather than stated | Grading is the binding constraint on every change |
 | 4 | `docs/RESEARCH_DECISIONS.md` | Why each sample, control set, subset and specification was chosen, and which decisions are closed | Prevents re-litigating settled choices |
 | 5 | `docs/PITFALLS_AND_CORRECTIONS.md` | Mistakes already made and what replaced them | Read before proposing a fix; most "improvements" have already been tried and rejected |
@@ -64,32 +64,37 @@ wrong at least once.
 | `data_raw/` | Eight frozen source snapshots | Never overwritten. Official portals are cited as provenance, not read at run time |
 | `data_final/` | Ten built panels and CSV copies | Rebuilt from `data_raw` by `1_build_data_261109.do` |
 
-## 4. Research in one paragraph
+## 4. Research and results
 
-Question: does longer father-specific paid leave reduce the male-minus-female
-employment gap? Primary panel: 23 European OECD countries, 2006–2019, 295
-country-years (Eurostat). Extension: 26 OECD countries, 2000–2024, 477
-country-years (ILOSTAT). The two are never pooled because the outcome
-definitions differ. Two-way fixed effects with lagged log GDP per capita in
-every regression; country-clustered standard errors are the reference
-inference. Main coefficient +0.617 (cluster p = 0.113; the within estimator
-gives p = 0.099), DiD −0.626 (p = 0.653), OECD columns p = 0.857 / 0.936 /
-0.876, AR(1) PCSE +0.493 (p = 0.021), full winsorized repeat +0.491 (p = 0.022).
+The primary panel uses ILOSTAT household employment data for 26 OECD countries
+from 2000 to 2024. The main model uses 348 country-years from 23 countries.
+It estimates the association between father-specific paid leave in the previous
+year and the male-minus-female employment rate gap, with country and year
+fixed effects, lagged log GDP per capita, lagged GDP growth, and public leave
+spending. The weekly entitlement is scaled to ten weeks.
 
-**Conclusion: no robustly significant policy effect, only a conditional
-association.** All historically significant p-values are retired and must not
-be reinstated by rolling back a specification.
+Country-clustered TWFE estimates +0.038 percentage points per ten additional weeks
+(p = 0.8567). PCSE with AR(1) gives +0.023 (p = 0.9358). The winsorized PCSE
+estimate is +0.029 (p = 0.9202). The primary estimates provide little evidence
+that a longer entitlement narrows the employment gap.
+
+The European Eurostat panel remains a separate supplement because it uses a
+different household employment measure. Its regressions, reform DiD, and event
+study follow the primary OECD results in `log_files/3_results_261109.log`.
+The main-model checks, build-up, and geographic subsets use the OECD panel in
+`log_files/4_tables_261109.log`. The optional trend check is in
+`do_files/oecd_country_trends.do`.
 
 ## 5. Closed decisions — do not reopen
 
 Full reasoning and evidence in `docs/RESEARCH_DECISIONS.md`.
 
-1. **Europe is the primary sample; OECD is the extension.** Never pooled, never
-   swapped. A patch that makes the OECD panel the main analysis is a change of
-   research design, not a code improvement.
+1. **This branch uses the OECD ILOSTAT panel as primary.** The European
+   Eurostat panel is estimated separately. The team handover describes the
+   earlier European-primary workflow.
 2. **The Test7 `weeks × pay_c` interaction is not in the model.** It is a
    different question with a much smaller sample; see §7 below.
-3. **Five do-files and four logs.** Each numbered do-file writes its own log.
+3. **Five numbered do-files and four logs.** The country-trend script runs separately.
 4. **No live downloads at run time.** `data_raw/` snapshots are the inputs.
 5. **The 2019 summary table is restricted to the main regressor, and the
    non-European subset column is kept** although it is imprecise.
@@ -166,10 +171,7 @@ The master opens with one editable line, `capture noisily cd "<path>"`, which is
   analysis CSVs are checksummed against the previous run. A change that moves a
   number must be explained, not just committed.
 - Root do-file copies and `do_files/` copies must stay byte-identical.
-- Pull requests are reviewed against §2 and §5. A pull request that flips the
-  primary sample, restores live source imports, merges the four logs into one
-  unlogged chain, or relaxes the command rules is closed with a written reason
-  rather than merged.
+- Review changes against the specifications and workflow described in §2 and §5.
 - Hansen and Neal own the code; Sultana owns the paper text and the formatted
   tables. An assistant without the course's own Stata handouts must not decide
   which commands are permitted, and must not reinterpret p-value conventions —

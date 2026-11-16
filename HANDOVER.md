@@ -1,5 +1,9 @@
 # ECON 490 — Project Handover (authoritative English version)
 
+> This document records the European-primary team version. For this branch's
+> OECD-primary models and outputs, see the repository README and the numbered
+> Stata logs.
+
 Last updated: 14 November 2026 (local time, MST).
 This is the single current handover. It replaces the Chinese-language handover
 that was previously uploaded to this repository. `README.md` carries the reading

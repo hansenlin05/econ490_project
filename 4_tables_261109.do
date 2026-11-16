@@ -7,14 +7,17 @@ if ${store_log_tables}==1 {
     capture noisily log using "${log_dir}/4_tables_261109.log", text replace
 }
 
-* Quadratic specification, European panel
-use "${datadir_final}/europe_analysis_261109.dta", clear
+* Quadratic specification, OECD ILO panel
+use "${datadir_final}/oecd_analysis_261109.dta", clear
 xtset country_id year, yearly
+
+* Use the main estimation sample to calculate the winsorization cutoffs.
+keep if !missing(employment_gap, lag_fatherweeks10, lag_lngdp, lag_gdp_growth, leave_gdp)
 
 xtpcse employment_gap c.lag_fatherweeks10##c.lag_fatherweeks10 ///
     ${controls} i.year i.country_id, het corr(ar1)
 estimates store pcse_quad
-* The quadratic term does not improve the fit, so the linear specification is kept.
+test c.lag_fatherweeks10#c.lag_fatherweeks10 = 0
 
 * Winsorize every continuous variable at the 1/99 percentiles and count the changes
 summarize employment_gap, detail
@@ -81,14 +84,14 @@ display "Observations changed by leave spending winsorization = " r(N)
 xtpcse employment_gap_winsor lag_fatherweeks10_winsor lag_lngdp_winsor ///
     lag_gdp_growth_winsor leave_gdp_winsor i.year i.country_id, het corr(ar1)
 estimates store pcse_winsor
-* The unwinsorized specification is preferred; winsorization keeps the same sign and significance.
+test lag_fatherweeks10_winsor = 0
 
 etable, estimates(pcse_quad pcse_winsor) ///
     keep(lag_fatherweeks10 c.lag_fatherweeks10#c.lag_fatherweeks10 ///
          lag_fatherweeks10_winsor lag_lngdp lag_lngdp_winsor ///
          lag_gdp_growth lag_gdp_growth_winsor leave_gdp leave_gdp_winsor) ///
     mstat(N) mstat(r2) showstars showstarsnote varlabel column(dvlabel) ///
-    export("${tabledir}/results_europe_robust_261109.docx", replace)
+    export("${tabledir}/results_oecd_robust_261109.docx", replace)
 
 * Single specification built one variable at a time, OECD full sample
 use "${datadir_final}/oecd_analysis_261109.dta", clear
