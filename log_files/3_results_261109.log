@@ -2,7 +2,7 @@
       name:  <unnamed>
        log:  /private/tmp/econ490-oecd-publish.YVpfxO/log_files/3_results_261109.log
   log type:  text
- opened on:  16 Nov 2026, 15:56:55
+ opened on:  16 Nov 2026, 15:51:46
 
 . 
 . import delimited using "data_final/oecd_childcare_261109.csv", clear
@@ -86,7 +86,7 @@ Panel variable: ccode (unbalanced)
 (3 real changes made)
 
 . 
-. xtpcse employment_gap_winsor lag_fatherweeks10 lag_socx_ecec ///
+. xtpcse employment_gap_winsor lag_socx_ecec lag_fatherweeks10 ///
 >     lag_lngdp_winsor lag_gdp_growth leave_gdp i.year i.ccode ///
 >     c.year_centered#i.ccode, het corr(ar1)
 
@@ -111,8 +111,8 @@ Estimated coefficients     =        71          Prob > chi2       =     0.0000
                       |            Het-corrected
 employment_gap_winsor | Coefficient  std. err.      z    P>|z|     [95% conf. interval]
 ----------------------+----------------------------------------------------------------
-    lag_fatherweeks10 |    .809851   .2720957     2.98   0.003     .2765532    1.343149
         lag_socx_ecec |   -7.70207   2.684218    -2.87   0.004    -12.96304   -2.441099
+    lag_fatherweeks10 |    .809851   .2720957     2.98   0.003     .2765532    1.343149
      lag_lngdp_winsor |   11.43613   5.272585     2.17   0.030     1.102057    21.77021
        lag_gdp_growth |   .0835914   .0709374     1.18   0.239    -.0554434    .2226262
             leave_gdp |  -4.794236   2.303591    -2.08   0.037    -9.309192   -.2792796
@@ -187,7 +187,7 @@ ccode#c.year_centered |
                  NLD  |  -.8360952   .1206661    -6.93   0.000    -1.072596   -.5995941
                  POL  |  -.8976807    .296991    -3.02   0.003    -1.479772   -.3155891
                  PRT  |  -1.126221   .1721312    -6.54   0.000    -1.463592   -.7888504
-                 SVN  |  -.5635689   .3159398    -1.78   0.074    -1.182799    .0556616
+                 SVN  |  -.5635689   .3159398    -1.78   0.074      -1.1828    .0556616
                  TUR  |  -1.057059   .2321195    -4.55   0.000    -1.512005   -.6021135
                       |
                 _cons |  -96.82504   56.21766    -1.72   0.085    -207.0096    13.35954
