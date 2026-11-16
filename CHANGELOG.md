@@ -3,6 +3,20 @@
 All entries describe the local OneDrive project; this repository only mirrors
 them for teammate handoff. Dates are local (MST).
 
+## 2026-11-16 — Stata CheatSheet removed from the command whitelist
+
+The permitted source list is now the COMET Notebook modules and the StataTest /
+ECON490Quizzes question sets only. `StataCheatSheet_analysis_19.pdf` is no longer
+a source, and commands that rested on it alone are out: `isid`, `count`,
+`tempfile`, `recast double`, `dtable`, `collect export`, `column(index)`,
+`note()`, `test coef = 0`, `lincom`, `margins`, `vce(cluster id)`, `vce(robust)`
+and the `sheet()` / `cellrange()` / `firstrow()` import options. `docs/CODE_CONVENTIONS.md`
+is rewritten accordingly, the documented exceptions fall from four to one, and
+the two Chinese command indexes, `HANDOVER.md`, `TEAMMATE_NOTES.md` and
+`COURSE_REQUIREMENTS.md` are updated. The do-files were deliberately left
+unchanged in this round, so §7 of the code conventions records where each
+removed command is still used. Those uses must be replaced before submission.
+
 ## 2026-11-15 (night, second) — guard removed; course-demonstrated cd line restored
 
 The guard added earlier tonight used `confirm file`, `_rc` and `exit`, none of which appears anywhere in the course material, and the team rule is to prefer the fully permitted syntax whenever a change does not affect results. The guard is removed. The master instead opens with `capture noisily cd "<path>"` followed by `capture noisily dir`, which the course index demonstrates verbatim as the prefix-command form of the directory block; the header tells the reader to edit that one line to their own project folder. `docs/RESEARCH_DECISIONS.md` records both the relative-path attempt and this reversal, `docs/CODE_CONVENTIONS.md` is back to four documented exceptions, and a full rerun produced byte-identical numbered logs.

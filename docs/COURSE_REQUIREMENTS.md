@@ -106,16 +106,15 @@ and `Final Paper Instructions`)
 ## 4. Implicit rules (derived from the course's own Stata handouts)
 
 Source files: `18 - Stata Workflow Guide – COMET.pdf`, the COMET notebooks,
-Stata Test do-files (Test One-Seven), quiz do-files,
-`StataCheatSheet_analysis_19.pdf`, and the lecture note
-`Preparing for Panel Data Analysis`.
+Stata Test do-files (Test One-Seven), quiz do-files, and the lecture note
+`Preparing for Panel Data Analysis`. `StataCheatSheet_analysis_19.pdf` was
+removed as a permitted source on 16 November 2026.
 
 - **Only demonstrated commands.** The do-files may use only syntax literally
-  shown in those handouts. `reghdfe`, `csdid`, `eventdd`, `bacondecomp` and
-  similar commands from general Stata practice are out of bounds. Two local
-  indexes record the permitted vocabulary:
-  `docs/CODE_CONVENTIONS.md`, which lists the permitted command set and the
-  material each command comes from.
+  shown in those sources. `reghdfe`, `csdid`, `eventdd`, `bacondecomp` and
+  similar commands from general Stata practice are out of bounds. The local
+  index is `docs/CODE_CONVENTIONS.md`, which records each permitted command and
+  flags the CheatSheet commands still present in the do-files.
 - **Always cluster standard errors.** The lecture note gives a rough floor of
   30-50 clusters; 23 country clusters is below it, so inference is optimistic
   and PCSE is only a sensitivity check.

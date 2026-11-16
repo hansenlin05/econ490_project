@@ -32,11 +32,11 @@ filling the gap from general knowledge.
 ## Course constraints on Stata syntax
 
 The course restricts Stata syntax to what is literally demonstrated in the
-team's own Stata handouts: `StataCheatSheet_analysis_19.pdf`, the COMET
-notebooks (including `18 - Stata Workflow Guide – COMET.pdf`), the Stata Test
-do-files (Test One-Seven) and the quiz do-files. Two local indexes record that
-vocabulary: `docs/CODE_CONVENTIONS.md` lists every permitted command and where
-the course demonstrates it.
+COMET notebooks (including `18 - Stata Workflow Guide – COMET.pdf`), the Stata
+Test do-files (Test One-Seven) and the quiz do-files. The Stata CheatSheet was
+removed from this list on 16 November 2026 and is no longer a permitted source.
+Two local indexes record the vocabulary: `docs/CODE_CONVENTIONS.md` lists every
+permitted command and where the course demonstrates it.
 
 Do not use `reghdfe` / `csdid` / `eventdd` / `bacondecomp` or any other command
 from general Stata practice that the handouts do not show. Do not reinterpret

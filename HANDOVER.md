@@ -175,14 +175,14 @@ These are conventions the team derived from the course's own Stata handouts and
 lecture notes. They are easy to miss and have caused real rework.
 
 1. **Command vocabulary is restricted.** Only syntax literally demonstrated in
-   the course's Stata handouts may appear in a do-file:
-   `StataCheatSheet_analysis_19.pdf`, the COMET notebooks (including
-   `18 - Stata Workflow Guide – COMET.pdf`), the Stata Test do-files
-   (Test One-Seven) and the quiz do-files. Banned examples: `reghdfe`,
-   `csdid`, `eventdd`, `bacondecomp`. The two local indexes are
-   `docs/CODE_CONVENTIONS.md` §7, which records the course module or
-   handout in which each permitted command is demonstrated. Panel lags/leads use
-   `L1.` / `F1.` after `encode` + `xtset` + `sort`.
+   the COMET notebooks (including `18 - Stata Workflow Guide – COMET.pdf`), the
+   Stata Test do-files (Test One-Seven) and the quiz do-files may appear in a
+   do-file. `StataCheatSheet_analysis_19.pdf` was removed as a source on 16
+   November 2026. Banned examples: `reghdfe`, `csdid`, `eventdd`,
+   `bacondecomp`. The local index is `docs/CODE_CONVENTIONS.md` §7, which
+   records the course module or question set in which each permitted command is
+   demonstrated and lists the CheatSheet commands still present in the do-files.
+   Panel lags/leads use `L1.` / `F1.` after `encode` + `xtset` + `sort`.
 2. **Workflow 18 structure.** Master starts with `/* Project info */`, then
    `clear`, directory settings, project settings, and ordered
    `capture noisily do` calls. `clear all` inside a sub-do-file would erase the
