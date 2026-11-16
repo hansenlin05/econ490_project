@@ -1,8 +1,8 @@
 /* Project info
    3_results_261109.do | regressions, diagnostics and tables
-   Primary: 23 Eurostat countries, 2006-2019. Extension: 26 ILO countries, 2000-2024, reported separately.
+   Primary: OECD ILO panel, 2000-2024. European Eurostat panel, 2006-2019, is reported separately.
    GAP = male minus female employment rate, pp. Eurostat: ages 25-54, youngest child under 6; no couple restriction.
-   OECD extension: ILO household series (HHT_AGGREGATE_K, child under 6); population definition differs, never pooled.
+   OECD primary: ILO household series (HHT_AGGREGATE_K, child under 6); population definition differs, never pooled.
    GAP_it = b1*L1.LEAVE10_it + b2*L1.LNGDP_it + b3*L1.GROWTH_it + b4*SPEND_it + country_i + year_t + e_it
    LEAVE10 is in 10-week units; H1 predicts b1<0. Estimates are associations, not causal effects.
    */
@@ -13,11 +13,8 @@ if ${store_log_mainresults}==1 {
     capture noisily log using "${log_dir}/3_results_261109.log", text replace
 }
 
-* Load the saved file if both earlier steps were skipped
-if ${run_build}==0 & ${run_descriptive}==0 {
-    use "${datadir_final}/europe_analysis_261109.dta", clear
-}
-
+* Main OECD panel; the third column drops public leave spending to show its coverage.
+use "${datadir_final}/oecd_analysis_261109.dta", clear
 xtset country_id year, yearly
 
 * FE baseline; xttest3 and xtserial need the unadjusted fit
@@ -34,6 +31,35 @@ xttest3
 capture noisily xtserial employment_gap lag_fatherweeks10 lag_lngdp ///
     lag_gdp_growth leave_gdp
 
+* Hausman: FE vs RE
+xtreg employment_gap lag_fatherweeks10 ${controls} i.year, re
+estimates store random
+capture noisily hausman fixed random
+
+xtreg employment_gap lag_fatherweeks10 ${controls} i.year, fe vce(robust)
+estimates store oecd_fe
+test lag_fatherweeks10 = 0
+xtpcse employment_gap lag_fatherweeks10 ${controls} i.year i.country_id, ///
+    het corr(ar1)
+estimates store oecd_pcse
+* Test the main coefficient against zero
+test lag_fatherweeks10 = 0
+xtreg employment_gap lag_fatherweeks10 lag_lngdp lag_gdp_growth i.year, ///
+    fe vce(robust)
+estimates store oecd_fe_nospend
+
+etable, estimates(oecd_fe oecd_pcse oecd_fe_nospend) ///
+    keep(lag_fatherweeks10 lag_lngdp lag_gdp_growth leave_gdp) ///
+    mstat(N) mstat(r2) showstars showstarsnote varlabel column(dvlabel) ///
+    export("${tabledir}/results_oecd_261109.docx", replace)
+
+* European Eurostat supplement: estimate on the separate country-year panel.
+use "${datadir_final}/europe_analysis_261109.dta", clear
+xtset country_id year, yearly
+
+xtreg employment_gap lag_fatherweeks10 ${controls} i.year, fe
+estimates store fixed
+
 * Robust standard errors
 xtreg employment_gap lag_fatherweeks10 ${controls} i.year, fe vce(robust)
 estimates store robust
@@ -44,11 +70,6 @@ regress employment_gap lag_fatherweeks10 ${controls} i.year i.country_id, ///
 estimates store clustered
 * Test the main coefficient against zero
 test lag_fatherweeks10 = 0
-
-* Hausman: FE vs RE
-xtreg employment_gap lag_fatherweeks10 ${controls} i.year, re
-estimates store random
-capture noisily hausman fixed random
 
 * DiD on the first verified expansion
 regress employment_gap 1.treated#1.post ${controls} i.year i.country_id, ///
@@ -91,26 +112,6 @@ etable, estimates(fixed robust clustered did pcse eventstudy) ///
          lag_lngdp lag_gdp_growth leave_gdp) ///
     mstat(N) mstat(r2) showstars showstarsnote varlabel column(dvlabel) ///
     export("${tabledir}/results_europe_261109.docx", replace)
-
-* OECD extension: leave_gdp coverage limits the sample; third column drops that covariate
-use "${datadir_final}/oecd_analysis_261109.dta", clear
-xtset country_id year, yearly
-
-xtreg employment_gap lag_fatherweeks10 ${controls} i.year, fe vce(robust)
-estimates store oecd_fe
-xtpcse employment_gap lag_fatherweeks10 ${controls} i.year i.country_id, ///
-    het corr(ar1)
-estimates store oecd_pcse
-* Test the main coefficient against zero
-test lag_fatherweeks10 = 0
-xtreg employment_gap lag_fatherweeks10 lag_lngdp lag_gdp_growth i.year, ///
-    fe vce(robust)
-estimates store oecd_fe_nospend
-
-etable, estimates(oecd_fe oecd_pcse oecd_fe_nospend) ///
-    keep(lag_fatherweeks10 lag_lngdp lag_gdp_growth leave_gdp) ///
-    mstat(N) mstat(r2) showstars showstarsnote varlabel column(dvlabel) ///
-    export("${tabledir}/results_oecd_261109.docx", replace)
 
 //Close log if needed
 if ${store_log_mainresults}==1 {
