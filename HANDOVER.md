@@ -311,7 +311,8 @@ Full rationale: `docs/RESEARCH_DECISIONS.md`. Citation strings and the official
    does not download anything.
 3. Set the working directory to the project root. There is no `cd` line to
    edit: the master uses `global proj_main "."` and every path is relative, so
-   the folder can be renamed or moved without touching the code.
+   the folder can be renamed or moved without touching the code. If the working directory is wrong the master stops at once with a
+   `Wrong working directory` error rather than failing silently.
 4. From the project root run the master; it calls the four numbered do-files.
 5. Compare `log_files/` with this repository. Any differing coefficient means
    the reproduction failed.

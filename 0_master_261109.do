@@ -37,6 +37,13 @@ global store_log_tables = 1        // 0 = don't save log file; 1 = save log file
 * Lagged log GDP per capita is in every regression
 global controls "lag_lngdp lag_gdp_growth leave_gdp"
 
+* Stop here if the working directory is not the project root
+capture confirm file "do_files/0_master_261109.do"
+if _rc {
+    display as error "Wrong working directory: run this master from the project root, e.g. cd ""C:\Users\Hansen\UBC\ECON 490 003 2026W1 Seminar in Applied Economics - econ490_project"""
+    exit 601
+}
+
 /* Run the do-files: runs all of the do-files for the project */
 if ${run_build}==1 {
     capture noisily do "${do_dir}/1_build_data_261109.do"
