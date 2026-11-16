@@ -1,134 +1,64 @@
 /* Project info
-   2_descriptive_261109.do | descriptive statistics and figures for the OECD ILO sample,
-   plus the 2019 OECD summary table and the regional comparison. */
-
-//If log setting is activated, we record a log file in the log folder
+   2_descriptive_261109.do | OECD childcare descriptives, figures, and subset regressions. */
 if ${store_log_descriptive}==1 {
-    cap log close
+    capture log close
     capture noisily log using "${log_dir}/2_descriptive_261109.log", text replace
 }
 
-use "${datadir_final}/oecd_analysis_261109.dta", clear
+use "${datadir_final}/oecd_childcare_261109.dta", clear
 
-summarize year
-
-* Univariate statistics
-summarize employment_gap male_rate female_rate fatherweeks10 ///
-    lag_fatherweeks10 lag_lngdp lag_gdp_growth leave_gdp
-summarize employment_gap, detail
-return list
-summarize lag_lngdp, detail
-return list
-
-* Mean, sd, min, max and N for all variables
+* Describe all model variables in 2019 for observations with childcare spending.
 preserve
-    collapse ///
-        (mean) mean_gap=employment_gap (sd) sd_gap=employment_gap ///
-        (min) min_gap=employment_gap (max) max_gap=employment_gap ///
-        (count) n_gap=employment_gap ///
-        (mean) mean_leave10=lag_fatherweeks10 (sd) sd_leave10=lag_fatherweeks10 ///
-        (min) min_leave10=lag_fatherweeks10 (max) max_leave10=lag_fatherweeks10 ///
-        (count) n_leave10=lag_fatherweeks10 ///
-        (mean) mean_lngdp=lag_lngdp (sd) sd_lngdp=lag_lngdp ///
-        (min) min_lngdp=lag_lngdp (max) max_lngdp=lag_lngdp ///
-        (count) n_lngdp=lag_lngdp ///
-        (mean) mean_growth=lag_gdp_growth (sd) sd_growth=lag_gdp_growth ///
-        (min) min_growth=lag_gdp_growth (max) max_growth=lag_gdp_growth ///
-        (count) n_growth=lag_gdp_growth ///
-        (mean) mean_spend=leave_gdp (sd) sd_spend=leave_gdp ///
-        (min) min_spend=leave_gdp (max) max_spend=leave_gdp ///
-        (count) n_spend=leave_gdp ///
-        (mean) mean_male=male_rate (sd) sd_male=male_rate ///
-        (min) min_male=male_rate (max) max_male=male_rate ///
-        (count) n_male=male_rate ///
-        (mean) mean_female=female_rate (sd) sd_female=female_rate ///
-        (min) min_female=female_rate (max) max_female=female_rate ///
-        (count) n_female=female_rate
-    list
-    export excel using "${tabledir}/descriptive_261109.xlsx", firstrow(variables) replace
+    keep if year==2019 & !missing(lag_socx_ecec)
+    dtable employment_gap lag_socx_ecec lag_fatherweeks10 lag_lngdp lag_gdp_growth leave_gdp, ///
+        continuous(employment_gap lag_socx_ecec lag_fatherweeks10 lag_lngdp lag_gdp_growth leave_gdp, ///
+        statistic(n mean sd min max)) ///
+        title("OECD childcare model: descriptive statistics for 2019") ///
+        export("${tabledir}/descriptive_2019_oecd_childcare_261109.docx", replace)
 restore
 
-* Compact N/mean/sd table
-dtable employment_gap lag_fatherweeks10 lag_lngdp lag_gdp_growth ///
-    leave_gdp male_rate female_rate, ///
-    export("${tabledir}/descriptive_dtable_261109.docx", replace)
+keep if childcare_sample==1
+generate year_centered = year - 2010
+xtset country_id year, yearly
+tabulate eu_childcare
 
-* Figure 1: gap against lagged leave
-twoway (scatter employment_gap lag_fatherweeks10) ///
-    (lfit employment_gap lag_fatherweeks10), ///
-    title("Father-specific paid leave and the employment gap") ///
-    xtitle("Lagged father-specific paid leave, per 10 weeks") ///
-    ytitle("Male minus female employment rate, percentage points") ///
+* Illustrate the relationship between spending and employment in the estimation sample.
+twoway (scatter employment_gap lag_socx_ecec) (lfit employment_gap lag_socx_ecec), ///
+    title("Public childcare spending and the employment gap") ///
+    xtitle("Prior-year public ECEC spending (% of GDP)") ///
+    ytitle("Male minus female employment rate (pp)") ///
     legend(label(1 "Country-year observation") label(2 "Linear fit")) ///
     graphregion(color(white))
-graph export "${figdir}/scatter_gap_leave_261109.png", as(png) replace
+graph export "${figdir}/scatter_gap_childcare_261109.png", as(png) replace
 
-* Figure 2: outcome distribution
-histogram employment_gap, ///
-    title("Distribution of the employment gap") ///
-    xtitle("Male minus female employment rate, percentage points") ///
-    graphregion(color(white))
-graph export "${figdir}/histogram_gap_261109.png", as(png) replace
+* Compare spending across the regional groups used in the subset regressions.
+twoway (histogram lag_socx_ecec if eu_childcare==1, color(navy%40) lcolor(navy) start(0) width(.2)) ///
+    (histogram lag_socx_ecec if eu_childcare==0, color(maroon%40) lcolor(maroon) start(0) width(.2)), ///
+    title("Public childcare spending by subgroup") ///
+    xtitle("Prior-year public ECEC spending (% of GDP)") ///
+    ytitle("Density") ///
+    legend(label(1 "EU-target group") label(2 "Other OECD")) graphregion(color(white))
+graph export "${figdir}/histogram_childcare_byregion_261109.png", as(png) replace
 
-* Figure 3: average gap over time
-bysort year: egen mean_gap = mean(employment_gap)
-twoway (connected mean_gap year), ///
-    title("Average employment gap, OECD ILO panel") ///
-    ytitle("Male minus female employment rate, percentage points") ///
-    xtitle("Year") ///
-    graphregion(color(white))
-graph export "${figdir}/trend_gap_261109.png", as(png) replace
+* Compare the same specification across both groups and the full sample.
+* The EU's Barcelona targets linked ECEC access to parental employment.
+* https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32022H1220(01)
+xtreg employment_gap lag_socx_ecec lag_fatherweeks10 ${controls} ///
+    i.year c.year_centered#i.country_id, fe vce(robust)
+estimates store childcare_all
+xtreg employment_gap lag_socx_ecec lag_fatherweeks10 ${controls} ///
+    i.year c.year_centered#i.country_id if eu_childcare==1, fe vce(robust)
+estimates store childcare_eu
+xtreg employment_gap lag_socx_ecec lag_fatherweeks10 ${controls} ///
+    i.year c.year_centered#i.country_id if eu_childcare==0, fe vce(robust)
+estimates store childcare_other
 
-* Summary for one representative year, keeping only rows with the main regressor
-preserve
-    use "${datadir_final}/oecd_analysis_261109.dta", clear
-    keep if year==2019 & lag_fatherweeks10!=.
-    count
-    * Export the same 2019 summary table as a Word document
-    dtable employment_gap lag_fatherweeks10 lag_lngdp lag_gdp_growth leave_gdp, ///
-        continuous(employment_gap lag_fatherweeks10 lag_lngdp lag_gdp_growth leave_gdp, ///
-        statistic(n mean sd min max)) ///
-        title("Summary statistics, 2019 OECD sample; each row reports N, mean (sd), minimum and maximum") ///
-        export("${tabledir}/descriptive_2019_oecd_261109.docx", replace)
-    collapse ///
-        (mean) mean_gap=employment_gap (sd) sd_gap=employment_gap ///
-        (min) min_gap=employment_gap (max) max_gap=employment_gap ///
-        (count) n_gap=employment_gap ///
-        (mean) mean_leave=lag_fatherweeks10 (sd) sd_leave=lag_fatherweeks10 ///
-        (min) min_leave=lag_fatherweeks10 (max) max_leave=lag_fatherweeks10 ///
-        (count) n_leave=lag_fatherweeks10 ///
-        (mean) mean_lngdp=lag_lngdp (sd) sd_lngdp=lag_lngdp ///
-        (min) min_lngdp=lag_lngdp (max) max_lngdp=lag_lngdp ///
-        (count) n_lngdp=lag_lngdp ///
-        (mean) mean_growth=lag_gdp_growth (sd) sd_growth=lag_gdp_growth ///
-        (min) min_growth=lag_gdp_growth (max) max_growth=lag_gdp_growth ///
-        (count) n_growth=lag_gdp_growth ///
-        (mean) mean_spend=leave_gdp (sd) sd_spend=leave_gdp ///
-        (min) min_spend=leave_gdp (max) max_spend=leave_gdp ///
-        (count) n_spend=leave_gdp
-    list
-    export excel using "${tabledir}/descriptive_2019_oecd_261109.xlsx", firstrow(variables) replace
-    export delimited using "${tabledir}/descriptive_2019_oecd_261109.csv", replace
-restore
+etable, estimates(childcare_all childcare_eu childcare_other) ///
+    keep(lag_socx_ecec lag_fatherweeks10 lag_lngdp lag_gdp_growth leave_gdp) ///
+    mstat(N) showstars showstarsnote varlabel column(index) ///
+    note("Columns: all countries, EU-target group, other OECD. Country FE: yes. Year FE: yes. Country trends: yes. Country-clustered standard errors.") ///
+    export("${tabledir}/results_childcare_subsets_261109.docx", replace)
 
-* Overlapping histograms for the two country subsets
-preserve
-    use "${datadir_final}/oecd_analysis_261109.dta", clear
-    generate byte european = 0
-    replace european = 1 if inlist(iso,"AUT","BEL","CZE","DEU","ESP","EST","FRA","GBR")
-    replace european = 1 if inlist(iso,"GRC","HUN","IRL","ITA","LTU","LUX","LVA","NLD")
-    replace european = 1 if inlist(iso,"POL","PRT","SVN")
-    twoway (histogram lag_fatherweeks10 if european==1, color(navy) lcolor(black)) ///
-        (histogram lag_fatherweeks10 if european==0, color(maroon) lcolor(black)), ///
-        title("Father-specific paid leave by region") ///
-        xtitle("Lagged father-specific paid leave, per 10 weeks") ///
-        ytitle("Density") ///
-        legend(label(1 "European OECD (19)") label(2 "Non-European OECD (7)")) ///
-        graphregion(color(white))
-    graph export "${figdir}/histogram_leave_byregion_261109.png", as(png) replace
-restore
-
-//Close log if needed
 if ${store_log_descriptive}==1 {
-    cap log close
+    capture log close
 }
