@@ -1,5 +1,9 @@
 # Submission status — 18 Nov 2026 Econometric Files
 
+> This document records the European-primary team version. For this branch's
+> OECD-primary models and outputs, see the repository README and the numbered
+> Stata logs.
+
 Last updated 15 November 2026. This is the actionable checklist. Code work is
 finished and verified; everything left is a manual team action.
 
