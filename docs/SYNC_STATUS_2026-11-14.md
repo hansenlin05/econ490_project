@@ -40,10 +40,10 @@ are now in `log_files/4_tables_261109.log`, and the older "2396 floats in
 `3_results`" figure no longer applies.
 
 New in this update: a `.docx` version of the 2019 summary table, a full 1/99
-winsorized repeat of all five continuous variables, and one fixed 333-observation
-sample across all four build-up columns. The Canvas comments draft was corrected
-(295 input rows versus 272 estimation rows; two kinds of observation loss;
-both country-clustered p-values).
+winsorized repeat of all five continuous variables, one fixed 348-observation
+sample across all four build-up columns, and a leave lag built on the policy
+panel before the merge (295 input rows versus 292 estimation rows; two kinds of
+observation loss; both country-clustered p-values).
 
 All five data citations now carry the exact access date **14 November 2026**.
 The Chinese-language handover previously uploaded to the root and to `docs/`

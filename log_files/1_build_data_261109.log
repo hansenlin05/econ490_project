@@ -3,7 +3,7 @@
        log:  C:\Users\Hansen\UBC\ECON 490 003 2026W1 Seminar in Applied Economi
 > cs - econ490_project\log_files/1_build_data_261109.log
   log type:  text
- opened on:  15 Nov 2026, 15:51:07
+ opened on:  15 Nov 2026, 19:14:20
 . }
 
 . 
@@ -46,7 +46,7 @@
 . tempfile country_codes euro_codes policy
 
 . save `country_codes'
-file C:\Users\Hansen\AppData\Local\Temp\ST_9a60_000001.tmp saved as .dta
+file C:\Users\Hansen\AppData\Local\Temp\ST_a680_000001.tmp saved as .dta
     format
 
 . preserve
@@ -55,7 +55,7 @@ file C:\Users\Hansen\AppData\Local\Temp\ST_9a60_000001.tmp saved as .dta
 (15 observations deleted)
 
 . save `euro_codes'
-file C:\Users\Hansen\AppData\Local\Temp\ST_9a60_000002.tmp saved as .dta
+file C:\Users\Hansen\AppData\Local\Temp\ST_a680_000002.tmp saved as .dta
     format
 
 . restore
@@ -254,8 +254,48 @@ variable timing_note was str47 now str63
 . keep if inrange(year,2000,2024)
 (1,140 observations deleted)
 
+. 
+. * Leave weeks and their lags, built on the policy panel before any merge
+. encode iso, generate(cid_policy)
+
+. xtset cid_policy year, yearly
+
+Panel variable: cid_policy (strongly balanced)
+ Time variable: year, 2000 to 2024
+         Delta: 1 year
+
+. generate fatherweeks = real(total_paid_raw)
+(62 missing values generated)
+
+. recast double fatherweeks
+
+. replace fatherweeks = real(total_paid_raw)
+(236 real changes made)
+
+. replace fatherweeks = 28.6  if total_paid_raw == "28.6 / 54.6"
+(7 real changes made)
+
+. replace fatherweeks = 30.17 if total_paid_raw == "30.17 / 56.17"
+(3 real changes made)
+
+. label variable fatherweeks "Weeks of paid father-specific leave (PF2.1, lower
+>  bound)"
+
+. generate fatherweeks10 = fatherweeks/10
+(52 missing values generated)
+
+. label variable fatherweeks10 "Father-specific paid leave, per 10 weeks"
+
+. generate lag_fatherweeks10 = L1.fatherweeks10
+(90 missing values generated)
+
+. label variable lag_fatherweeks10 "Lagged father-specific paid leave, per 10 w
+> eeks"
+
+. drop cid_policy
+
 . save `policy'
-file C:\Users\Hansen\AppData\Local\Temp\ST_9a60_000003.tmp saved as .dta
+file C:\Users\Hansen\AppData\Local\Temp\ST_a680_000003.tmp saved as .dta
     format
 
 . 
@@ -593,66 +633,47 @@ file ./data_final/policy_controls.dta saved
 .     use "${datadir_final}/`s'_twfe.dta", clear
   3.     xtset country_id year, yearly
   4. 
-.     * PF2.1 Total_Father_specific_paid; slash cells keep the lower bound
-.     generate fatherweeks = real(total_paid_raw)
-  5.     recast double fatherweeks
-  6.     replace fatherweeks = real(total_paid_raw)
-  7.     replace fatherweeks = 28.6  if total_paid_raw == "28.6 / 54.6"
-  8.     replace fatherweeks = 30.17 if total_paid_raw == "30.17 / 56.17"
-  9.     label variable fatherweeks "Weeks of paid father-specific leave (PF2.1
-> , lower bound)"
- 10. 
-.     * Unit: pp change in the gap per 10 extra weeks of lagged leave
-.     generate fatherweeks10 = fatherweeks/10
- 11.     label variable fatherweeks10 "Father-specific paid leave, per 10 weeks
-> "
- 12.     generate lag_fatherweeks10 = L1.fatherweeks10
- 13.     label variable lag_fatherweeks10 "Lagged father-specific paid leave, p
-> er 10 weeks"
- 14. 
+.     * Leave weeks are already in 10-week units, with the lag built in the pol
+> icy file
+. 
 .     * WDI macro controls, with lags already built on the full annual series
 .     sort iso year
- 15.     merge 1:1 iso year using "${datadir_final}/wdi_controls.dta"
- 16.     keep if _merge==3
- 17.     drop _merge
- 18. 
+  5.     merge 1:1 iso year using "${datadir_final}/wdi_controls.dta"
+  6.     keep if _merge==3
+  7.     drop _merge
+  8. 
 .     * Public leave spending; maternal_weeks kept for inspection only (sparse 
 > coverage)
 .     sort iso year
- 19.     merge 1:1 iso year using "${datadir_final}/policy_controls.dta"
- 20.     keep if _merge==3
- 21.     drop _merge
- 22. 
+  9.     merge 1:1 iso year using "${datadir_final}/policy_controls.dta"
+ 10.     keep if _merge==3
+ 11.     drop _merge
+ 12. 
 .     * Lagged log GDP per capita is required in every regression
 .     label variable leave_gdp "Public maternity and parental leave spending, p
 > ercent of GDP"
- 23. 
+ 13. 
 .     * post: years at/after the first verified expansion; controls have no ref
 > orm year
 .     generate post = (year>=reform_year) if !missing(reform_year)
- 24.     replace post = 0 if missing(post)
- 25.     label variable post "Post first verified expansion of reserved paid le
+ 14.     replace post = 0 if missing(post)
+ 15.     label variable post "Post first verified expansion of reserved paid le
 > ave"
- 26. 
+ 16. 
 .     * Coverage of the control variables
 .     * Non-missing paid maternity weeks
 .     count if maternal_weeks!=.
- 27.     * Non-missing lagged log GDP per capita
+ 17.     * Non-missing lagged log GDP per capita
 .     count if lag_lngdp!=.
- 28.     * Non-missing public leave spending
+ 18.     * Non-missing public leave spending
 .     count if leave_gdp!=.
- 29. 
+ 19. 
 .     save "${datadir_final}/`s'_analysis_261109.dta", replace
- 30. }
+ 20. }
 
 Panel variable: country_id (unbalanced)
  Time variable: year, 2006 to 2019
          Delta: 1 year
-(5 missing values generated)
-(125 real changes made)
-(5 real changes made)
-(0 real changes made)
-(23 missing values generated)
 
     Result                      Number of obs
     -----------------------------------------
@@ -684,11 +705,6 @@ file ./data_final/europe_analysis_261109.dta saved
 Panel variable: country_id (unbalanced)
  Time variable: year, 2000 to 2024, but with gaps
          Delta: 1 year
-(10 missing values generated)
-(199 real changes made)
-(7 real changes made)
-(3 real changes made)
-(34 missing values generated)
 
     Result                      Number of obs
     -----------------------------------------

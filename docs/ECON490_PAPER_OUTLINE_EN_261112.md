@@ -52,7 +52,7 @@ Closing paragraph, explicitly answering: [How does my work contribute to this li
 4. Required table: [mean, sd, min, max, N for **all** variables; appropriate decimal places; variable names in CAPS used throughout].
 5. Required graph: [properly formatted figure illustrating the hypothesised relationship; title, axis labels, units, sample, source].
 6. For **every** explanatory variable: [predicted sign] + [economic reasoning].
-7. Data weaknesses: [missing `leave_gdp`, lagged-leave first-year loss (N = 272 vs 295), differing ILO/Eurostat population definitions, 23 country clusters below the 30–50 rule of thumb].
+7. Data weaknesses: [missing `leave_gdp`, the lag's first-year loss (N = 292 vs 295), differing ILO/Eurostat population definitions, 23 country clusters below the 30–50 rule of thumb].
 8. **Logs are not used in this section** (that belongs in Results).
 
 ## 4. Empirical Results and Discussion (1000–1250 words)
@@ -73,7 +73,7 @@ Closing paragraph, explicitly answering: [How does my work contribute to this li
    - [How well does the data fit the model?]
    - [In what ways could the analysis be improved with better data?]
 9. Results graph: [event-study coefficient plot with CI, zero line, k = −1 omitted, title, units, source].
-10. Robustness / extension: [OECD extension reported separately; explain why its N falls to 333 / 333 / 443; quadratic and winsorized models in a separate table].
+10. Robustness / extension: [OECD extension reported separately; explain why its N falls to 348 / 348 / 463; quadratic and winsorized models in a separate table].
 
 ## 5. Conclusion (500–700 words)
 
@@ -94,8 +94,8 @@ Closing paragraph, explicitly answering: [How does my work contribute to this li
 | Item | Source | Value |
 |---|---|---|
 | Primary / extension N | `1_build_data_261109.log` | [295 / 477] |
-| Estimation N, six Europe columns | `3_results_261109.log` | [272, 272, 272, 295, 272, 295] |
-| Estimation N, three OECD columns | `3_results_261109.log` | [333, 333, 443] |
+| Estimation N, six Europe columns | `3_results_261109.log` | [292, 292, 292, 295, 292, 295] |
+| Estimation N, three OECD columns | `3_results_261109.log` | [348, 348, 463] |
 | LEAVE10 coefficient and SE, FE / robust / clustered / PCSE | `3_results_261109.log` | [fill from final log] |
 | DiD coefficient, SE, p | `3_results_261109.log` | [fill from final log] |
 | Event-study four coefficients, SEs, p | `3_results_261109.log` | [fill from final log] |
@@ -131,7 +131,7 @@ Folders
   figures/     descriptive figures and the event-study plot
 
 Known limitations
-  Lagged-leave regressions use N = 272; DiD and event study use N = 295.
-  OECD estimation N falls to 333 / 333 / 443 because of missing leave_gdp and the lagged regressor.
+  Lagged-leave regressions use N = 292; DiD and event study use N = 295.
+  OECD estimation N falls to 348 / 348 / 463 because of missing leave_gdp.
   Country clusters: 23 (Europe) / 26 (OECD), below the usual 30-50 rule of thumb.
 ```

@@ -110,6 +110,21 @@ replace reform_year = first_reform
 drop first_reform
 keep iso country year total_all_raw total_paid_raw known_policy reform_year timing_note
 keep if inrange(year,2000,2024)
+
+* Leave weeks and their lags, built on the policy panel before any merge
+encode iso, generate(cid_policy)
+xtset cid_policy year, yearly
+generate fatherweeks = real(total_paid_raw)
+recast double fatherweeks
+replace fatherweeks = real(total_paid_raw)
+replace fatherweeks = 28.6  if total_paid_raw == "28.6 / 54.6"
+replace fatherweeks = 30.17 if total_paid_raw == "30.17 / 56.17"
+label variable fatherweeks "Weeks of paid father-specific leave (PF2.1, lower bound)"
+generate fatherweeks10 = fatherweeks/10
+label variable fatherweeks10 "Father-specific paid leave, per 10 weeks"
+generate lag_fatherweeks10 = L1.fatherweeks10
+label variable lag_fatherweeks10 "Lagged father-specific paid leave, per 10 weeks"
+drop cid_policy
 save `policy'
 
 * Read the Eurostat employment file.
@@ -238,19 +253,7 @@ foreach s in europe oecd {
     use "${datadir_final}/`s'_twfe.dta", clear
     xtset country_id year, yearly
 
-    * PF2.1 Total_Father_specific_paid; slash cells keep the lower bound
-    generate fatherweeks = real(total_paid_raw)
-    recast double fatherweeks
-    replace fatherweeks = real(total_paid_raw)
-    replace fatherweeks = 28.6  if total_paid_raw == "28.6 / 54.6"
-    replace fatherweeks = 30.17 if total_paid_raw == "30.17 / 56.17"
-    label variable fatherweeks "Weeks of paid father-specific leave (PF2.1, lower bound)"
-
-    * Unit: pp change in the gap per 10 extra weeks of lagged leave
-    generate fatherweeks10 = fatherweeks/10
-    label variable fatherweeks10 "Father-specific paid leave, per 10 weeks"
-    generate lag_fatherweeks10 = L1.fatherweeks10
-    label variable lag_fatherweeks10 "Lagged father-specific paid leave, per 10 weeks"
+    * Leave weeks are already in 10-week units, with the lag built in the policy file
 
     * WDI macro controls, with lags already built on the full annual series
     sort iso year
