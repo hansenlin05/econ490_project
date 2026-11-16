@@ -243,17 +243,17 @@ were deliberately left unchanged in this round.
 
 | Command or option | Where the current do-files use it |
 |---|---|
-| `isid` | `1_build_data_261109.do`; `1_build_data_261116.do` |
-| `tempfile` | `1_build_data_261109.do`; `1_build_data_261116.do`; `5_childcare_robust` |
-| `recast double` | `1_build_data_261109.do`; `4_tables_261109.do`; `1_build_data_261116.do`; `4_tables` in the childcare branch |
-| `count` | `4_tables_261109.do`; `4_tables` in the childcare branch |
+| `isid` | `1_build_data_261109.do` (main); `1_build_data_261116.do` (childcare branch) |
+| `tempfile` | `1_build_data_261109.do` (main); `1_build_data_261116.do`, `5_childcare_robust_261116.do` (childcare branch) |
+| `recast double` | `1_build_data_261109.do`, `4_tables_261109.do` (main); `1_build_data_261116.do`, `4_tables_261109.do` (childcare branch) |
+| `count` | `4_tables_261109.do` in both directions |
 | `dtable` | `2_descriptive_261109.do` in both directions |
-| `vce(cluster id)` | `3_results_261109.do` (original direction) |
-| `vce(robust)` | `3_results` and tables in both directions |
+| `vce(cluster id)` | `3_results_261109.do` (main only) |
+| `vce(robust)` | `3_results_261109.do`, `4_tables_261109.do`, `2_descriptive_261109.do` in both directions, plus `5_childcare_robust_261116.do`, `5b_childcare_extensions_261116.do`, `6_childcare_figures_261116.do` |
 | `test coef = 0` | `3_results_261109.do` in both directions |
-| `column(index)` | `3_results_261109.do`, `4_tables_261109.do`, `2_descriptive_261109.do`, and the childcare tables |
-| `note()` on `etable` | `3_results_261109.do`, `4_tables_261109.do`, `2_descriptive_261109.do`, and the childcare tables |
-| `sheet()`, `cellrange()` on `import excel` | `1_build_data_261109.do`; `1_build_data_261116.do` |
+| `column(index)` | `3_results_261109.do`, `4_tables_261109.do`, `2_descriptive_261109.do` in both directions |
+| `note()` on `etable` | `3_results_261109.do`, `4_tables_261109.do`, `2_descriptive_261109.do` in both directions |
+| `sheet()`, `cellrange()` on `import excel` | `1_build_data_261109.do` (main); `1_build_data_261116.do` (childcare branch) |
 
 **Not used, and not to be introduced:** `reghdfe`, `csdid`, `eventdd`,
 `bacondecomp`, `winsor2`, `outreg2`, `estout`, `esttab`, `putdocx`, `collect
