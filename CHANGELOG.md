@@ -3,6 +3,20 @@
 All entries describe the local OneDrive project; this repository only mirrors
 them for teammate / AI handoff. Dates are local (MST).
 
+## 2026-11-15 (night) — wrong-working-directory guard in the master
+
+Running the master from any directory other than the project root printed four
+`file ... not found` errors and stopped, because every path in the do-files is
+relative and `capture noisily` swallowed each failure. `0_master_261109.do` now
+checks for `do_files/0_master_261109.do` before doing anything and exits with
+`Wrong working directory: run this master from the project root ...` if the
+check fails. The guard uses `capture confirm file` / `exit` / `display as
+error`, which are not in the course handouts, so it is recorded as the fifth
+documented exception in `docs/CODE_CONVENTIONS.md` §2: it touches no data and
+cannot change any number. A full rerun from the project root produced
+byte-identical numbered logs (md5-verified), confirming the guard is inert when
+the working directory is correct.
+
 ## 2026-11-15 (late) — leave lag rebuilt on the policy panel; specification search declined
 
 **The leave series and its lag are now built on the policy panel, before any

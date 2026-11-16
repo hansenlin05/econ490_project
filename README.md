@@ -161,8 +161,15 @@ There is **no absolute path anywhere in the do-files**. The master starts with
 the working directory. This is deliberate: the team folder was renamed once
 already, and a hard-coded `cd` fails silently under `capture` while every later
 path resolves to the wrong place. Set the working directory to the project root
-before running; the first `use` in `1_build_data` names the missing file if you
-did not.
+before running:
+
+```stata
+cd "C:\Users\Hansen\UBC\ECON 490 003 2026W1 Seminar in Applied Economics - econ490_project"
+do do_files\0_master_261109.do
+```
+
+If you forget, the master stops at once with a `Wrong working directory`
+message instead of failing silently.
 
 ## 9. How this repository is maintained
 
