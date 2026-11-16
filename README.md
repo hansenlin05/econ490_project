@@ -19,15 +19,16 @@ Nothing here is optional for an assistant that will touch the code.
 | # | File | What it gives you | Why the order matters |
 |---|---|---|---|
 | 1 | `README.md` (this file) | Current state, frozen decisions, reading path, collaboration rules | One page of orientation before any detail |
-| 2 | `HANDOVER.md` | The authoritative handover: research question, samples, current results, what is finished and what is not | The only document that describes the project as a whole |
-| 3 | `docs/COURSE_REQUIREMENTS.md` | Every graded item and point value for 18 Nov, allowed upload types, the 11 Dec gates, and the rules that are implied rather than stated | Grading is the binding constraint on every change |
-| 4 | `docs/RESEARCH_DECISIONS.md` | Why each sample, control set, subset and specification was chosen, and which decisions are closed | Prevents re-litigating settled choices |
-| 5 | `docs/PITFALLS_AND_CORRECTIONS.md` | Mistakes already made and what replaced them | Read before proposing a fix; most "improvements" have already been tried and rejected |
-| 6 | `docs/CODE_CONVENTIONS.md` | The permitted command set, the comment rules, the coding level expected, and the four documented exceptions | The gate any code change must pass |
-| 7 | `docs/DATA_CITATIONS.md` | Official citation formats with URLs and the five citation strings in the do-file | Any citation edit must match these |
-| 8 | `docs/SUBMISSION_STATUS.md` | Done / manual / blocked, plus the ready-to-paste Canvas comments | Tells you what is actually left |
-| 9 | `docs/LITERATURE_SOURCES.md` | The ten article PDFs by filename, and the paper-writing format rules | Needed only for the 11 Dec paper |
-| 10 | `docs/HANDOVER_INDEX.md` | Full document map, and which older files are legacy background only | Stops you reading superseded material by mistake |
+| 2 | `docs/RESEARCH_QUESTION.md` | The official research question and the five direction-level red lines | A direction change is the one failure code review cannot catch; read this before judging any proposal |
+| 3 | `HANDOVER.md` | The authoritative handover: research question, samples, current results, what is finished and what is not | The only document that describes the project as a whole |
+| 4 | `docs/COURSE_REQUIREMENTS.md` | Every graded item and point value for 18 Nov, allowed upload types, the 11 Dec gates, and the rules that are implied rather than stated | Grading is the binding constraint on every change |
+| 5 | `docs/RESEARCH_DECISIONS.md` | Why each sample, control set, subset and specification was chosen, and which decisions are closed | Prevents re-litigating settled choices |
+| 6 | `docs/PITFALLS_AND_CORRECTIONS.md` | Mistakes already made and what replaced them | Read before proposing a fix; most "improvements" have already been tried and rejected |
+| 7 | `docs/CODE_CONVENTIONS.md` | The permitted command set, the comment rules, the coding level expected, and the four documented exceptions | The gate any code change must pass |
+| 8 | `docs/DATA_CITATIONS.md` | Official citation formats with URLs and the five citation strings in the do-file | Any citation edit must match these |
+| 9 | `docs/SUBMISSION_STATUS.md` | Done / manual / blocked, plus the ready-to-paste Canvas comments | Tells you what is actually left |
+| 10 | `docs/LITERATURE_SOURCES.md` | The ten article PDFs by filename, and the paper-writing format rules | Needed only for the 11 Dec paper |
+| 11 | `docs/HANDOVER_INDEX.md` | Full document map, and which older files are legacy background only | Stops you reading superseded material by mistake |
 
 ## 2. Before you review or edit any do-file
 
@@ -102,6 +103,11 @@ Full reasoning and evidence in `docs/RESEARCH_DECISIONS.md`.
     merge.** A lag built after the merge disappears whenever the previous
     year's outcome is missing, which lets outcome availability decide the
     estimation sample.
+11. **The research question and its main explanatory variable are frozen.**
+    Father-specific paid leave is the main variable and the hypothesis
+    predicts a negative coefficient. Replacing the variable, rewording the
+    hypothesis, or picking a specification for its p-value is a direction
+    change governed by `docs/RESEARCH_QUESTION.md`, not a code improvement.
 
 ## 6. Pitfalls worth knowing before you read the code
 
@@ -166,10 +172,12 @@ The master opens with one editable line, `capture noisily cd "<path>"`, which is
   analysis CSVs are checksummed against the previous run. A change that moves a
   number must be explained, not just committed.
 - Root do-file copies and `do_files/` copies must stay byte-identical.
-- Pull requests are reviewed against §2 and §5. A pull request that flips the
-  primary sample, restores live source imports, merges the four logs into one
-  unlogged chain, or relaxes the command rules is closed with a written reason
-  rather than merged.
+- Pull requests are reviewed against §2, §5 and `docs/RESEARCH_QUESTION.md`.
+  A pull request that flips the primary sample, swaps the main explanatory
+  variable, adds country-specific trends chosen after comparing results,
+  restores live source imports, merges the four logs into one unlogged chain,
+  or relaxes the command rules is closed with a written reason rather than
+  merged.
 - Hansen and Neal own the code; Sultana owns the paper text and the formatted
   tables. An assistant without the course's own Stata handouts must not decide
   which commands are permitted, and must not reinterpret p-value conventions —

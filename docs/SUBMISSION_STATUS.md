@@ -1,6 +1,6 @@
 # Submission status — 18 Nov 2026 Econometric Files
 
-Last updated 15 November 2026. This is the actionable checklist. Code work is
+Last updated 16 November 2026. This is the actionable checklist. Code work is
 finished and verified; everything left is a manual team action.
 
 ## 1. Done and verified
@@ -60,7 +60,9 @@ finished and verified; everything left is a manual team action.
 A stale second copy of the project exists in a personal OneDrive folder with
 only 4 do-files, 3 logs, 5 tables and 4 figures plus old notes in its root.
 It is **not** the submission folder. The authoritative folder is the team
-`... - 2_Team/econ490_project` one with nine clean directories.
+OneDrive folder `C:\Users\Hansen\UBC\ECON 490 003 2026W1 Seminar in Applied
+Economics - econ490_project` with nine clean directories; the earlier
+`- 2_Team` path no longer exists.
 
 ## 3. Ready-to-paste Canvas comments (English)
 

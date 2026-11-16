@@ -1,9 +1,11 @@
 # Research decisions log
 
-Last updated 14 November 2026. These decisions are frozen unless the team
+Last updated 16 November 2026. These decisions are frozen unless the team
 writes a new decision. Each row names the evidence that supports it. For the
 purpose of a handover, a "frozen" decision means: do not reopen it to chase a
-better p-value, and do not reintroduce a retired result.
+better p-value, and do not reintroduce a retired result. The research question
+itself and the direction-level red lines are stated in
+`docs/RESEARCH_QUESTION.md`.
 
 ## 1. Scope and samples
 
@@ -25,7 +27,7 @@ better p-value, and do not reintroduce a retired result.
 | Unwinsorized specification preferred | 1/99 winsorization changes only 4 outcome and 4 lagged-GDP observations; sign, magnitude and significance of the main coefficient are unchanged |
 | Conclusion: no robustly significant policy effect, only a conditional association | Clustered p=0.113, DiD p=0.653, OECD p=0.857/0.936/0.876, all event-study leads/lags insignificant. The sign is positive throughout, i.e. opposite to the hypothesis, so the PCSE result (p=0.021) does not support it either |
 | Leave series and its lag built on the policy panel, before any merge | The earlier build computed `L1.` on the assembled panel, so a country-year whose outcome was missing in t-1 also lost the lag in t. Building the lag on the policy panel returns 20 country-years in each sample, leaves every existing value unchanged, and removes the channel through which outcome availability selected the sample. The whole chain was rerun; Europe clustered p moves 0.065 -> 0.113, OECD 0.352/0.583 -> 0.936/0.857 |
-| Specification search declined: country-specific trends, lagged unemployment, lagged childcare spending, switching `leave_gdp` to its own lag, and a two-year lag as the headline | Each was tried and none is adopted for the 18 Nov submission. Country trends take 23 degrees of freedom from a 292-row panel, are not demonstrated in the course material, and were already insignificant in the earlier draft (0.500, p=0.426, N=266). Adding controls the assignment does not ask for confounds "one variable added at a time". A two-year lag gives -0.015 (p=0.961) in this data, and choosing the lag length by which one is significant is precisely what "a single properly specified regression" excludes |
+| Specification search declined: country-specific trends, lagged unemployment, lagged childcare spending, switching `leave_gdp` to its own lag, and a two-year lag as the headline | Each was tried and none is adopted for the 18 Nov submission. Country trends take 23 degrees of freedom from a 292-row panel, are not demonstrated in the course material, and were already insignificant in the earlier draft (0.500, p=0.426, N=266). Adding controls the assignment does not ask for confounds "one variable added at a time". A two-year lag gives -0.015 (p=0.961) in this data, and choosing the lag length by which one is significant is precisely what "a single properly specified regression" excludes. Two later proposals were declined for the same reason: a 15 Nov pull request that made the OECD panel primary (closed unmerged), and a 16 Nov side branch that replaced the main variable with childcare spending plus country trends "selected after exploratory comparisons" — its p=0.0070 exists only with the trends; the same sample without them gives +1.159 (p=0.6904), and keeping the trends but dropping one country gives p=0.069 (closed unmerged). The red lines are now written in `docs/RESEARCH_QUESTION.md` |
 
 **Retired results, do not resurrect:** any historically significant p-value came
 from (a) unclustered standard errors, (b) a GDP lag built inside the research
