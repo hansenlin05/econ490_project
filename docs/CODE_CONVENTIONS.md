@@ -56,7 +56,8 @@ only in the CheatSheet and are now out (see §7).
 
 **Estimation**
 
-- `regress`, including factor terms
+- `regress`, including `regress ..., robust` (the verbatim COMET 14 form) and
+  factor terms
 - `xtreg ..., fe`, `xtreg ..., re`
 - `xtpcse ..., het corr(ar1)`
 - post-estimation: `estimates store`, `testparm`, `hausman`, `predict`
@@ -230,8 +231,8 @@ not demonstrated in one of those two sources and is not the single exception in
 | 11 Regression | `regress`, `i.var`, `c.var`, `#`, `##`, `predict` |
 | 12 Exporting output | `etable, estimates() mstat(N) mstat(r2) showstars showstarsnote varlabel column(dvlabel) keep() export()`, `coefplot` |
 | 13 Dummies and interactions | `i.` and `c.` notation, `##` adding both main effects and the product |
-| 14 Good regression practice | `testparm`, omitted base categories, collinearity warnings |
-| 15 Panel data | `xtset`, `xtreg ..., fe`, `xtreg ..., re`, `hausman`, `xttest3`, `xtserial`, `xtpcse ..., het corr(ar1)`, `L1.` / `F1.` |
+| 14 Good regression practice | `regress ..., robust` (the verbatim form; equivalent to the CheatSheet `vce(robust)` but that spelling is not in the course text), winsorizing with `generate` + `replace` + `r(p1)` / `r(p99)`, omitted base categories, collinearity warnings, `regress ... c.age##c.age`, `predict yhat, xb` |
+| 15 Panel data | `xtset`, `xtreg ..., fe`, `xtreg ..., re`, `hausman`, `testparm i.year`, `xttest3`, `xtserial`, `xtpcse ..., het corr(ar1)`, `L1.` / `F1.` |
 | 16 Differences-in-differences | `1.treated#1.post`, event-time dummies built with `generate` + `replace` |
 | 18 Stata Workflow Guide | `/* Project info */` header, directory globals, `capture noisily do` in a fixed order, `clear` rather than `clear all` |
 

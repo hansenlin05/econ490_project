@@ -117,7 +117,11 @@ removed as a permitted source on 16 November 2026.
   flags the CheatSheet commands still present in the do-files.
 - **Always cluster standard errors.** The lecture note gives a rough floor of
   30-50 clusters; 23 country clusters is below it, so inference is optimistic
-  and PCSE is only a sensitivity check.
+  and PCSE is only a sensitivity check. Note the tension with the current
+  command whitelist: `vce(cluster id)` is not demonstrated in the COMET or
+  Test/Quiz text and was removed on 16 November 2026, while the COMET modules
+  show `regress ..., robust` and `xtpcse ..., het corr(ar1)`. §7 of
+  `CODE_CONVENTIONS.md` records where the do-files still use clustered errors.
 - **Workflow 18 structure** for the master and numbered do-files; `clear` in the
   master, never `clear all` in a sub-do-file; `capture noisily do` calls;
   §18.2.2 allows a separate do-file for tables.
