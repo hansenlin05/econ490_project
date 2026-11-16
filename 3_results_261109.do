@@ -1,119 +1,71 @@
 /* Project info
-   3_results_261109.do | regressions, diagnostics and tables
-   Primary: OECD ILO panel, 2000-2024. European Eurostat panel, 2006-2019, is reported separately.
-   GAP = male minus female employment rate, pp. Eurostat: ages 25-54, youngest child under 6; no couple restriction.
-   OECD primary: ILO household series (HHT_AGGREGATE_K, child under 6); population definition differs, never pooled.
-   GAP_it = b1*L1.LEAVE10_it + b2*L1.LNGDP_it + b3*L1.GROWTH_it + b4*SPEND_it + country_i + year_t + e_it
-   LEAVE10 is in 10-week units; H1 predicts b1<0. Estimates are associations, not causal effects.
-   */
+   3_results_261109.do | primary OECD childcare expenditure regressions. */
 
-//If log setting is activated, we record a log file in the log folder
 if ${store_log_mainresults}==1 {
-    cap log close
+    capture log close
     capture noisily log using "${log_dir}/3_results_261109.log", text replace
 }
 
-* Main OECD panel; the third column drops public leave spending to show its coverage.
+* OECD. 2026. Social Expenditure Database, public early childhood education
+* and care spending as a share of GDP (TP521). https://doi.org/10.1787/data-00167-en
+* Official annual series retrieved 15 November 2026.
+* Build the one-year spending lag before attaching employment data.
+import delimited using "${datadir_raw}/oecd_socx_ecec_gdp.csv", clear varnames(1)
+keep if unit_measure=="PT_B1GQ" & expend_source=="ES10" & programme_type=="TP521"
+rename ref_area iso
+rename time_period year
+keep iso year obs_value
+encode iso, generate(spending_id)
+xtset spending_id year, yearly
+sort spending_id year
+generate lag_socx_ecec = L1.obs_value
+keep iso year lag_socx_ecec
+isid iso year
+tempfile spending
+save `spending'
+
 use "${datadir_final}/oecd_analysis_261109.dta", clear
+merge 1:1 iso year using `spending'
+keep if _merge==3
+drop _merge
+
+* Compare both specifications on the same complete cases.
+keep if !missing(employment_gap, lag_socx_ecec, lag_fatherweeks10)
+keep if !missing(lag_lngdp, lag_gdp_growth, leave_gdp)
+label variable lag_socx_ecec "Prior-year public childcare and early education spending (% of GDP)"
 xtset country_id year, yearly
 
-* FE baseline; xttest3 and xtserial need the unadjusted fit
-xtreg employment_gap lag_fatherweeks10 ${controls} i.year, fe
-estimates store fixed
-
-* Joint test of the year dummies
+* Check the year effects, heteroskedasticity, and serial correlation.
+xtreg employment_gap lag_socx_ecec lag_fatherweeks10 lag_lngdp lag_gdp_growth leave_gdp ///
+    i.year c.year#i.country_id, fe
 testparm i.year
-
-* Heteroskedasticity (modified Wald)
 xttest3
+capture noisily xtserial employment_gap lag_socx_ecec lag_fatherweeks10 lag_lngdp lag_gdp_growth leave_gdp
 
-* Serial correlation (Wooldridge)
-capture noisily xtserial employment_gap lag_fatherweeks10 lag_lngdp ///
-    lag_gdp_growth leave_gdp
+* Compare with a model that uses country and year effects without separate trends.
+xtreg employment_gap lag_socx_ecec lag_fatherweeks10 lag_lngdp lag_gdp_growth leave_gdp ///
+    i.year, fe vce(robust)
+estimates store childcare_no_trends
+test lag_socx_ecec = 0
 
-* Hausman: FE vs RE
-xtreg employment_gap lag_fatherweeks10 ${controls} i.year, re
-estimates store random
-capture noisily hausman fixed random
+* Estimate the primary association using country-clustered standard errors.
+xtreg employment_gap lag_socx_ecec lag_fatherweeks10 lag_lngdp lag_gdp_growth leave_gdp ///
+    i.year c.year#i.country_id, fe vce(robust)
+estimates store childcare_twfe
+test lag_socx_ecec = 0
 
-xtreg employment_gap lag_fatherweeks10 ${controls} i.year, fe vce(robust)
-estimates store oecd_fe
-test lag_fatherweeks10 = 0
-xtpcse employment_gap lag_fatherweeks10 ${controls} i.year i.country_id, ///
-    het corr(ar1)
-estimates store oecd_pcse
-* Test the main coefficient against zero
-test lag_fatherweeks10 = 0
-xtreg employment_gap lag_fatherweeks10 lag_lngdp lag_gdp_growth i.year, ///
-    fe vce(robust)
-estimates store oecd_fe_nospend
+* Compare inference using PCSE with first-order serial correlation.
+xtpcse employment_gap lag_socx_ecec lag_fatherweeks10 lag_lngdp lag_gdp_growth leave_gdp ///
+    i.year i.country_id c.year#i.country_id, het corr(ar1)
+estimates store childcare_pcse
+test lag_socx_ecec = 0
 
-etable, estimates(oecd_fe oecd_pcse oecd_fe_nospend) ///
-    keep(lag_fatherweeks10 lag_lngdp lag_gdp_growth leave_gdp) ///
-    mstat(N) mstat(r2) showstars showstarsnote varlabel column(dvlabel) ///
-    export("${tabledir}/results_oecd_261109.docx", replace)
+etable, estimates(childcare_twfe childcare_pcse childcare_no_trends) ///
+    keep(lag_socx_ecec lag_fatherweeks10 lag_lngdp lag_gdp_growth leave_gdp) ///
+    mstat(N) showstars showstarsnote varlabel column(index) ///
+    note("Country and year fixed effects in all columns. Columns 1 and 2 include country-specific linear trends. Columns 1 and 3 use country-clustered standard errors. Column 2 uses PCSE with AR(1).") ///
+    export("${tabledir}/results_oecd_childcare_261109.docx", replace)
 
-* European Eurostat supplement: estimate on the separate country-year panel.
-use "${datadir_final}/europe_analysis_261109.dta", clear
-xtset country_id year, yearly
-
-xtreg employment_gap lag_fatherweeks10 ${controls} i.year, fe
-estimates store fixed
-
-* Robust standard errors
-xtreg employment_gap lag_fatherweeks10 ${controls} i.year, fe vce(robust)
-estimates store robust
-
-* Country-clustered SEs, LSDV with explicit country and year dummies
-regress employment_gap lag_fatherweeks10 ${controls} i.year i.country_id, ///
-    vce(cluster country_id)
-estimates store clustered
-* Test the main coefficient against zero
-test lag_fatherweeks10 = 0
-
-* DiD on the first verified expansion
-regress employment_gap 1.treated#1.post ${controls} i.year i.country_id, ///
-    vce(cluster country_id)
-estimates store did
-
-* Prais-Winsten AR(1); xtpcse does not absorb FE, so dummies are explicit
-xtpcse employment_gap lag_fatherweeks10 ${controls} i.year i.country_id, ///
-    het corr(ar1)
-estimates store pcse
-* Test the main coefficient against zero
-test lag_fatherweeks10 = 0
-
-* Event study; k=-1 omitted, endpoints binned at -2 and +2
-generate time_entering_treatment = reform_year if treated==1
-replace time_entering_treatment = . if treated==0
-generate event_time = year - time_entering_treatment
-replace event_time = -1 if treated==0
-replace event_time = -2 if event_time<-2 & treated==1 & event_time!=.
-replace event_time =  2 if event_time> 2 & treated==1 & event_time!=.
-tabulate event_time, missing
-tabulate event_time, gen(event_time_dummy)
-regress employment_gap event_time_dummy1 event_time_dummy3 ///
-    event_time_dummy4 event_time_dummy5 ${controls} i.year i.country_id, ///
-    vce(cluster country_id)
-estimates store eventstudy
-
-coefplot, keep(event_time_*) vertical graphregion(color(white)) yline(0) ///
-    rename(event_time_dummy1="k=-2" event_time_dummy3="k=0" ///
-           event_time_dummy4="k=+1" event_time_dummy5="k=+2") ///
-    title("Event study: father-specific paid leave expansions") ///
-    ytitle("Employment gap, male minus female (percentage points)") ///
-    xtitle("Years since first expansion, k = -1 omitted")
-graph export "${figdir}/event_study_261109.png", as(png) replace
-
-* Formal tables; keep() drops the country and year dummies
-etable, estimates(fixed robust clustered did pcse eventstudy) ///
-    keep(lag_fatherweeks10 1.treated#1.post ///
-         event_time_dummy1 event_time_dummy3 event_time_dummy4 event_time_dummy5 ///
-         lag_lngdp lag_gdp_growth leave_gdp) ///
-    mstat(N) mstat(r2) showstars showstarsnote varlabel column(dvlabel) ///
-    export("${tabledir}/results_europe_261109.docx", replace)
-
-//Close log if needed
 if ${store_log_mainresults}==1 {
-    cap log close
+    capture log close
 }
