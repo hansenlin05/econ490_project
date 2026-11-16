@@ -292,8 +292,46 @@ foreach s in europe oecd {
     export delimited using "${datadir_final}/`s'_analysis_261109.csv", replace
 }
 
-* Leave the primary sample in memory for the next do-file.
+* OECD. 2026. Social Expenditure Database, public early childhood education
+* and care spending as a share of GDP (TP521). https://doi.org/10.1787/data-00167-en
+* Official annual series retrieved 15 November 2026.
+* Build the one-year spending lag before attaching employment data.
+import delimited using "${datadir_raw}/oecd_socx_ecec_gdp.csv", clear varnames(1)
+keep if unit_measure=="PT_B1GQ" & expend_source=="ES10" & programme_type=="TP521"
+rename ref_area iso
+rename time_period year
+keep iso year obs_value
+encode iso, generate(spending_id)
+xtset spending_id year, yearly
+sort spending_id year
+generate lag_socx_ecec = L1.obs_value
+keep iso year lag_socx_ecec
+isid iso year
+tempfile spending
+save `spending'
+
 use "${datadir_final}/oecd_analysis_261109.dta", clear
+merge 1:1 iso year using `spending'
+* Keep the employment sample. Spending-only rows fall outside the matched employment panel.
+tabulate _merge
+drop if _merge==2
+drop _merge
+
+label variable lag_socx_ecec "Prior-year public ECEC spending (% of GDP)"
+* Compare countries that participated in the EU's childcare-target framework with other OECD members.
+generate byte eu_childcare = 0
+replace eu_childcare = 1 if inlist(iso,"AUT","BEL","CZE","DEU","ESP","EST","FRA","GBR")
+replace eu_childcare = 1 if inlist(iso,"GRC","HUN","IRL","ITA","LTU","LUX","LVA","NLD")
+replace eu_childcare = 1 if inlist(iso,"POL","PRT","SVN")
+label variable eu_childcare "European group covered by EU childcare targets during the study period"
+
+generate byte childcare_sample = 1
+replace childcare_sample = 0 if missing(employment_gap, lag_socx_ecec, lag_fatherweeks10)
+replace childcare_sample = 0 if missing(lag_lngdp, lag_gdp_growth, leave_gdp)
+label variable childcare_sample "Complete-case sample for the childcare regressions"
+tabulate childcare_sample
+save "${datadir_final}/oecd_childcare_261109.dta", replace
+export delimited using "${datadir_final}/oecd_childcare_261109.csv", replace
 
 //Close log if needed
 if ${store_log_build}==1 {
