@@ -6,9 +6,9 @@ their AI assistants. It is **not** the course submission: the 18 Nov 2026
 team's OneDrive project. Changes go to OneDrive by default; this mirror is
 updated only when the team says so.
 
-This branch studies OECD public spending on early childhood education and care
-and its association with the employment gender gap. The earlier analysis of
-father-specific paid leave is available as a supplement.
+This branch studies the association between father-specific paid leave and
+the employment gender gap in OECD countries, controlling for public spending
+on early childhood education and care.
 
 ---
 
