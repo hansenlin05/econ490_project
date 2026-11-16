@@ -1,330 +1,359 @@
 -----------------------------------------------------------------------------------------------------
       name:  <unnamed>
-       log:  /private/tmp/econ490-primary-latest.2uoPd4/log_files/2_descriptive_261109.log
+       log:  /private/tmp/econ490-rubric-fix.7K6Zd2/log_files/2_descriptive_261109.log
   log type:  text
- opened on:  15 Nov 2026, 21:13:43
+ opened on:  16 Nov 2026, 00:29:29
 . }
 
 . 
-. use "${datadir_final}/oecd_analysis_261109.dta", clear
+. use "${datadir_final}/oecd_childcare_261109.dta", clear
 
 . 
-. summarize year
-
-    Variable |        Obs        Mean    Std. dev.       Min        Max
--------------+---------------------------------------------------------
-        year |        477    2013.126    6.706709       2000       2024
-
-. 
-. * Univariate statistics
-. summarize employment_gap male_rate female_rate fatherweeks10 ///
->     lag_fatherweeks10 lag_lngdp lag_gdp_growth leave_gdp
-
-    Variable |        Obs        Mean    Std. dev.       Min        Max
--------------+---------------------------------------------------------
-employment~p |        477    33.17118    15.92486   8.176003     72.352
-   male_rate |        477    92.47409    3.343169     77.897        100
- female_rate |        477    59.30291    15.56455     16.607     86.225
-fatherwee~10 |        477    .5736699    .8417433          0      3.017
-lag_fathe~10 |        463    .5422797    .8307684          0      3.017
--------------+---------------------------------------------------------
-   lag_lngdp |        477    10.05892     .698991   8.299163   11.63002
-lag_gdp_gr~h |        477    2.382779     3.53801  -14.63022   24.62399
-   leave_gdp |        362    .3462055    .2929626   .0039702   1.559837
-
-. summarize employment_gap, detail
-
-                       employment_gap
--------------------------------------------------------------
-      Percentiles      Smallest
- 1%     9.880005       8.176003
- 5%     12.27499       8.654999
-10%       14.965       9.281006       Obs                 477
-25%       20.186       9.383003       Sum of wgt.         477
-
-50%       29.732                      Mean           33.17118
-                        Largest       Std. dev.      15.92486
-75%       44.895         71.831
-90%       57.808         71.832       Variance       253.6012
-95%       62.695         72.219       Skewness       .5999157
-99%        69.98         72.352       Kurtosis       2.300083
-
-. return list
-
-scalars:
-                  r(N) =  477
-              r(sum_w) =  477
-               r(mean) =  33.17118020127654
-                r(Var) =  253.6012388473224
-                 r(sd) =  15.92486228660463
-           r(skewness) =  .5999156514813598
-           r(kurtosis) =  2.30008273196987
-                r(sum) =  15822.65295600891
-                r(min) =  8.176002502441406
-                r(max) =  72.35200119018555
-                 r(p1) =  9.8800048828125
-                 r(p5) =  12.27499389648438
-                r(p10) =  14.96499633789063
-                r(p25) =  20.18600463867188
-                r(p50) =  29.73199844360352
-                r(p75) =  44.89500045776367
-                r(p90) =  57.80800247192383
-                r(p95) =  62.69499969482422
-                r(p99) =  69.97999954223633
-
-. summarize lag_lngdp, detail
-
-               Lagged log real GDP per capita
--------------------------------------------------------------
-      Percentiles      Smallest
- 1%     8.526544       8.299163
- 5%     8.968808       8.308516
-10%     9.182769       8.331869       Obs                 477
-25%     9.510822       8.369138       Sum of wgt.         477
-
-50%     10.03794                      Mean           10.05892
-                        Largest       Std. dev.       .698991
-75%     10.63632       11.56759
-90%     10.81789       11.57633       Variance       .4885884
-95%     11.07166       11.60911       Skewness      -.0725666
-99%     11.56495       11.63002       Kurtosis       2.340184
-
-. return list
-
-scalars:
-                  r(N) =  477
-              r(sum_w) =  477
-               r(mean) =  10.0589217711833
-                r(Var) =  .4885884092472192
-                 r(sd) =  .6989909936810482
-           r(skewness) =  -.0725665862714416
-           r(kurtosis) =  2.34018434637427
-                r(sum) =  4798.105684854436
-                r(min) =  8.299163495152589
-                r(max) =  11.63001624718559
-                 r(p1) =  8.526543578261013
-                 r(p5) =  8.968808014006854
-                r(p10) =  9.182769426621666
-                r(p25) =  9.510822497318676
-                r(p50) =  10.03793691968917
-                r(p75) =  10.63631995673707
-                r(p90) =  10.81788696574417
-                r(p95) =  11.07166064166677
-                r(p99) =  11.56495242375398
-
-. 
-. * Mean, sd, min, max and N for all variables
+. * Describe all model variables in 2019 for observations with childcare spending.
 . preserve
 
-.     collapse ///
->         (mean) mean_gap=employment_gap (sd) sd_gap=employment_gap ///
->         (min) min_gap=employment_gap (max) max_gap=employment_gap ///
->         (count) n_gap=employment_gap ///
->         (mean) mean_leave10=lag_fatherweeks10 (sd) sd_leave10=lag_fatherweeks10 ///
->         (min) min_leave10=lag_fatherweeks10 (max) max_leave10=lag_fatherweeks10 ///
->         (count) n_leave10=lag_fatherweeks10 ///
->         (mean) mean_lngdp=lag_lngdp (sd) sd_lngdp=lag_lngdp ///
->         (min) min_lngdp=lag_lngdp (max) max_lngdp=lag_lngdp ///
->         (count) n_lngdp=lag_lngdp ///
->         (mean) mean_growth=lag_gdp_growth (sd) sd_growth=lag_gdp_growth ///
->         (min) min_growth=lag_gdp_growth (max) max_growth=lag_gdp_growth ///
->         (count) n_growth=lag_gdp_growth ///
->         (mean) mean_spend=leave_gdp (sd) sd_spend=leave_gdp ///
->         (min) min_spend=leave_gdp (max) max_spend=leave_gdp ///
->         (count) n_spend=leave_gdp ///
->         (mean) mean_male=male_rate (sd) sd_male=male_rate ///
->         (min) min_male=male_rate (max) max_male=male_rate ///
->         (count) n_male=male_rate ///
->         (mean) mean_female=female_rate (sd) sd_female=female_rate ///
->         (min) min_female=female_rate (max) max_female=female_rate ///
->         (count) n_female=female_rate
-
-.     list
-
-     +----------------------------------------------------------------------------------------------+
-  1. | mean_gap |   sd_gap |  min_gap | max_gap | n_gap | mean_~10 | sd_le~10 | min_l~10 | max_l~10 |
-     | 33.17118 | 15.92486 | 8.176003 |  72.352 |   477 | .5422797 | .8307684 |        0 |    3.017 |
-     |----------------------------------------------------------------------------------------------|
-     | n_lea~10  | mean_l~p  | sd_lngdp  | min_ln~p  | max_ln~p  | n_lngdp  | mean_g~h  | sd_gro~h  |
-     |      463  | 10.05892  |  .698991  | 8.299163  | 11.63002  |     477  | 2.382779  |  3.53801  |
-     |-----------+-----------+-----------+-----------+-----------+----------------------------------|
-     | min_gro~h | max_gr~h  | n_growth  | mean_s~d  | sd_spend  | min_sp~d  | max_sp~d  | n_spend  |
-     | -14.63022 | 24.62399  |      477  | .3462055  | .2929626  | .0039702  | 1.559837  |     362  |
-     |-----------+-----------+-----------+-----------+----------------------------------------------|
-     | mean_m~e  |  sd_male  | min_male  | max_male  | n_male  | mean_f~e  | sd_fem~e  |  min_fe~e  |
-     | 92.47409  | 3.343169  |   77.897  |      100  |    477  | 59.30291  | 15.56455  |    16.607  |
-     |----------------------------------------------------------------------------------------------|
-     |                   max_fe~e                   |                   n_female                    |
-     |                     86.225                   |                        477                    |
-     +----------------------------------------------------------------------------------------------+
-
-.     export excel using "${tabledir}/descriptive_261109.xlsx", firstrow(variables) replace
-file ./tables/descriptive_261109.xlsx saved
-
-. restore
-
-. 
-. * Compact N/mean/sd table
-. dtable employment_gap lag_fatherweeks10 lag_lngdp lag_gdp_growth ///
->     leave_gdp male_rate female_rate, ///
->     export("${tabledir}/descriptive_dtable_261109.docx", replace)
-
-----------------------------------------------------------------------------
-                                                                 Summary    
-----------------------------------------------------------------------------
-N                                                                        477
-employment_gap                                               33.171 (15.925)
-Lagged father-specific paid leave, per 10 weeks                0.542 (0.831)
-Lagged log real GDP per capita                                10.059 (0.699)
-Lagged real GDP growth, percent                                2.383 (3.538)
-Public maternity and parental leave spending, percent of GDP   0.346 (0.293)
-M obs_value                                                   92.474 (3.343)
-F obs_value                                                  59.303 (15.565)
-----------------------------------------------------------------------------
-(collection DTable exported to file ./tables/descriptive_dtable_261109.docx)
-
-. 
-. * Figure 1: gap against lagged leave
-. twoway (scatter employment_gap lag_fatherweeks10) ///
->     (lfit employment_gap lag_fatherweeks10), ///
->     title("Father-specific paid leave and the employment gap") ///
->     xtitle("Lagged father-specific paid leave, per 10 weeks") ///
->     ytitle("Male minus female employment rate, percentage points") ///
->     legend(label(1 "Country-year observation") label(2 "Linear fit")) ///
->     graphregion(color(white))
-
-. graph export "${figdir}/scatter_gap_leave_261109.png", as(png) replace
-file /private/tmp/econ490-primary-latest.2uoPd4/figures/scatter_gap_leave_261109.png saved as PNG
-    format
-
-. 
-. * Figure 2: outcome distribution
-. histogram employment_gap, ///
->     title("Distribution of the employment gap") ///
->     xtitle("Male minus female employment rate, percentage points") ///
->     graphregion(color(white))
-(bin=21, start=8.1760025, width=3.0559999)
-
-. graph export "${figdir}/histogram_gap_261109.png", as(png) replace
-file /private/tmp/econ490-primary-latest.2uoPd4/figures/histogram_gap_261109.png saved as PNG
-    format
-
-. 
-. * Figure 3: average gap over time
-. bysort year: egen mean_gap = mean(employment_gap)
-
-. twoway (connected mean_gap year), ///
->     title("Average employment gap, OECD ILO panel") ///
->     ytitle("Male minus female employment rate, percentage points") ///
->     xtitle("Year") ///
->     graphregion(color(white))
-
-. graph export "${figdir}/trend_gap_261109.png", as(png) replace
-file /private/tmp/econ490-primary-latest.2uoPd4/figures/trend_gap_261109.png saved as PNG format
-
-. 
-. * Summary for one representative year, keeping only rows with the main regressor
-. preserve
-
-.     use "${datadir_final}/oecd_analysis_261109.dta", clear
-
-.     keep if year==2019 & lag_fatherweeks10!=.
+.     keep if year==2019 & !missing(lag_socx_ecec)
 (454 observations deleted)
 
-.     count
-  23
-
-.     * Export the same 2019 summary table as a Word document
-.     dtable employment_gap lag_fatherweeks10 lag_lngdp lag_gdp_growth leave_gdp, ///
->         continuous(employment_gap lag_fatherweeks10 lag_lngdp lag_gdp_growth leave_gdp, ///
+.     dtable employment_gap lag_socx_ecec lag_fatherweeks10 lag_lngdp lag_gdp_growth leave_gdp, ///
+>         continuous(employment_gap lag_socx_ecec lag_fatherweeks10 lag_lngdp lag_gdp_growth leave_gd
+> p, ///
 >         statistic(n mean sd min max)) ///
->         title("Summary statistics, 2019 OECD sample; each row reports N, mean (sd), minimum and max
-> imum") ///
->         export("${tabledir}/descriptive_2019_oecd_261109.docx", replace)
+>         title("OECD childcare model: descriptive statistics for 2019") ///
+>         export("${tabledir}/descriptive_2019_oecd_childcare_261109.docx", replace)
 
-Summary statistics, 2019 OECD sample; each row reports N, mean (sd), minimum and maximum
+OECD childcare model: descriptive statistics for 2019
 --------------------------------------------------------------------------------------------
                                                                          Summary            
 --------------------------------------------------------------------------------------------
 N                                                                                         23
 employment_gap                                               23 29.404 (15.022) 9.281 58.573
+Prior-year public ECEC spending (% of GDP)                      23 0.589 (0.223) 0.316 1.291
 Lagged father-specific paid leave, per 10 weeks                 23 0.508 (0.776) 0.000 2.860
 Lagged log real GDP per capita                                23 10.092 (0.628) 8.757 11.212
 Lagged real GDP growth, percent                                 23 3.183 (1.706) 0.827 7.689
 Public maternity and parental leave spending, percent of GDP    20 0.372 (0.302) 0.021 1.207
 --------------------------------------------------------------------------------------------
-(collection DTable exported to file ./tables/descriptive_2019_oecd_261109.docx)
-
-.     collapse ///
->         (mean) mean_gap=employment_gap (sd) sd_gap=employment_gap ///
->         (min) min_gap=employment_gap (max) max_gap=employment_gap ///
->         (count) n_gap=employment_gap ///
->         (mean) mean_leave=lag_fatherweeks10 (sd) sd_leave=lag_fatherweeks10 ///
->         (min) min_leave=lag_fatherweeks10 (max) max_leave=lag_fatherweeks10 ///
->         (count) n_leave=lag_fatherweeks10 ///
->         (mean) mean_lngdp=lag_lngdp (sd) sd_lngdp=lag_lngdp ///
->         (min) min_lngdp=lag_lngdp (max) max_lngdp=lag_lngdp ///
->         (count) n_lngdp=lag_lngdp ///
->         (mean) mean_growth=lag_gdp_growth (sd) sd_growth=lag_gdp_growth ///
->         (min) min_growth=lag_gdp_growth (max) max_growth=lag_gdp_growth ///
->         (count) n_growth=lag_gdp_growth ///
->         (mean) mean_spend=leave_gdp (sd) sd_spend=leave_gdp ///
->         (min) min_spend=leave_gdp (max) max_spend=leave_gdp ///
->         (count) n_spend=leave_gdp
-
-.     list
-
-     +----------------------------------------------------------------------------------------------+
-  1. | mean_gap |   sd_gap |  min_gap | max_gap | n_gap | mean_l~e | sd_leave | min_le~e | max_le~e |
-     |  29.4037 | 15.02172 | 9.281006 |  58.573 |    23 | .5076173 | .7758401 |        0 |     2.86 |
-     |----------+-----------------------------------------------------------------------------------|
-     | n_leave  | mean_l~p  | sd_lngdp  | min_ln~p  | max_ln~p  | n_lngdp  | mean_g~h  |  sd_gro~h  |
-     |      23  | 10.09246  | .6283055  | 8.756768  | 11.21221  |      23  | 3.183065  |   1.70633  |
-     |----------------------------------------------------------------------------------------------|
-     | min_gr~h  | max_gr~h  | n_growth  | mean_s~d  | sd_spend  | min_sp~d  | max_sp~d  | n_spend  |
-     | .8266467  | 7.688659  |       23  | .3723358  | .3019385  | .0212108  | 1.206938  |      20  |
-     +----------------------------------------------------------------------------------------------+
-
-.     export excel using "${tabledir}/descriptive_2019_oecd_261109.xlsx", firstrow(variables) replace
-file ./tables/descriptive_2019_oecd_261109.xlsx saved
-
-.     export delimited using "${tabledir}/descriptive_2019_oecd_261109.csv", replace
-file ./tables/descriptive_2019_oecd_261109.csv saved
+(collection DTable exported to file ./tables/descriptive_2019_oecd_childcare_261109.docx)
 
 . restore
 
 . 
-. * Overlapping histograms for the two country subsets
-. preserve
+. keep if childcare_sample==1
+(130 observations deleted)
 
-.     use "${datadir_final}/oecd_analysis_261109.dta", clear
+. generate year_centered = year - 2010
 
-.     generate byte european = 0
+. xtset country_id year, yearly
 
-.     replace european = 1 if inlist(iso,"AUT","BEL","CZE","DEU","ESP","EST","FRA","GBR")
-(189 real changes made)
+Panel variable: country_id (unbalanced)
+ Time variable: year, 2001 to 2023, but with gaps
+         Delta: 1 year
 
-.     replace european = 1 if inlist(iso,"GRC","HUN","IRL","ITA","LTU","LUX","LVA","NLD")
-(131 real changes made)
+. tabulate eu_childcare
 
-.     replace european = 1 if inlist(iso,"POL","PRT","SVN")
-(43 real changes made)
+   European |
+      group |
+ covered by |
+         EU |
+  childcare |
+    targets |
+ during the |
+      study |
+     period |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          0 |         38       10.95       10.95
+          1 |        309       89.05      100.00
+------------+-----------------------------------
+      Total |        347      100.00
 
-.     twoway (histogram lag_fatherweeks10 if european==1, color(navy) lcolor(black)) ///
->         (histogram lag_fatherweeks10 if european==0, color(maroon) lcolor(black)), ///
->         title("Father-specific paid leave by region") ///
->         xtitle("Lagged father-specific paid leave, per 10 weeks") ///
->         ytitle("Density") ///
->         legend(label(1 "European OECD (19)") label(2 "Non-European OECD (7)")) ///
->         graphregion(color(white))
+. 
+. * Illustrate the relationship between spending and employment in the estimation sample.
+. twoway (scatter employment_gap lag_socx_ecec) (lfit employment_gap lag_socx_ecec), ///
+>     title("Public childcare spending and the employment gap") ///
+>     xtitle("Prior-year public ECEC spending (% of GDP)") ///
+>     ytitle("Male minus female employment rate (pp)") ///
+>     legend(label(1 "Country-year observation") label(2 "Linear fit")) ///
+>     graphregion(color(white))
 
-.     graph export "${figdir}/histogram_leave_byregion_261109.png", as(png) replace
-file /private/tmp/econ490-primary-latest.2uoPd4/figures/histogram_leave_byregion_261109.png saved
+. graph export "${figdir}/scatter_gap_childcare_261109.png", as(png) replace
+file /private/tmp/econ490-rubric-fix.7K6Zd2/figures/scatter_gap_childcare_261109.png saved as PNG
+    format
+
+. 
+. * Compare spending across the regional groups used in the subset regressions.
+. twoway (histogram lag_socx_ecec if eu_childcare==1, color(navy%40) lcolor(navy) start(0) width(.2))
+>  ///
+>     (histogram lag_socx_ecec if eu_childcare==0, color(maroon%40) lcolor(maroon) start(0) width(.2)
+> ), ///
+>     title("Public childcare spending by subgroup") ///
+>     xtitle("Prior-year public ECEC spending (% of GDP)") ///
+>     ytitle("Density") ///
+>     legend(label(1 "EU-target group") label(2 "Other OECD")) graphregion(color(white))
+
+. graph export "${figdir}/histogram_childcare_byregion_261109.png", as(png) replace
+file /private/tmp/econ490-rubric-fix.7K6Zd2/figures/histogram_childcare_byregion_261109.png saved
     as PNG format
 
-. restore
+. 
+. * Compare the same specification across both groups and the full sample.
+. * The EU's Barcelona targets linked ECEC access to parental employment.
+. * https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32022H1220(01)
+. xtreg employment_gap lag_socx_ecec lag_fatherweeks10 ${controls} ///
+>     i.year c.year_centered#i.country_id, fe vce(robust)
+note: 3.country_id#c.year_centered omitted because of collinearity.
+note: 25.country_id#c.year_centered omitted because of collinearity.
+
+Fixed-effects (within) regression               Number of obs     =        347
+Group variable: country_id                      Number of groups  =         23
+
+R-squared:                                      Obs per group:
+     Within  = 0.6734                                         min =          1
+     Between = 0.0758                                         avg =       15.1
+     Overall = 0.0422                                         max =         22
+
+                                                F(21, 22)         =          .
+corr(u_i, Xb) = -0.6246                         Prob > F          =          .
+
+                                          (Std. err. adjusted for 23 clusters in country_id)
+--------------------------------------------------------------------------------------------
+                           |               Robust
+            employment_gap | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+---------------------------+----------------------------------------------------------------
+             lag_socx_ecec |  -9.456293   3.180464    -2.97   0.007    -16.05217   -2.860413
+         lag_fatherweeks10 |   .9319747   .3910309     2.38   0.026     .1210262    1.742923
+                 lag_lngdp |   9.293324   9.473842     0.98   0.337    -10.35422    28.94087
+            lag_gdp_growth |   .1284931   .0868853     1.48   0.153    -.0516959    .3086821
+                 leave_gdp |  -3.385323   4.648794    -0.73   0.474    -13.02633    6.255686
+                           |
+                      year |
+                     2002  |  -.4956497   1.050077    -0.47   0.642    -2.673376    1.682076
+                     2003  |  -1.830801   2.288511    -0.80   0.432    -6.576883    2.915282
+                     2004  |  -1.491178   2.093568    -0.71   0.484    -5.832973    2.850617
+                     2005  |  -2.220566    2.83165    -0.78   0.441     -8.09305    3.651917
+                     2006  |   -3.40666   3.262363    -1.04   0.308    -10.17239    3.359067
+                     2007  |  -3.909494   3.906003    -1.00   0.328    -12.01005     4.19106
+                     2008  |   -5.25916   4.490395    -1.17   0.254    -14.57167    4.053349
+                     2009  |  -7.171154   5.085234    -1.41   0.172    -17.71728    3.374976
+                     2010  |   -7.28115     5.3101    -1.37   0.184    -18.29362    3.731323
+                     2011  |  -8.542037   5.438565    -1.57   0.131    -19.82093    2.736856
+                     2012  |   -10.5902   5.629553    -1.88   0.073    -22.26518    1.084779
+                     2013  |  -10.36619   5.999377    -1.73   0.098    -22.80814    2.075756
+                     2014  |  -11.33889   6.157073    -1.84   0.079    -24.10788    1.430093
+                     2015  |  -11.54249   6.588291    -1.75   0.094    -25.20577    2.120789
+                     2016  |  -12.24851   7.137829    -1.72   0.100    -27.05146    2.554446
+                     2017  |  -12.22041   7.503223    -1.63   0.118    -27.78115    3.340318
+                     2018  |  -13.44636   7.909201    -1.70   0.103    -29.84904    2.956315
+                     2019  |  -14.04117   8.365094    -1.68   0.107    -31.38932     3.30697
+                     2020  |  -13.84714   9.038469    -1.53   0.140    -32.59178    4.897498
+                     2021  |  -16.14611   7.775177    -2.08   0.050    -32.27084   -.0213768
+                     2022  |  -18.19804   8.137899    -2.24   0.036    -35.07501   -1.321071
+                     2023  |  -20.87509   8.886812    -2.35   0.028    -39.30521    -2.44497
+                           |
+country_id#c.year_centered |
+                      AUT  |   .4220797   .3173326     1.33   0.197    -.2360278    1.080187
+                      BEL  |   .5433608   .3268708     1.66   0.111    -.1345278    1.221249
+                      CAN  |          0  (omitted)
+                      CHL  |  -.0530381   .1924898    -0.28   0.785    -.4522374    .3461613
+                      COL  |   1.055651   .1913928     5.52   0.000     .6587269    1.452576
+                      CZE  |   .1272979   .1942934     0.66   0.519     -.275642    .5302378
+                      DEU  |   .1593592   .2891722     0.55   0.587    -.4403472    .7590657
+                      ESP  |  -.5296029   .3608084    -1.47   0.156    -1.277874    .2186679
+                      EST  |   .9794771   .1836036     5.33   0.000     .5987066    1.360248
+                      FRA  |   .0569499   .3538634     0.16   0.874     -.676918    .7908178
+                      GBR  |   .2618186   .3713819     0.70   0.488    -.5083804    1.032018
+                      GRC  |   1.045521   .4517293     2.31   0.030     .1086917     1.98235
+                      HUN  |   .2407971   .2107405     1.14   0.265     -.196252    .6778462
+                      IRL  |  -.1689848   .1298583    -1.30   0.207    -.4382945    .1003249
+                      ITA  |   .8483031   .4321434     1.96   0.062    -.0479074    1.744514
+                      LTU  |   1.302275    .300841     4.33   0.000     .6783689    1.926181
+                      LUX  |  -.7114486   .3676703    -1.94   0.066     -1.47395    .0510529
+                      LVA  |   .1624832    .250552     0.65   0.523    -.3571298    .6820962
+                      NLD  |    .192527   .3489508     0.55   0.587    -.5311526    .9162067
+                      POL  |   .2296899   .1227221     1.87   0.075    -.0248203       .4842
+                      PRT  |  -.2036531   .3816482    -0.53   0.599     -.995143    .5878368
+                      SVN  |   .5082083   .2545634     2.00   0.058     -.019724     1.03614
+                      TUR  |          0  (omitted)
+                           |
+                     _cons |  -49.24437   91.37985    -0.54   0.595    -238.7546    140.2658
+---------------------------+----------------------------------------------------------------
+                   sigma_u |  18.935097
+                   sigma_e |  3.0271885
+                       rho |  .97507798   (fraction of variance due to u_i)
+--------------------------------------------------------------------------------------------
+
+. estimates store childcare_all
+
+. xtreg employment_gap lag_socx_ecec lag_fatherweeks10 ${controls} ///
+>     i.year c.year_centered#i.country_id if eu_childcare==1, fe vce(robust)
+note: 24.country_id#c.year_centered omitted because of collinearity.
+
+Fixed-effects (within) regression               Number of obs     =        309
+Group variable: country_id                      Number of groups  =         19
+
+R-squared:                                      Obs per group:
+     Within  = 0.6744                                         min =          7
+     Between = 0.0279                                         avg =       16.3
+     Overall = 0.0429                                         max =         22
+
+                                                F(18, 18)         =          .
+corr(u_i, Xb) = -0.7305                         Prob > F          =          .
+
+                                          (Std. err. adjusted for 19 clusters in country_id)
+--------------------------------------------------------------------------------------------
+                           |               Robust
+            employment_gap | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+---------------------------+----------------------------------------------------------------
+             lag_socx_ecec |  -8.957061   3.193443    -2.80   0.012    -15.66624   -2.247885
+         lag_fatherweeks10 |   .9569444   .4227492     2.26   0.036     .0687812    1.845108
+                 lag_lngdp |   15.35111   9.038718     1.70   0.107    -3.638529    34.34075
+            lag_gdp_growth |   .1077843   .0943116     1.14   0.268     -.090357    .3059256
+                 leave_gdp |  -2.776005   4.569662    -0.61   0.551    -12.37651      6.8245
+                           |
+                      year |
+                     2002  |  -.1721723     1.1629    -0.15   0.884    -2.615335     2.27099
+                     2003  |  -.9866838   2.371523    -0.42   0.682    -5.969068    3.995701
+                     2004  |  -.2171187   2.322732    -0.09   0.927    -5.096997    4.662759
+                     2005  |  -.4007906   3.268877    -0.12   0.904    -7.268445    6.466864
+                     2006  |  -1.353081   3.864717    -0.35   0.730    -9.472551    6.766389
+                     2007  |  -1.464115   4.525347    -0.32   0.750    -10.97151    8.043286
+                     2008  |  -2.458291   5.222822    -0.47   0.644    -13.43103     8.51445
+                     2009  |  -3.891835   5.975764    -0.65   0.523    -16.44645     8.66278
+                     2010  |  -3.490448   6.299976    -0.55   0.586    -16.72621    9.745311
+                     2011  |  -4.200054   6.779902    -0.62   0.543     -18.4441    10.04399
+                     2012  |  -5.599728    6.95838    -0.80   0.431    -20.21874    9.019285
+                     2013  |  -4.582336   7.506388    -0.61   0.549    -20.35267      11.188
+                     2014  |   -4.73743   7.834755    -0.60   0.553    -21.19764    11.72278
+                     2015  |  -4.467031   8.380028    -0.53   0.601    -22.07282    13.13875
+                     2016  |  -4.818068   9.066313    -0.53   0.602    -23.86569    14.22955
+                     2017  |    -4.2808   9.384813    -0.46   0.654    -23.99756    15.43596
+                     2018  |  -5.305056   9.849635    -0.54   0.597    -25.99837    15.38826
+                     2019  |  -5.443336   10.27074    -0.53   0.603    -27.02135    16.13468
+                     2020  |    -4.9704   10.89641    -0.46   0.654    -27.86291    17.92211
+                     2021  |   -7.26812   8.722285    -0.83   0.416    -25.59296    11.05672
+                     2022  |  -7.236247   11.32023    -0.64   0.531    -31.01916    16.54667
+                           |
+country_id#c.year_centered |
+                      AUT  |  -.1185335    .462605    -0.26   0.801    -1.090431    .8533635
+                      BEL  |  -.0024474    .452061    -0.01   0.996    -.9521923    .9472975
+                      CZE  |  -.5028515   .3747616    -1.34   0.196    -1.290196    .2844934
+                      DEU  |  -.4200081   .4311128    -0.97   0.343    -1.325742    .4857264
+                      ESP  |  -1.047496   .4708118    -2.22   0.039    -2.036635   -.0583572
+                      EST  |     .31927   .3536991     0.90   0.379    -.4238242    1.062364
+                      FRA  |  -.4798594    .490862    -0.98   0.341    -1.511122    .5514033
+                      GBR  |  -.2791969   .5285144    -0.53   0.604    -1.389565    .8311707
+                      GRC  |   .5922521   .5247539     1.13   0.274     -.510215    1.694719
+                      HUN  |  -.3830865   .3912296    -0.98   0.340    -1.205029    .4388563
+                      IRL  |  -.8665085    .329974    -2.63   0.017    -1.559758   -.1732589
+                      ITA  |   .3398829   .4695422     0.72   0.478    -.6465887    1.326355
+                      LTU  |   .6807086   .1959626     3.47   0.003     .2690064    1.092411
+                      LUX  |  -1.258671   .5421986    -2.32   0.032    -2.397788   -.1195545
+                      LVA  |  -.3493756   .1183218    -2.95   0.009    -.5979606   -.1007907
+                      NLD  |  -.3680313   .4951514    -0.74   0.467    -1.408306    .6722431
+                      POL  |  -.5232501   .3027038    -1.73   0.101    -1.159207     .112707
+                      PRT  |  -.7698456   .4688278    -1.64   0.118    -1.754816    .2151251
+                      SVN  |          0  (omitted)
+                           |
+                     _cons |  -118.9413   88.75415    -1.34   0.197    -305.4068    67.52429
+---------------------------+----------------------------------------------------------------
+                   sigma_u |  18.559909
+                   sigma_e |  3.1201064
+                       rho |  .97251576   (fraction of variance due to u_i)
+--------------------------------------------------------------------------------------------
+
+. estimates store childcare_eu
+
+. xtreg employment_gap lag_socx_ecec lag_fatherweeks10 ${controls} ///
+>     i.year c.year_centered#i.country_id if eu_childcare==0, fe vce(robust)
+note: 3b.country_id#c.year_centered omitted because of collinearity.
+note: 25.country_id#c.year_centered omitted because of collinearity.
+
+Fixed-effects (within) regression               Number of obs     =         38
+Group variable: country_id                      Number of groups  =          4
+
+R-squared:                                      Obs per group:
+     Within  = 0.9735                                         min =          1
+     Between = 0.5909                                         avg =        9.5
+     Overall = 0.2495                                         max =         14
+
+                                                F(2, 3)           =          .
+corr(u_i, Xb) = -0.5783                         Prob > F          =          .
+
+                                           (Std. err. adjusted for 4 clusters in country_id)
+--------------------------------------------------------------------------------------------
+                           |               Robust
+            employment_gap | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+---------------------------+----------------------------------------------------------------
+             lag_socx_ecec |  -4.110588   2.233318    -1.84   0.163      -11.218    2.996826
+         lag_fatherweeks10 |  -19.08922   .3074782   -62.08   0.000    -20.06775   -18.11069
+                 lag_lngdp |  -27.43082   2.932318    -9.35   0.003    -36.76277   -18.09888
+            lag_gdp_growth |   .1901963   .1138426     1.67   0.193    -.1721017    .5524943
+                 leave_gdp |  -4.012463   5.604599    -0.72   0.526     -21.8488    13.82387
+                           |
+                      year |
+                     2005  |   1.366923   .6277403     2.18   0.118    -.6308265    3.364673
+                     2006  |   3.354339   .7730522     4.34   0.023     .8941419    5.814536
+                     2007  |   5.208268   .7372588     7.06   0.006     2.861981    7.554554
+                     2008  |   5.255282   .7124225     7.38   0.005     2.988036    7.522528
+                     2009  |   3.279753   .5784597     5.67   0.011     1.438836     5.12067
+                     2010  |   2.777777   .4175646     6.65   0.007     1.448901    4.106654
+                     2011  |   2.579732    .852134     3.03   0.056     -.132139    5.291602
+                     2012  |    3.83092   1.269178     3.02   0.057      -.20817    7.870011
+                     2013  |   4.698037   1.216727     3.86   0.031     .8258698    8.570204
+                     2014  |   3.901596   .9705263     4.02   0.028     .8129482    6.990244
+                     2015  |   5.446246   3.466617     1.57   0.214    -5.586076    16.47857
+                     2016  |   5.973413   .9630774     6.20   0.008     2.908472    9.038355
+                     2017  |   6.121586   2.283544     2.68   0.075    -1.145669    13.38884
+                     2018  |   7.178808   1.014113     7.08   0.006     3.951449    10.40617
+                     2019  |   7.059926   1.605945     4.40   0.022     1.949092    12.17076
+                     2020  |   8.533209   1.484146     5.75   0.010     3.809995    13.25642
+                     2021  |   9.693614   1.632315     5.94   0.010      4.49886    14.88837
+                     2022  |   6.328747   2.571686     2.46   0.091    -1.855507      14.513
+                     2023  |   6.908537   1.588406     4.35   0.022     1.853521    11.96355
+                           |
+country_id#c.year_centered |
+                      CAN  |          0  (omitted)
+                      CHL  |  -.8739622   .0949854    -9.20   0.003    -1.176248   -.5716764
+                      COL  |    .544644   .1449536     3.76   0.033      .083337    1.005951
+                      TUR  |          0  (omitted)
+                           |
+                     _cons |   298.4515   26.06026    11.45   0.001     215.5161    381.3869
+---------------------------+----------------------------------------------------------------
+                   sigma_u |  16.012855
+                   sigma_e |   1.136223
+                       rho |  .99499034   (fraction of variance due to u_i)
+--------------------------------------------------------------------------------------------
+
+. estimates store childcare_other
 
 . 
-. //Close log if needed
+. etable, estimates(childcare_all childcare_eu childcare_other) ///
+>     keep(lag_socx_ecec lag_fatherweeks10 lag_lngdp lag_gdp_growth leave_gdp) ///
+>     mstat(N) showstars showstarsnote varlabel column(index) ///
+>     note("Columns: all countries, EU-target group, other OECD. Country FE: yes. Year FE: yes. Count
+> ry trends: yes. Country-clustered standard errors.") ///
+>     export("${tabledir}/results_childcare_subsets_261109.docx", replace)
+
+--------------------------------------------------------------------------------------------
+                                                                  1         2          3    
+--------------------------------------------------------------------------------------------
+Prior-year public ECEC spending (% of GDP)                    -9.456 **  -8.957 *  -4.111   
+                                                             (3.180)    (3.193)   (2.233)   
+Lagged father-specific paid leave, per 10 weeks                0.932 *    0.957 * -19.089 **
+                                                             (0.391)    (0.423)   (0.307)   
+Lagged log real GDP per capita                                 9.293     15.351   -27.431 **
+                                                             (9.474)    (9.039)   (2.932)   
+Lagged real GDP growth, percent                                0.128      0.108     0.190   
+                                                             (0.087)    (0.094)   (0.114)   
+Public maternity and parental leave spending, percent of GDP  -3.385     -2.776    -4.012   
+                                                             (4.649)    (4.570)   (5.605)   
+Number of observations                                           347        309        38   
+--------------------------------------------------------------------------------------------
+** p<.01, * p<.05
+Columns: all countries, EU-target group, other OECD. Country FE: yes. Year FE: yes. Country
+trends: yes. Country-clustered standard errors.
+(collection ETable exported to file ./tables/results_childcare_subsets_261109.docx)
+
+. 
 . if ${store_log_descriptive}==1 {
-.     cap log close
+.     capture log close

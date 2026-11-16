@@ -1,8 +1,8 @@
 -----------------------------------------------------------------------------------------------------
       name:  <unnamed>
-       log:  /private/tmp/econ490-primary-latest.2uoPd4/log_files/1_build_data_261109.log
+       log:  /private/tmp/econ490-rubric-fix.7K6Zd2/log_files/1_build_data_261109.log
   log type:  text
- opened on:  15 Nov 2026, 21:13:41
+ opened on:  16 Nov 2026, 00:29:27
 . }
 
 . 
@@ -38,7 +38,7 @@
 . tempfile country_codes euro_codes policy
 
 . save `country_codes'
-file /var/folders/70/c_t3zk1175x0jxm83ldvyly00000gn/T//S_79882.000001 saved as .dta format
+file /var/folders/70/c_t3zk1175x0jxm83ldvyly00000gn/T//S_82929.000001 saved as .dta format
 
 . preserve
 
@@ -46,7 +46,7 @@ file /var/folders/70/c_t3zk1175x0jxm83ldvyly00000gn/T//S_79882.000001 saved as .
 (15 observations deleted)
 
 . save `euro_codes'
-file /var/folders/70/c_t3zk1175x0jxm83ldvyly00000gn/T//S_79882.000002 saved as .dta format
+file /var/folders/70/c_t3zk1175x0jxm83ldvyly00000gn/T//S_82929.000002 saved as .dta format
 
 . restore
 
@@ -263,7 +263,7 @@ Panel variable: cid_policy (strongly balanced)
 . drop cid_policy
 
 . save `policy'
-file /var/folders/70/c_t3zk1175x0jxm83ldvyly00000gn/T//S_79882.000003 saved as .dta format
+file /var/folders/70/c_t3zk1175x0jxm83ldvyly00000gn/T//S_82929.000003 saved as .dta format
 
 . 
 . * Read the Eurostat employment file.
@@ -699,8 +699,125 @@ file ./data_final/europe_analysis_261109.csv saved
 file ./data_final/oecd_analysis_261109.csv saved
 
 . 
-. * Leave the primary sample in memory for the next do-file.
+. * OECD. 2026. Social Expenditure Database, public early childhood education
+. * and care spending as a share of GDP (TP521). https://doi.org/10.1787/data-00167-en
+. * Official annual series retrieved 15 November 2026.
+. * Build the one-year spending lag before attaching employment data.
+. import delimited using "${datadir_raw}/oecd_socx_ecec_gdp.csv", clear varnames(1)
+(encoding automatically selected: ISO-8859-2)
+(16 vars, 1,009 obs)
+
+. keep if unit_measure=="PT_B1GQ" & expend_source=="ES10" & programme_type=="TP521"
+(0 observations deleted)
+
+. rename ref_area iso
+
+. rename time_period year
+
+. keep iso year obs_value
+
+. encode iso, generate(spending_id)
+
+. xtset spending_id year, yearly
+
+Panel variable: spending_id (unbalanced)
+ Time variable: year, 1999 to 2023
+         Delta: 1 year
+
+. sort spending_id year
+
+. generate lag_socx_ecec = L1.obs_value
+(95 missing values generated)
+
+. keep iso year lag_socx_ecec
+
+. isid iso year
+
+. tempfile spending
+
+. save `spending'
+file /var/folders/70/c_t3zk1175x0jxm83ldvyly00000gn/T//S_82929.000007 saved as .dta format
+
+. 
 . use "${datadir_final}/oecd_analysis_261109.dta", clear
+
+. merge 1:1 iso year using `spending'
+(variable iso was str3, now str4 to accommodate using data's values)
+
+    Result                      Number of obs
+    -----------------------------------------
+    Not matched                           632
+        from master                        50  (_merge==1)
+        from using                        582  (_merge==2)
+
+    Matched                               427  (_merge==3)
+    -----------------------------------------
+
+. * Keep the employment sample. Spending-only rows fall outside the matched employment panel.
+. tabulate _merge
+
+   Matching result from |
+                  merge |      Freq.     Percent        Cum.
+------------------------+-----------------------------------
+        Master only (1) |         50        4.72        4.72
+         Using only (2) |        582       54.96       59.68
+            Matched (3) |        427       40.32      100.00
+------------------------+-----------------------------------
+                  Total |      1,059      100.00
+
+. drop if _merge==2
+(582 observations deleted)
+
+. drop _merge
+
+. 
+. label variable lag_socx_ecec "Prior-year public ECEC spending (% of GDP)"
+
+. * Compare countries that participated in the EU's childcare-target framework with other OECD member
+> s.
+. generate byte eu_childcare = 0
+
+. replace eu_childcare = 1 if inlist(iso,"AUT","BEL","CZE","DEU","ESP","EST","FRA","GBR")
+(189 real changes made)
+
+. replace eu_childcare = 1 if inlist(iso,"GRC","HUN","IRL","ITA","LTU","LUX","LVA","NLD")
+(131 real changes made)
+
+. replace eu_childcare = 1 if inlist(iso,"POL","PRT","SVN")
+(43 real changes made)
+
+. label variable eu_childcare "European group covered by EU childcare targets during the study period
+> "
+
+. 
+. generate byte childcare_sample = 1
+
+. replace childcare_sample = 0 if missing(employment_gap, lag_socx_ecec, lag_fatherweeks10)
+(80 real changes made)
+
+. replace childcare_sample = 0 if missing(lag_lngdp, lag_gdp_growth, leave_gdp)
+(50 real changes made)
+
+. label variable childcare_sample "Complete-case sample for the childcare regressions"
+
+. tabulate childcare_sample
+
+Complete-ca |
+  se sample |
+    for the |
+  childcare |
+regressions |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          0 |        130       27.25       27.25
+          1 |        347       72.75      100.00
+------------+-----------------------------------
+      Total |        477      100.00
+
+. save "${datadir_final}/oecd_childcare_261109.dta", replace
+file ./data_final/oecd_childcare_261109.dta saved
+
+. export delimited using "${datadir_final}/oecd_childcare_261109.csv", replace
+file ./data_final/oecd_childcare_261109.csv saved
 
 . 
 . //Close log if needed
