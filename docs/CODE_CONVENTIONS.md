@@ -63,9 +63,10 @@ only in the CheatSheet and are now out (see §7).
 - post-estimation: `estimates store`, `testparm`, `hausman`, `predict`
 - diagnostics: `xttest3`, `xtserial`
 
-`vce(cluster id)`, `vce(robust)`, `test coef = 0`, `lincom` and `margins` are
-not on this list; they appear only in the CheatSheet or in its derived
-appendix, and are now out (see §7).
+`vce(cluster id)`, `vce(robust)`, `lincom` and `margins` are not on this list;
+they appear only in the CheatSheet and are now out (see §7). The single-coefficient
+`test varname = 0` form is not demonstrated in any course material; use
+`testparm`, which the panel module shows.
 
 **Tables and figures**
 
@@ -78,8 +79,10 @@ appendix, and are now out (see §7).
   `graphregion(color(white))`, `graph export ..., as(png) replace`
 - `coefplot, keep(...) vertical rename(...)`
 
-`dtable`, `collect export`, `column(index)` and `note()` are not on this list;
-they are CheatSheet additions and are now out (see §7).
+`dtable`, `collect export` and `column(index)` are not on this list; they are
+CheatSheet additions and are now out (see §7). The `note()` option on `etable`
+is not demonstrated in any of the three source sets, so the exported table's
+fixed-effects statement belongs in a plain comment instead.
 
 **Banned, with no exceptions**
 
@@ -91,14 +94,19 @@ They are either package estimators the course never demonstrates, or
 higher-level idioms that make the code harder to read than the equivalent
 `generate` / `replace` sequence.
 
-**Removed when the CheatSheet source was dropped (16 Nov 2026)**
+**Removed when the source restriction was applied (16 Nov 2026; re-verified
+against the local PDF/MD originals on 16 Nov)**
 
 `isid`, `count` (as a command), `tempfile`, `recast double`, `dtable`,
 `collect export`, `column(index)`, `note()` (on `etable`), `test coef = 0`,
 `lincom`, `margins`, `vce(cluster id)`, `vce(robust)`, and the `sheet()`,
-`cellrange()`, `firstrow()` import options. None of these is demonstrated in
-the COMET or Test/Quiz course text. §7 names which of them the current
-do-files still use.
+`cellrange()`, `firstrow()` import options. The exact source status differs:
+`isid`, `tempfile`, `recast double`, `dtable`, `collect export`, `column(index)`,
+`lincom`, `margins`, `vce(cluster id)`, `vce(robust)` and the three import options
+are demonstrated only in the CheatSheet, which is no longer a source. The
+`count` command, `test varname = 0` and `etable note()` have no verbatim form in
+any of the three source sets. None is demonstrated in the COMET or Test/Quiz
+course text. §7 names which of them the current do-files still use.
 
 ## 2. The one documented exception
 
