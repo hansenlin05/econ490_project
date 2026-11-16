@@ -148,6 +148,6 @@ Stata Test do-files (Test One-Seven), quiz do-files,
 | Other publication graphs | `figures/trend_gap_261109.png`, `scatter_gap_leave_261109.png`, `histogram_gap_261109.png`, `event_study_261109.png` |
 | Heteroskedasticity / serial correlation / FE tests | `log_files/3_results_261109.log` (`xttest3`, `xtserial`, `testparm`, Hausman) |
 | Single specification + full winsorized repeat + quadratic check | `log_files/4_tables_261109.log`, `tables/results_europe_robust_261109.docx` |
-| Build-up table, one variable at a time, all columns on 333 observations | `tables/results_buildup_261109.docx`, `log_files/4_tables_261109.log` |
-| Subset table, three columns (443 = 341 + 102) | `tables/results_subsets_261109.docx`, `log_files/4_tables_261109.log` |
-| Fully annotated logs under 25 pages | `log_files/*.log` (conservative estimates 14.7 / 7.3 / 17.9 / 22.6 pages) |
+| Build-up table, one variable at a time, all columns on 348 observations | `tables/results_buildup_261109.docx`, `log_files/4_tables_261109.log` |
+| Subset table, three columns (463 = 350 + 113) | `tables/results_subsets_261109.docx`, `log_files/4_tables_261109.log` |
+| Fully annotated logs under 25 pages | `log_files/*.log` (conservative estimates 15.1 / 7.3 / 18.1 / 22.9 pages) |

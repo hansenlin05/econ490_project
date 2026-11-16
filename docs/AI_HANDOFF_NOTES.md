@@ -71,13 +71,13 @@ Full rationale in `docs/RESEARCH_DECISIONS.md`.
 
 ## Current headline numbers (from `log_files/3_results_261109.log`)
 
-Europe main table N = 272 / 272 / 272 / 295 / 272 / 295; OECD N = 333 / 333 / 443.
-`lag_fatherweeks10` = +0.668 with FE p=0.016, robust p=0.054,
-country-cluster p=0.065; AR(1) PCSE +0.560 (p=0.007). DiD -0.626 (p=0.653).
+Europe main table N = 292 / 292 / 292 / 295 / 292 / 295; OECD N = 348 / 348 / 463.
+`lag_fatherweeks10` = +0.617 with FE p=0.028, robust p=0.099,
+country-cluster p=0.113; AR(1) PCSE +0.493 (p=0.021). DiD -0.626 (p=0.653).
 Event-study periods p=0.878 / 0.815 / 0.817 / 0.603. OECD columns
-p=0.352 / 0.583 / 0.746. With only 23 country clusters, the lecture note
+p=0.857 / 0.936 / 0.876. With only 23 country clusters, the lecture note
 `Preparing for Panel Data Analysis` ("always cluster your SEs", rough floor
-30-50) means the clustered p=0.065 is itself optimistic; PCSE is a sensitivity
+30-50) means the clustered p=0.113 is itself optimistic; PCSE is a sensitivity
 check only.
 
 ## Evidence hierarchy

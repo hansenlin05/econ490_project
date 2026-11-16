@@ -3,7 +3,7 @@
        log:  C:\Users\Hansen\UBC\ECON 490 003 2026W1 Seminar in Applied Economi
 > cs - econ490_project\log_files/2_descriptive_261109.log
   log type:  text
- opened on:  15 Nov 2026, 15:51:13
+ opened on:  15 Nov 2026, 19:14:26
 . }
 
 . 
@@ -30,7 +30,7 @@ employment~p |        295    27.64681    12.06477   7.680142   60.93509
    male_rate |        295     90.7258    3.839696   74.52456   97.55639
  female_rate |        295    63.07899    12.57904     34.455   84.52414
 fatherwee~10 |        295    .7429291    .9252702          0       2.86
-lag_fathe~10 |        272     .730279    .9217422          0       2.86
+lag_fathe~10 |        292    .7142325    .9160242          0       2.86
 -------------+---------------------------------------------------------
    lag_lngdp |        295     10.2962    .5864253   9.059352   11.63002
 lag_gdp_gr~h |        295    1.881435    3.396585  -14.63022   24.62399
@@ -149,10 +149,10 @@ scalars:
 
      +-----------------------------------------------------------------+
   1. | mean_gap |   sd_gap |  min_gap |  max_gap  | n_gap  | mean_~10  |
-     | 27.64681 | 12.06477 | 7.680142 | 60.93509  |   295  |  .730279  |
+     | 27.64681 | 12.06477 | 7.680142 | 60.93509  |   295  | .7142324  |
      |----------+----------+----------+--------------------------------|
      | sd_le~10 | min_l~10 | max_l~10 | n_lea~10 | mean_l~p | sd_lngdp |
-     | .9217423 |        0 |     2.86 |      272 |  10.2962 | .5864253 |
+     | .9160242 |        0 |     2.86 |      292 |  10.2962 | .5864253 |
      |----------+----------+-------------------------------------------|
      | min_ln~p | max_ln~p | n_lngdp | mean_g~h | sd_gro~h | min_gro~h |
      | 9.059352 | 11.63002 |     295 | 1.881435 | 3.396585 | -14.63022 |
@@ -184,7 +184,7 @@ file ./tables/descriptive_261109.xlsx saved
 ----------------------------------------------------------------------------
 N                                                                        295
 employment_gap                                               27.647 (12.065)
-Lagged father-specific paid leave, per 10 weeks                0.730 (0.922)
+Lagged father-specific paid leave, per 10 weeks                0.714 (0.916)
 Lagged log real GDP per capita                                10.296 (0.586)
 Lagged real GDP growth, percent                                1.881 (3.397)
 Public maternity and parental leave spending, percent of GDP   0.418 (0.294)

@@ -26,21 +26,21 @@ finished and verified; everything left is a manual team action.
   version reports N, mean (sd), min and max per variable, so the reading
   `leave_gdp` covers 20 of the 23 rows is visible rather than hidden behind a
   single sample size.
-- Build-up table with all four columns on the same 333 observations:
+- Build-up table with all four columns on the same 348 observations:
   `tables/results_buildup_261109.docx`.
-- Three-column subset table with its all-countries column on the full 443
-  observations, so 341 + 102 adds back to 443:
+- Three-column subset table with its all-countries column on the full 463
+  observations, so 350 + 113 adds back to 463:
   `tables/results_subsets_261109.docx`.
 - Full 1/99 winsorized repeat covering all five continuous variables; changes
-  4 / 0 / 4 / 5 / 5 observations and moves the main coefficient from +0.560 to
-  +0.571 with the same sign and significance.
+  4 / 0 / 4 / 5 / 5 observations and moves the main coefficient from +0.493 to
+  +0.491 with the same sign and significance.
 - Overlapping two-subset histogram: `figures/histogram_leave_byregion_261109.png`.
 - Comments in the do-files about unmatched merges, the preferred unwinsorized
   specification, and why the non-linear term is not used.
 - Three `test lag_fatherweeks10 = 0` lines in `3_results_261109.do` print the
   exact p-values behind the quoted numbers: Europe LSDV clustered
-  `F(1,22) = 3.77`, `p = 0.0651`; Europe AR(1) PCSE `chi2(1) = 7.29`,
-  `p = 0.0069`; OECD AR(1) PCSE `chi2(1) = 0.30`, `p = 0.5832`.
+  `F(1,22) = 2.73`, `p = 0.1127`; Europe AR(1) PCSE `chi2(1) = 5.29`,
+  `p = 0.0215`; OECD AR(1) PCSE `chi2(1) = 0.01`, `p = 0.9358`.
 
 ## 2. Manual actions still required
 
@@ -66,18 +66,20 @@ It is **not** the submission folder. The authoritative folder is the team
 
 > Our results do not support the hypothesis. The primary European panel
 > contains 23 OECD countries over 2006-2019 (295 country-year observations);
-> the two-way fixed effects regressions use the 272 observations with complete
+> the two-way fixed effects regressions use the 292 observations with complete
 > data on all variables. The coefficient on lagged father-specific paid leave
-> is +0.668 with country-clustered standard errors (SE 0.344, p=0.065) in the
+> is +0.617 with country-clustered standard errors (SE 0.374, p=0.113) in the
 > LSDV specification; the within estimator with the same 23 country clusters
-> gives p=0.054. Both are wrong-signed relative to H1 and neither is
+> gives p=0.099. Both are wrong-signed relative to H1 and neither is
 > significant at 5 percent. The DiD estimate is -0.626 (p=0.653), all
 > event-study leads and lags are insignificant, and the OECD extension columns
-> give p=0.352 / 0.583 / 0.746. An AR(1) PCSE sensitivity check gives +0.560
-> (p=0.007); we do not use it as the headline inference because the course
-> note "Preparing for Panel Data Analysis" requires clustered standard errors,
-> and with only 23 clusters our inference is already optimistic. We therefore
-> report no robust evidence of a policy effect, only a conditional association.
+> give p=0.857 / 0.936 / 0.876. An AR(1) PCSE sensitivity check gives +0.493
+> (p=0.021) with the same positive sign; we do not use it as the headline
+> inference because the course note "Preparing for Panel Data Analysis"
+> requires clustered standard errors, and with only 23 clusters our inference
+> is already optimistic. We therefore report no robust evidence of a policy
+> effect, only a conditional association; the sign of the association is the
+> opposite of the one the hypothesis predicts.
 >
 > Merge note: all merges are performed inside `1_build_data_261109.do`. Two
 > distinct kinds of observation loss occur and neither is an error. (i) Rows
@@ -89,23 +91,28 @@ It is **not** the submission folder. The authoritative folder is the team
 > years. (ii) Rows that do match but still leave a regression: WDI GDP controls
 > merge to all 295 European and all 477 OECD country-years, but taking lags and
 > missing values in public leave spending (`leave_gdp`, whose SOCX coverage is
-> sparse outside Europe) reduce the OECD extension columns to 333 / 333 / 443
+> sparse outside Europe) reduce the OECD extension columns to 348 / 348 / 463
 > observations; the third column drops that covariate to show the loss. For the
-> same reason the build-up table holds the sample fixed at 333 observations in
-> all four columns.
+> same reason the build-up table holds the sample fixed at 348 observations in
+> all four columns. The leave series and its one-year lag are built on the OECD
+> policy history before it is merged into the employment panel, so a country-
+> year is not lost merely because the previous year's employment observation is
+> missing; this recovers 20 country-years in each sample and changes no existing
+> value.
 >
 > Subset note: the three-column subset table splits the 26 OECD countries
 > into 19 European and 7 non-European members, following the difference in
-> supranational leave mandates. The non-European column has only 6 country
-> groups and 102 observations and is shown for the required comparison only;
-> its coefficient must not be read as a policy effect.
+> supranational leave mandates. The non-European column has 7 country groups,
+> one of them contributing a single observation, and 113 observations, and is
+> shown for the required comparison only; its coefficient must not be read as a
+> policy effect.
 >
 > Preferred specification: the unwinsorized AR(1) PCSE model with country and
 > year fixed effects. The 1/99 winsorized repetition winsorizes all five
 > continuous variables (the outcome, lagged father-specific leave, lagged log
 > GDP per capita, lagged GDP growth and public leave spending); country and
 > year dummies are left unchanged. It changes 4 / 0 / 4 / 5 / 5 observations
-> respectively and moves the main coefficient from +0.560 to +0.571, keeping
+> respectively and moves the main coefficient from +0.493 to +0.491, keeping
 > the same sign and significance, so we do not prefer it. The quadratic term
 > is insignificant and does not improve fit, so it is reported only as
 > robustness, consistent with the assignment instruction to add non-linearity

@@ -3,6 +3,62 @@
 All entries describe the local OneDrive project; this repository only mirrors
 them for teammate / AI handoff. Dates are local (MST).
 
+## 2026-11-15 (late) — leave lag rebuilt on the policy panel; specification search declined
+
+**The leave series and its lag are now built on the policy panel, before any
+merge.** In the previous build `lag_fatherweeks10 = L1.fatherweeks10` was
+computed inside the assembled panel, where a country-year exists only if the
+outcome, the WDI controls and the SOCX spending figure are all observed. A
+missing outcome in year t-1 therefore removed the lag in year t even when the
+policy value for t-1 was known. Two consequences: the estimation sample was
+decided by the availability of the dependent variable, and the treatment of the
+policy lag was inconsistent with the GDP lags, which the same do-file already
+builds on the full annual series before merging.
+
+The construction moved into the policy block of `1_build_data_261109.do`, using
+`encode` + `xtset` + `L1.` on the policy panel; the analysis loop now receives
+`fatherweeks`, `fatherweeks10` and `lag_fatherweeks10` through the merge. No new
+command and no new option was introduced.
+
+Measured effect: **20 country-years return in each sample and no existing value
+changes.** Europe 272 -> 292 estimation rows, OECD 443 -> 463 (348 with
+`leave_gdp`). On the 272 and 443 overlapping rows the lag is identical; the
+added rows are exactly the ones that were missing. Every headline number moves
+in the conservative direction:
+
+| | before | after |
+|---|---|---|
+| Europe, country-clustered LSDV | +0.668, p=0.065 | +0.617, p=0.113 |
+| Europe, AR(1) PCSE | +0.560, p=0.007 | +0.493, p=0.021 |
+| Europe, winsorized PCSE | +0.571, p=0.005 | +0.491, p=0.022 |
+| OECD, three columns | p=0.352 / 0.583 / 0.746 | p=0.857 / 0.936 / 0.876 |
+| DiD | -0.626, p=0.653 | unchanged |
+| Event study | p=0.878 / 0.815 / 0.817 / 0.603 | unchanged |
+
+The conclusion does not change and gets cleaner: the association is positive,
+i.e. opposite to the hypothesis, and it is not significant under country
+clustering. The build-up table now holds 348 observations in all four columns
+and the subset table 463 = 350 + 113.
+
+**A specification search proposed at the same time was declined.** The list was
+country-specific linear trends, a lagged unemployment rate, lagged childcare
+spending, replacing `leave_gdp` with its own lag, and a two-year lag as the
+headline. Country trends consume 23 degrees of freedom in a 292-row panel, are
+not demonstrated anywhere in the course material, and were already insignificant
+in the earlier draft (0.500, p=0.426, N=266). The extra controls are not part of
+"a single properly specified regression", and an interaction or extra term is
+permitted only when it improves fit and theory predicts it. The two-year lag
+gives -0.015 (p=0.961) on this data, so the reported significance does not
+reproduce; selecting a lag length because one of them is significant is what the
+assignment's "single properly specified regression" excludes. All five are
+recorded as evaluated and declined in `docs/RESEARCH_DECISIONS.md`.
+
+**Verification.** Full rerun from `data_raw`: no `r()` error; logs 753 / 354 /
+866 / 1100 lines (15.1 / 7.3 / 18.1 / 22.9 pages, all under 25); the 2019
+single-year table is unchanged at 23 rows; the two `note()` strings and the
+Canvas comment draft were updated to the new sample sizes; the non-European
+column now has 7 groups (one of them a single observation) and its note says so.
+
 ## 2026-11-15 (evening) — source refresh check, portable master, Chinese content merged
 
 **Source vintages checked against the publishers.** Two of the five sources had a
