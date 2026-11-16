@@ -21,7 +21,7 @@ generate lag_lngdp_winsor = lag_lngdp
 replace lag_lngdp_winsor = r(p1) if lag_lngdp_winsor < r(p1) & lag_lngdp_winsor != .
 replace lag_lngdp_winsor = r(p99) if lag_lngdp_winsor > r(p99) & lag_lngdp_winsor != .
 
-xtpcse employment_gap_winsor lag_fatherweeks10 lag_socx_ecec ///
+xtpcse employment_gap_winsor lag_socx_ecec lag_fatherweeks10 ///
     lag_lngdp_winsor lag_gdp_growth leave_gdp i.year i.ccode ///
     c.year_centered#i.ccode, het corr(ar1)
 
