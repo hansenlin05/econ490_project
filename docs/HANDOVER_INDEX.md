@@ -11,12 +11,12 @@ document collection.
 | File | What it answers |
 |---|---|
 | `../README.md` | Reading order, what each document is for, closed decisions, pre-edit checklist, collaboration rules |
-| `RESEARCH_QUESTION.md` | The official research question and the five direction-level red lines; what counts as a direction change and who may approve one |
 | `../HANDOVER.md` | Full project state: research direction, progress, results, explicit and implicit course rules, pitfalls, frozen decisions, open items, reproduction |
 | `CODE_CONVENTIONS.md` | Permitted command set, banned commands, the four documented exceptions, comment rules, coding level, pre-commit checks |
 | `COURSE_REQUIREMENTS.md` | All 18 Nov rubric items with point values, allowed file types, 12 Dec gates, implicit course conventions |
+| `RUBRIC_REDLINES.md` | Every 11/18 rubric clause turned into a must-do / must-not-do technical line, with the 100-point map |
 | `SUBMISSION_STATUS.md` | What is done, the manual Canvas checklist, ready-to-paste Canvas comments |
-| `AI_HANDOFF_NOTES.md` | Short rules for a newly joining assistant: what it may and may not decide |
+| `TEAMMATE_NOTES.md` | Short rules for a teammate joining the project: course constraints, frozen decisions, current numbers |
 | `../CHANGELOG.md` | Dated change record |
 
 ## 2. Decisions, corrections, citations

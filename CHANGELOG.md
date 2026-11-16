@@ -1,7 +1,7 @@
 # Changelog
 
 All entries describe the local OneDrive project; this repository only mirrors
-them for teammate / AI handoff. Dates are local (MST).
+them for teammate handoff. Dates are local (MST).
 
 ## 2026-11-15 (night, second) — guard removed; course-demonstrated cd line restored
 
@@ -164,7 +164,7 @@ order, what each document is for and when to read it, the nine closed decisions,
 the eight pitfalls that have already caused damage, what each file type is for,
 why there is no `pay_c` term, and the rules under which pull requests are
 reviewed. The section "Before you review or edit any do-file" is the checklist a
-new assistant should follow before touching code.
+new teammate should follow before touching code.
 
 **`docs/CODE_CONVENTIONS.md` added.** An English restatement of the permitted
 command set by category, the banned commands, the three documented exceptions
@@ -247,7 +247,7 @@ the root as the single authoritative handover, plus `docs/COURSE_REQUIREMENTS.md
 `docs/RESEARCH_DECISIONS.md`, `docs/PITFALLS_AND_CORRECTIONS.md`,
 `docs/DATA_CITATIONS.md`, `docs/SUBMISSION_STATUS.md` and
 `docs/LITERATURE_SOURCES.md`. Rewrote `README.md`, `docs/HANDOVER_INDEX.md`,
-`docs/AI_HANDOFF_NOTES.md`, `docs/SYNC_STATUS_2026-11-14.md` and the Sultana
+`docs/TEAMMATE_NOTES.md`, `docs/SYNC_STATUS_2026-11-14.md` and the Sultana
 task note. All new documents justify rules with filenames or URLs only. The
 Chinese-language handover previously uploaded to the root and to `docs/` was
 removed from this mirror (the team keeps its own Chinese copy locally).
@@ -336,7 +336,7 @@ do-files, four logs, nine tables, five figures, all filenames ASCII.
 
 Added to this mirror: `tables/` (5), `figures/` (4), `data_raw/` (8),
 `data_final/` (10), plus `CHANGELOG.md`, `docs/HANDOVER_INDEX.md` and
-`docs/AI_HANDOFF_NOTES.md`.
+`docs/TEAMMATE_NOTES.md`.
 
 Do-file changes on this date, all verified by a full rerun from `data_raw`:
 

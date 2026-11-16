@@ -1,7 +1,7 @@
 # Literature sources and paper-writing format rules
 
 Last updated 14 November 2026. Replaces the older Chinese literature note.
-Written for an assistant that only has this repository: the PDFs themselves are
+Written for a teammate who only has this repository: the PDFs themselves are
 **not** in this mirror, but their filenames and the corresponding citations are
 listed below so they can be requested from the team or looked up by DOI/journal.
 

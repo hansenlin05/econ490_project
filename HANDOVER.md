@@ -6,7 +6,7 @@ that was previously uploaded to this repository. `README.md` carries the reading
 order and the closed decisions; this file carries the detail; then use
 `docs/HANDOVER_INDEX.md` for the document map.
 
-Everything here is written for an assistant that has **only this repository**:
+Everything here is written for a teammate who has **only this repository**:
 no access to the team's course folder, no chat history, and no special tooling.
 Where a rule comes from a course document or a website, the filename or URL is
 given so it can be checked independently.
@@ -16,7 +16,7 @@ given so it can be checked independently.
 ## 1. What this repository is, and is not
 
 This GitHub repository (`hansenlin05/econ490_project`) is an **information-sync
-mirror** between the teammates and their AI assistants. It is **not** a course
+mirror** for the teammates. It is **not** a course
 submission. The 18 Nov 2026 "Econometric Files" and the 11 Dec 2026 final paper
 are submitted from the team's OneDrive project folder to Canvas.
 
@@ -208,7 +208,7 @@ lecture notes. They are easy to miss and have caused real rework.
    directories. Notes, changelogs and handover documents live in the local
    working folder, never in the submission root.
 7. **Number authority.** Primary course PDFs > original logs and data >
-   official web sources > any earlier AI conclusion (verify each one). Never
+   official web sources > any earlier conclusion from a conversation (verify each one). Never
    judge a file's version by filename or timestamp: compare bytes. Never treat a
    summary as primary evidence. Keep statistical denominators closed. Do not
    infer agreement from silence.

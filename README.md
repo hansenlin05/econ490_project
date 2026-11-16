@@ -1,10 +1,10 @@
 # ECON 490 Team Project — read this file first
 
-This repository is the **information-sync mirror** between three teammates and
-their AI assistants. It is **not** the course submission: the 18 Nov 2026
-"Econometric Files" and the 11 Dec 2026 paper are uploaded to Canvas from the
-team's OneDrive project. Changes go to OneDrive by default; this mirror is
-updated only when the team says so.
+This repository is the **information-sync mirror** for the three teammates.
+It is **not** the course submission: the 18 Nov 2026 "Econometric Files" and
+the 11 Dec 2026 paper are uploaded to Canvas from the team's OneDrive project.
+Changes go to OneDrive by default; this mirror is updated only when the team
+says so.
 
 Everything below is written so that a reader who has **only this repository**
 can work safely. Rules are justified by a filename or a web URL that anyone can
@@ -14,12 +14,12 @@ check. If a source is missing, ask the team — do not guess.
 
 ## 1. Read in this order
 
-Nothing here is optional for an assistant that will touch the code.
+Nothing here is optional for a teammate who will touch the code.
 
 | # | File | What it gives you | Why the order matters |
 |---|---|---|---|
 | 1 | `README.md` (this file) | Current state, frozen decisions, reading path, collaboration rules | One page of orientation before any detail |
-| 2 | `docs/RESEARCH_QUESTION.md` | The official research question and the five direction-level red lines | A direction change is the one failure code review cannot catch; read this before judging any proposal |
+| 2 | `docs/RUBRIC_REDLINES.md` | Every 11/18 rubric clause turned into a must-do / must-not-do technical line, with the 100-point map | Grading is the binding constraint; read this before touching a submission file |
 | 3 | `HANDOVER.md` | The authoritative handover: research question, samples, current results, what is finished and what is not | The only document that describes the project as a whole |
 | 4 | `docs/COURSE_REQUIREMENTS.md` | Every graded item and point value for 18 Nov, allowed upload types, the 11 Dec gates, and the rules that are implied rather than stated | Grading is the binding constraint on every change |
 | 5 | `docs/RESEARCH_DECISIONS.md` | Why each sample, control set, subset and specification was chosen, and which decisions are closed | Prevents re-litigating settled choices |
@@ -103,11 +103,6 @@ Full reasoning and evidence in `docs/RESEARCH_DECISIONS.md`.
     merge.** A lag built after the merge disappears whenever the previous
     year's outcome is missing, which lets outcome availability decide the
     estimation sample.
-11. **The research question and its main explanatory variable are frozen.**
-    Father-specific paid leave is the main variable and the hypothesis
-    predicts a negative coefficient. Replacing the variable, rewording the
-    hypothesis, or picking a specification for its p-value is a direction
-    change governed by `docs/RESEARCH_QUESTION.md`, not a code improvement.
 
 ## 6. Pitfalls worth knowing before you read the code
 
@@ -172,13 +167,11 @@ The master opens with one editable line, `capture noisily cd "<path>"`, which is
   analysis CSVs are checksummed against the previous run. A change that moves a
   number must be explained, not just committed.
 - Root do-file copies and `do_files/` copies must stay byte-identical.
-- Pull requests are reviewed against §2, §5 and `docs/RESEARCH_QUESTION.md`.
-  A pull request that flips the primary sample, swaps the main explanatory
-  variable, adds country-specific trends chosen after comparing results,
-  restores live source imports, merges the four logs into one unlogged chain,
-  or relaxes the command rules is closed with a written reason rather than
-  merged.
+- Pull requests are reviewed against §2, §5 and `docs/RUBRIC_REDLINES.md`.
+  A pull request that breaks a submission gate in the rubric — restoring live
+  source imports, merging the four logs into one unlogged chain, or relaxing
+  the command rules — is closed with a written reason rather than merged.
 - Hansen and Neal own the code; Sultana owns the paper text and the formatted
-  tables. An assistant without the course's own Stata handouts must not decide
-  which commands are permitted, and must not reinterpret p-value conventions —
-  see `docs/AI_HANDOFF_NOTES.md`.
+  tables. A teammate without the course's own Stata handouts should not decide
+  which commands are permitted, and should not reinterpret p-value conventions —
+  see `docs/TEAMMATE_NOTES.md`.

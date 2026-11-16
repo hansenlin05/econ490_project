@@ -1,27 +1,27 @@
-# Notes for a teammate's AI assistant
+# Notes for a teammate joining the project
 
 Read `README.md` first for the reading order and the closed decisions, then
-`HANDOVER.md`. This page is the short version for an assistant that is joining
-the project with only this repository.
+`HANDOVER.md`. This page is the short version for a teammate who is joining
+with only this repository.
 
 Before reviewing or editing any do-file, read `CODE_CONVENTIONS.md`. It lists
-the permitted commands, the banned ones, the three documented exceptions and
-the comment rules. A patch that violates it is declined even if the numbers are
-correct.
+the permitted commands, the banned ones, the documented exceptions and the
+comment rules. A patch that violates it is declined even if the numbers are
+correct. For the 18 Nov submission rules, read `RUBRIC_REDLINES.md`.
 
 ## What this repository is
 
-A mirror for information sync and handoff between the teammates' AI assistants.
-It is **not** the course submission. The 18 Nov 2026 Econometric Files and the
-11 Dec 2026 final paper are uploaded from the team's OneDrive project to Canvas.
-Nothing here is graded. By standing instruction, changes are synced to OneDrive
-by default and to GitHub only when the user explicitly asks.
+A mirror for information sync and handoff between teammates. It is **not** the
+course submission. The 18 Nov 2026 Econometric Files and the 11 Dec 2026 final
+paper are uploaded from the team's OneDrive project to Canvas. Nothing here is
+graded. By standing instruction, changes are synced to OneDrive by default and
+to GitHub only when the team asks.
 
 All rules in this repository are justified with filenames or URLs. If a source
-file named in a rule is not available to you, ask the team for the file rather
-than filling the gap from general knowledge.
+file named in a rule is not available, ask the team for the file rather than
+filling the gap from general knowledge.
 
-## What you may do
+## What the project uses
 
 - Read the do-files, logs, tables and figures to understand the current state.
 - Draft or polish paper prose, format exported Word tables, check reference
@@ -29,7 +29,7 @@ than filling the gap from general knowledge.
 - Answer "what does this file do" and "what are the current numbers" from the
   logs in `log_files/`.
 
-## What you must not decide on your own
+## Course constraints on Stata syntax
 
 The course restricts Stata syntax to what is literally demonstrated in the
 team's own Stata handouts: `StataCheatSheet_analysis_19.pdf`, the COMET
@@ -38,17 +38,15 @@ do-files (Test One-Seven) and the quiz do-files. Two local indexes record that
 vocabulary: `docs/CODE_CONVENTIONS.md` lists every permitted command and where
 the course demonstrates it.
 
-If you do not have those source files, do **not** judge whether a command is
-allowed, do not propose `reghdfe` / `csdid` / `eventdd` / `bacondecomp` or any
-other command from general Stata practice, and do not reinterpret p-values or
-standard-error conventions. Earlier feedback from an assistant working without
-the source handouts needed line-by-line correction on exactly these points.
-Raise a question instead of changing the specification.
+Do not use `reghdfe` / `csdid` / `eventdd` / `bacondecomp` or any other command
+from general Stata practice that the handouts do not show. Do not reinterpret
+p-values or standard-error conventions — the reading used in the logs is the
+one the course notes teach. Raise a question rather than changing the
+specification on an unverified convention.
 
-Also do not: swap the primary and extension samples, pool the two panels,
-reintroduce a retired p-value, change the subset definition without changing
-both `4_tables_261109.do` and `2_descriptive_261109.do`, or treat a GitHub
-commit as a Canvas submission.
+Also avoid: pooling the two panels, reintroducing a retired p-value, changing
+the subset definition without changing both `4_tables_261109.do` and
+`2_descriptive_261109.do`, or treating a GitHub commit as a Canvas submission.
 
 ## Frozen decisions (need a written group decision to reopen)
 
@@ -83,7 +81,7 @@ check only.
 ## Evidence hierarchy
 
 Primary course PDFs > original logs and data > authoritative web sources >
-conclusions from any earlier AI conversation (verify each one). Do not treat a
+any earlier conclusion in a conversation (verify each one). Do not treat a
 summary or a second-hand paraphrase as primary evidence. Compare file contents
 before claiming a version changed. Keep denominators closed. Do not infer
 agreement from silence.

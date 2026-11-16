@@ -43,7 +43,7 @@ the file or log where the correction can be verified.
 | `quietly` suggested to shorten logs | Zero occurrences in the course handouts; not used |
 | `split parse()`, `egen rowmin/rowmax/rownonmiss`, `cond()`, `[_n-1]` subscripts | Replaced with `generate` / `replace` / `real()` / `missing()` and the course-taught `L1.` / `F1.` operators after `encode` + `xtset` + `sort` |
 | Live official-endpoint imports (PR #1, commit `8efda45`) | Rejected, on reproducibility rather than availability. The ILOSTAT API endpoint returns HTTP 200 with 0 bytes for `.csv` and `.csv.gz` and the Eurostat SDMX 3.0 call did not finish in 20 s, but the ILOSTAT bulk download works: a 15 November re-download was byte-identical to the snapshot. The decisive reason is that a live revision would change the numbers the submitted log reports |
-| Do-file comments that read like AI delivery notes | Removed change logs, date/version tags, module numbers, course-checklist references, paper-writing hints and syntax justifications. One short `* ` line per block now. `display` is kept only for two `r()` counts |
+| Do-file comments that read like delivery notes | Removed change logs, date/version tags, module numbers, course-checklist references, paper-writing hints and syntax justifications. One short `* ` line per block now. `display` is kept only for two `r()` counts |
 
 ## D. Submission-format traps
 
@@ -62,7 +62,7 @@ the file or log where the correction can be verified.
 ## E. Method of working (process rules)
 
 - Primary course PDFs > original logs and data > official web sources > any
-  earlier AI conclusion, which must be re-verified line by line.
+  earlier conclusion from a conversation, which must be re-verified line by line.
 - Never treat a summary or second-hand paraphrase as primary evidence.
 - Keep statistical denominators closed; check that subsample N always sums back
   to the parent sample.
