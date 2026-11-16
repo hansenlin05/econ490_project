@@ -1,7 +1,7 @@
 /* Project info
    ECON 490 team project | 0_master_261109.do
    Father-specific paid leave and the gender employment gap.
-   Primary: 23 European OECD countries, 2006-2019. Extension: 26 ILO countries, 2000-2024.
+   Primary: OECD ILO panel, 2000-2024. Supplement: European Eurostat panel, 2006-2019.
    Run this file first: edit the single cd line below to your own project folder. */
 
 clear
