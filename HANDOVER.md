@@ -309,10 +309,10 @@ Full rationale: `docs/RESEARCH_DECISIONS.md`. Citation strings and the official
    commands `xttest3`, `xtserial`, `coefplot`.
 2. Copy the whole `econ490_project` folder, including `data_raw/` — the chain
    does not download anything.
-3. Set the working directory to the project root. There is no `cd` line to
-   edit: the master uses `global proj_main "."` and every path is relative, so
-   the folder can be renamed or moved without touching the code. If the working directory is wrong the master stops at once with a
-   `Wrong working directory` error rather than failing silently.
+3. Edit the single `capture noisily cd "<path>"` line in the master to your
+   project folder. It is the course-demonstrated form of the directory block,
+   and `capture noisily` shows the error instead of hiding it if the path is
+   wrong. Every other path is a relative global.
 4. From the project root run the master; it calls the four numbered do-files.
 5. Compare `log_files/` with this repository. Any differing coefficient means
    the reproduction failed.

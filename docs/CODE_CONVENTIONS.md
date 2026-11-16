@@ -71,12 +71,11 @@ They are either package estimators the course never demonstrates, or
 higher-level idioms that make the code harder to read than the equivalent
 `generate` / `replace` sequence.
 
-## 2. The five documented exceptions
+## 2. The four documented exceptions
 
 Each is deliberate and is described here so that it is not treated as a
 violation. None of them can change a coefficient, a standard error or a sample
-size; the first four affect presentation only, and the fifth only stops a run
-that would otherwise fail silently.
+size; all four affect presentation.
 
 | Exception | Where | Why | What the handouts do show |
 |---|---|---|---|
@@ -84,7 +83,6 @@ that would otherwise fail silently.
 | `generate` + `recast double` + `replace` | `1_build_data_261109.do` | Country-year keys exceed float precision after a merge on log GDP | `recast double mpg` |
 | `dtable ..., continuous(varlist, statistic(n mean sd min max))` | `2_descriptive_261109.do` | A Word summary table needs N, mean, sd, min and max per variable | `dtable price mpg i.rep78, export(table1.pdf)` |
 | `etable ..., title(...) note(...)` | `3_results_261109.do`, `4_tables_261109.do` | The exported table has to carry the fixed-effects statement and the warning that the six-group column is not a policy effect | The cheat sheet writes the `etable` option slot as `/* */`, i.e. options omitted; `title()` is also listed for `etable` in the course notes |
-| `capture confirm file` + `if _rc` guard | `0_master_261109.do` | The master has no absolute path; from the wrong working directory it would print four "file not found" errors and stop without explaining why. The guard stops the run with an instruction instead and touches no data | `capture` with `_rc` and `if` are course material; `confirm`, `exit` and `display as error` are the additions, all confined to this two-line guard |
 
 Stata rejects a bare `statistic()` or `stat()` in `dtable` (error 198); the
 option must sit inside `continuous()`. The cheat sheet's `stat(mean price mpg)`
