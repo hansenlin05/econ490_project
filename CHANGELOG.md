@@ -11,9 +11,9 @@ father-specific-leave design and all of its numbers are retired. Changes: the
 `string()` / `F1.snapshot` leave corrections were replaced by literal numeric
 replaces (no first-hand course source; the built panel is bit-identical);
 `testparm i.country_id` was added after the LSDV model so the rubric's panel
-fixed-effects test is in the log (F(22, 276) = 330.06, p < 0.001); the whole
+fixed-effects test is in the log (F(22, 276) = 173.18, p < 0.001); the whole
 chain was rerun (logs 551 / 417 / 622 / 835 lines, no `r()` errors, N = 347,
-PCSE p = 0.0044); the OneDrive submission folder now holds only the childcare
+PCSE p = 0.0004); the OneDrive submission folder now holds only the childcare
 deliverables and the retired father-leave files were archived outside it. The
 `childcare-neal-261116` branch was aligned with the OneDrive folder and merged
 into `main`; every handover document (README, HANDOVER, research decisions,

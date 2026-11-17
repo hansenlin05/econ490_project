@@ -30,12 +30,13 @@ quoted in the submission. Every decision below belongs to the current chain.
 | Decision | Rationale |
 |---|---|
 | LSDV `regress` with `i.year i.country_id c.year_centered#i.country_id` and `robust` standard errors is the main specification | The course demonstrates `regress ..., robust` and factor-variable syntax; the LSDV form also makes the country-effect test possible, which `xtreg, fe` does not (`testparm i.country_id` aborts there) |
-| Heteroskedasticity-robust SEs are the reference inference; PCSE with common AR(1) is the sensitivity check | `xttest3` rejects groupwise homoskedasticity (chi2(23) = 5496.51, p < 0.001) and `xtserial` rejects no serial correlation (p = 0.0129), so both corrections matter; the course material does not demonstrate cluster-robust options, so none is used |
-| Country-specific linear trends are part of the main specification | They absorb divergent post-2000 employment trajectories across countries; the model without them is reported as a comparison column (coefficient −12.856 vs −9.456), so the choice is transparent |
-| No quadratic term in the main model | The assignment permits non-linearity only if it improves fit and theory predicts it; the squared term is insignificant (F(1, 275) = 2.42, p = 0.1208) and no theory is offered for curvature in this range |
-| Unwinsorized specification preferred | The full 1/99 winsorized repeat of all six continuous model variables moves the main coefficient from −9.456 to −9.442, same sign and significance; the do-file comment states the preference, as rubric item 7 requires |
-| Conclusion: a statistically significant negative conditional association | The main coefficient is negative and significant with robust SEs (p < 0.001), under PCSE AR(1) (p = 0.0044), and winsorized (p < 0.001). It is an association across countries and years, not a causal effect; the paper must say so |
-| Year and country effects are tested, not assumed | `testparm i.year` F(22, 276) = 1.63, p = 0.0391; `testparm i.country_id` F(22, 276) = 330.06, p < 0.001, both printed in `3_results_261109.log` |
+| Heteroskedasticity-robust SEs are the reference inference; PCSE with common AR(1) is the sensitivity check | `xttest3` rejects groupwise homoskedasticity (chi2(23) = 5374.49, p < 0.001) and `xtserial` rejects no serial correlation (p = 0.0009), so both corrections matter; the course material does not demonstrate cluster-robust options, so none is used |
+| Country-specific linear trends are part of the main specification | They absorb divergent post-2000 employment trajectories across countries; the model without them is reported as a comparison column (coefficient −0.582 in both, robust SE 0.116), so the choice is transparent |
+| No quadratic term in the main model | The assignment permits non-linearity only if it improves fit and theory predicts it; the squared term is insignificant (F(1, 275) = 0.04, p = 0.8334) and no theory is offered for curvature in this range |
+| Unwinsorized specification preferred | The full 1/99 winsorized repeat of all six continuous model variables keeps the main coefficient at −0.582 with the same sign and significance; the do-file comment states the preference, as rubric item 7 requires |
+| Conclusion: a statistically significant negative conditional association | The main coefficient is negative and significant with robust SEs (p < 0.001), under PCSE AR(1) (p = 0.0004), and winsorized (p < 0.001). It is an association across countries and years, not a causal effect; the paper must say so |
+| Year and country effects are tested, not assumed | `testparm i.year` F(22, 276) = 1.15, p = 0.2897; `testparm i.country_id` F(22, 276) = 173.18, p < 0.001, both printed in `3_results_261109.log` |
+| The fully logged specification is the headline | The COMET quiz on Mankiw, Romer and Weil (1992) notes that the long-run growth regression "uses logged versions of the dependent and explanatory variables"; the instructor raised the point again on 16 November 2026. In `1_build_data_261109.do` the outcome, ECEC spending, father-leave weeks and leave spending are logged as `ln(1+x)`; GDP per capita is already logged, and GDP growth is already a log difference and stays in level form. The headline column gives elasticities (`ln_spending` −0.582, robust SE 0.116, p < 0.001; testparm F(1, 276) = 25.08). The level specification is retained as a comparison column (−9.456, p < 0.001). The change was adopted on 16 November 2026; the cost of rewriting code, comments, tables and text was not treated as a reason to keep the weaker interpretation. |
 
 **Retired results, do not resurrect:** every coefficient and p-value of the
 retired father-leave chain (Europe N=292/295, OECD extension N=348/463, DiD,
@@ -52,7 +53,7 @@ These choices were made against the hard rubric in
 |---|---|---|
 | Representative year | 2019 | Single-year summary table; 23 country-years have the main regressor observed; `leave_gdp` has 20 (`tables/descriptive_2019_oecd_childcare_261109.csv` and `.xlsx`) |
 | Subsets | EU childcare-targets group (19 members) vs other OECD members (4) | Rubric p.3: "The choice of subsets must be a reasonable one ... dedicated by the economic theory that explains the hypothesis." The EU's Barcelona targets and the 2022 Council Recommendation link ECEC provision to parental employment (https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32022H1220(01)); no comparable supranational target exists outside the EU |
-| Keep the weak "other OECD" column | **Keep it**, with an explicit warning | Deleting it would break the explicit three-column requirement (10 pts) and the overlapping subset histogram (6 pts), which uses the same split. The column has 38 observations and its coefficient (−4.111, p = 0.411) is not readable as a policy effect; the table note states this, and the paper bases conclusions on the all-countries and EU columns |
+| Keep the weak "other OECD" column | **Keep it**, with an explicit warning | Deleting it would break the explicit three-column requirement (10 pts) and the overlapping subset histogram (6 pts), which uses the same split. The column has 38 observations and its coefficient (−0.340, p = 0.340) is not readable as a policy effect; the table note states this, and the paper bases conclusions on the all-countries and EU columns |
 | Build-up table sample | All five columns on the same 347-observation estimation sample | Comparing coefficients across columns then reads purely as the effect of adding controls, the stricter reading of "a series of regressions with one variable added at a time" (15 pts) |
 | Histograms | Two overlapping histograms of `lag_socx_ecec` by the same two subsets | Rubric item 10 asks for the subsets chosen above; `figures/histogram_childcare_byregion_261109.png` |
 | Scatter | Spending versus the employment gap with a linear fit, estimation sample | Rubric item 3 asks for a graph that illustrates the story; `figures/scatter_gap_childcare_261109.png` |
@@ -80,9 +81,9 @@ These choices were made against the hard rubric in
   upload the `.csv` instead.
 - Post-export Word editing of the four tables, including the "Year FE yes /
   Country FE yes" rows.
-- Whether to ask the TA about the two documented command extensions
-  (`egen min()/max()` and `real()` for the slash-text column). Both are
-  option-level and cannot change a coefficient; neither is a banned add-on
-  package. See `docs/CODE_CONVENTIONS.md` §2.
+- Whether to ask the TA about the three documented command extensions
+  (`egen min()/max()`, `real()` for the slash-text column, and instructor-
+  approved `quietly summarize` for percentile cut-offs). None can change a
+  coefficient; none is a banned add-on package. See `docs/CODE_CONVENTIONS.md` §2.
 - Whether `format %10.0g` is acceptable in the final paper tables.
 - Exact wording in the paper for the association-versus-causation caveat.

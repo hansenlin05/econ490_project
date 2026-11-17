@@ -56,7 +56,7 @@ the file or log where the correction can be verified.
 | "All variables winsorized" applied to only some variables | The current repeat covers all six continuous model variables (outcome, lagged spending, lagged leave weeks, lagged log GDP, lagged GDP growth, leave spending) |
 | Canvas comments quoting the panel N beside the estimation N | 477 is the input panel; 347 is the complete-case estimation sample; 309 + 38 = 347 in the subset table. The draft separates the two and also distinguishes unmatched merge rows from matched rows lost to missing covariates |
 | Build-up table without FE "yes/no" rows | `etable` has no fixed-effects row option in the permitted vocabulary. The assignment explicitly says the exported Word file needs editing afterwards; adding the two rows is a manual step for the person formatting tables |
-| "Other OECD" subset column read as a real estimate | 4 country groups, 38 observations, coefficient −4.111 (p = 0.411). Kept for the required three columns, but the table note and this repository say it must not be interpreted |
+| "Other OECD" subset column read as a real estimate | 4 country groups, 38 observations, coefficient −0.340 (p = 0.340). Kept for the required three columns, but the table note and this repository say it must not be interpreted |
 | Assuming a GitHub commit equals a Canvas submission | It does not. Canvas upload is a manual team action |
 
 ## E. Method of working (process rules)
