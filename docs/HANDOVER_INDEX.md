@@ -25,7 +25,7 @@ document collection.
 |---|---|
 | `RESEARCH_DECISIONS.md` | Every sample / subset / control / specification decision and its reason, including the EU-targets subset split |
 | `PITFALLS_AND_CORRECTIONS.md` | Mistakes already made and what replaced them. Read before proposing a fix |
-| `DATA_CITATIONS.md` | Official "How to cite" rules with URLs, and the four citation strings used in the do-file (SOCX accessed 15 November 2026, the others 14 November 2026) |
+| `DATA_CITATIONS.md` | Official "How to cite" rules with URLs, and the four citation strings used in the do-file (SOCX accessed 16 November 2026, the others 14 November 2026) |
 
 ## 3. Paper writing and people
 
@@ -61,3 +61,10 @@ language:
 - `log_files/1_build_data_261109.log` — sample construction and coverage counts.
 - `tables/results_oecd_childcare_261109.docx` — main result table.
 - `1_build_data_261109.do` (`* Data sources` block) — the four data citations.
+
+## 6. Archived single file childcare variant
+
+`legacy/prior_pcse/` contains the earlier single-file do-file, its log, and
+its formatted PCSE table. These belong to a superseded specification with
+different controls and data handling. They are excluded from the current
+master chain and submission package.

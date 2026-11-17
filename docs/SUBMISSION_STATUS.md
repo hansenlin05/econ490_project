@@ -1,6 +1,6 @@
 # 18 Nov submission notes — OECD childcare chain
 
-Last updated 16 November 2026. This is the actionable checklist. Code work is
+Last updated 17 November 2026. This is the actionable checklist. Code work is
 finished and verified; everything left is a manual team action.
 
 ## 1. Done and verified
@@ -8,11 +8,11 @@ finished and verified; everything left is a manual team action.
 - Five numbered do-files, four numbered logs, six tables (four Word tables
   plus the 2019 summary as `.csv` and `.xlsx`), two PNG figures, eleven
   `data_raw` inputs, seven `data_final` outputs.
-- Full rerun from `data_raw` on 16 Nov: no `r()` errors anywhere. Logs are
+- Full rerun from `data_raw` on 17 Nov: no `r()` errors anywhere. Logs are
   586 / 423 / 911 / 749 lines, roughly 12.2 / 8.8 / 19.0 / 15.6 pages with
   80-character wrapping — all under the 35-page limit the instructor
   confirmed on 16 November 2026.
-- All five data sources cited in the do-file citation block
+- All four data sources cited in the do-file citation block
   (see `docs/DATA_CITATIONS.md`).
 - 2019 single-year summary table, restricted to rows with the main regressor
   observed (23 rows; `leave_gdp` has 20), exported as `.csv` and `.xlsx`.
@@ -30,8 +30,8 @@ finished and verified; everything left is a manual team action.
   (p < 0.001) in `3_results_261109.log`.
 - Comments in the do-files about unmatched merges, the preferred
   unwinsorized specification, and why the non-linear term is not used.
-- `testparm lag_socx_ecec` lines print the exact p-values behind the quoted
-  numbers in every column, and the PCSE column prints chi2(1) = 12.52,
+- `testparm ln_spending` prints childcare p-values for the log models, and
+  `testparm lag_socx_ecec` does so for the level model, and the PCSE column prints chi2(1) = 12.52,
   p = 0.0004.
 
 ## 2. Manual actions still required
@@ -41,7 +41,7 @@ finished and verified; everything left is a manual team action.
 | 1 | Confirm the nine directories are synced in the OneDrive client | Hansen | Canvas submission comes from OneDrive, not GitHub |
 | 2 | Upload to Canvas: 5 `.do`, 4 `.log`, `.csv` copies from `data_raw/` and `data_final/`, the table files, and 2 `.png` figures | Team | Canvas accepts only `log, csv, png, do, docx, jpeg`; try the `.xlsx` summary table first and fall back to its `.csv` if rejected |
 | 3 | Paste the Canvas comments in §3 below | Team | 5 pts for stating whether results support the hypothesis; part of the 8 merge points |
-| 4 | Edit the exported Word tables: add explicit "Year FE: yes" / "Country FE: yes" rows, check stars, SEs, N, headings | Sultana | The assignment says the exported table "will need to be edited after it has been exported"; `etable` cannot add those rows with permitted commands |
+| 4 | Check the four formatted Word tables before submission and repeat formatting after any Stata rerun | Sultana | Post-export formatting is complete, including distinct column headings, SE descriptions, and year FE, country FE, and trend rows. A rerun overwrites it with the raw Stata export |
 | 5 | Open each numbered log in Word with the final font and margins and confirm the printed page count | Team | The page estimates above are conservative calculations, not a rendering |
 | 6 | Check whether the Canvas assignment page has an extra upload field or naming rule, and confirm the live due date | Team | The exported PDF header says "Due No Due Date" and its body says "March 23rd"; Course Outline p.14 says 18 Nov |
 | 7 | Fill `literature/` with the article PDFs and `paper/` with the draft | Sultana | Both folders are still empty; 11 Dec paper needs ≥8 peer-reviewed economics articles |
@@ -49,27 +49,29 @@ finished and verified; everything left is a manual team action.
 
 ## 3. Ready-to-paste Canvas comments (English)
 
-> Our results support the hypothesis. The primary panel covers 23 OECD
-> countries over 2000-2024 (477 country-year observations in the employment
-> panel); the regressions use the 347 observations with complete data on every
-> model variable. The main explanatory variable is the prior-year share of GDP
-> that a country spends on publicly funded early childhood education and care.
-> Following the course's discussion of logged growth regressions, the outcome
-> and every nonnegative continuous variable are in logs, so the coefficients
-> are elasticities. The spending coefficient is negative and statistically
-> significant in every specification: -0.582 with year and country fixed
-> effects, country-specific linear trends and standard errors clustered by
-> country, as the course lecture note requires (SE 0.172, p = 0.003); -0.582
-> with unclustered robust standard errors (p < 0.001); -0.477 under
-> panel-corrected standard errors with a common AR(1) process (p < 0.001); and
-> -0.581 in the full 1/99 winsorized repetition (p = 0.002). A 1 percent increase in prior-year ECEC
-> spending is therefore associated with a 0.582 percent smaller
-> male-minus-female employment gap among parents of young children, read as an
-> elasticity from the log specification. Spending enters as ln(1 + x), so at
-> the sample mean of 0.538 percent of GDP the effect of a 1 percent relative
-> increase is about 0.20 percent (−0.582 × 0.538/1.538). We report this as a
-> conditional association across countries and years, not as proof of a causal
-> effect.
+> The primary model supports a negative association between prior-year public
+> childcare spending and the employment gender gap, conditional on country and
+> year fixed effects, country-specific linear trends, and the stated controls.
+> The employment panel contains 477 observations within the 2000–2024 source
+> window. The regressions use 347 complete observations from 23 OECD countries
+> over 2001–2023. The childcare coefficient is -0.582 with country-clustered
+> standard errors (SE 0.172, exact p = 0.0027), -0.582 with unclustered robust
+> standard errors (p < 0.001), and -0.477 with PCSE and a common AR(1) process
+> (p = 0.0004). The all-variable 1/99 winsorized repeat gives -0.581 with
+> country-clustered standard errors (p = 0.0021).
+>
+> The association depends on including country-specific trends. Removing only
+> these trends while retaining both fixed effects gives +0.131 (clustered
+> p = 0.5181). We therefore report a negative association relative to the
+> specified country trajectories, with no claim of a causal policy effect.
+>
+> The outcome is ln(employment gap) and childcare spending is ln(1 + x), with x
+> measured in percentage points of GDP. The local spending elasticity is
+> beta × x/(1 + x). At the sample mean of 0.538 percent of GDP, a 1 percent
+> relative spending increase is associated with approximately a 0.20 percent
+> smaller employment gap. The coefficient -0.582 is the elasticity with respect
+> to 1 + x, rather than a constant elasticity with respect to spending itself.
+> GDP growth is the WDI annual percentage growth series and stays in levels.
 >
 > Merge note: all merges are performed inside `1_build_data_261109.do`. Two
 > distinct kinds of observation loss occur and neither is an error. (i) Rows
