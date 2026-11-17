@@ -4,6 +4,16 @@ This file records the team's analysis and repository changes. The 17 November
 documentation and formatting correction was prepared from GitHub main. It
 does not by itself confirm that OneDrive or Canvas has been updated.
 
+## 2026-11-17 — Save logs directly without optional switches
+
+Removed the four `store_log_*` globals and the conditional log wrappers.
+Each numbered do-file now uses `capture log close`, `log using ..., text replace`,
+and a final `capture log close`. The master still controls which numbered
+files run. This simplifies the optional Workflow 18 log-switch example to
+the direct Test7 logging form. Regression commands, data and results are
+unchanged. Existing comments were retained except wording tied to the removed
+switches. Logs were regenerated from the final do-files.
+
 ## 2026-11-17 — OneDrive synced to the Test7 PCSE AR1 chain
 
 Copied the four revised do-files to the OneDrive package and reran the master

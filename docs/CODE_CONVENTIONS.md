@@ -215,29 +215,26 @@ line.
 
 ## 5. Structure of a do-file
 
-Every numbered do-file follows the course workflow guide:
+The numbered files retain the Workflow 18 master and folder structure. The
+optional log switches were removed at the user's request. Each numbered file
+now opens and closes its own log directly, as in Test7:
 
 ```
 /* Project info
    <file name> | <one line on what this file produces>. */
 
-//If log setting is activated, we record a log file in the log folder
-if ${store_log_<name>}==1 {
-    cap log close
-    capture noisily log using "${log_dir}/<file>.log", text replace
-}
+capture log close
+log using "${log_dir}/<file>.log", text replace
 
 ... body ...
 
-//Close log if needed
-if ${store_log_<name>}==1 {
-    cap log close
-}
+capture log close
 ```
 
-`0_master` sets the paths and the run/store globals, then calls the four
-numbered files with `capture noisily do`. It uses `clear`, never `clear all`,
-because the numbered files depend on the globals it defines.
+`0_master` still sets directory globals and the run switches, then calls the
+four numbered files with `capture noisily do`. There are no `store_log_*`
+globals or conditional log blocks. The log files are always saved whenever
+their corresponding numbered do-file runs.
 
 ## 6. Pre-commit checks
 

@@ -1,9 +1,7 @@
 /* Project info
    2_descriptive_261109.do | descriptives, figures and the subset runs */
-if ${store_log_descriptive}==1 {
-    capture log close
-    capture noisily log using "${log_dir}/2_descriptive_261109.log", text replace
-}
+capture log close
+log using "${log_dir}/2_descriptive_261109.log", text replace
 
 use "${datadir_final}/oecd_childcare_261109.dta", clear
 
@@ -73,6 +71,4 @@ etable, estimates(childcare_all childcare_eu childcare_other) ///
     mstat(N) showstars showstarsnote varlabel column(dvlabel) ///
     export("${tabledir}/results_childcare_subsets_261109.docx", replace)
 
-if ${store_log_descriptive}==1 {
-    capture log close
-}
+capture log close

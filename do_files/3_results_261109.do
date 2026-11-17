@@ -1,10 +1,8 @@
 /* Project info
    3_results_261109.do | the main OECD childcare expenditure regressions */
 
-if ${store_log_mainresults}==1 {
-    capture log close
-    capture noisily log using "${log_dir}/3_results_261109.log", text replace
-}
+capture log close
+log using "${log_dir}/3_results_261109.log", text replace
 
 use "${datadir_final}/oecd_childcare_261109.dta", clear
 keep if childcare_sample==1
@@ -48,6 +46,4 @@ xtpcse ln_gap c.ln_spending##c.ln_spending ///
     i.year i.country_id c.year_centered#i.country_id, het corr(ar1)
 testparm c.ln_spending#c.ln_spending
 
-if ${store_log_mainresults}==1 {
-    capture log close
-}
+capture log close
