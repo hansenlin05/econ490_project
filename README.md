@@ -1,36 +1,177 @@
-# Public Childcare Spending and the OECD Employment Gap
+# ECON 490 Team Project — read this file first
 
-The analysis tests whether higher public spending on early childhood education and care (ECEC) is associated with a smaller male-minus-female employment gap in couple households with children under six. The estimation sample contains **347 country-years from 23 OECD countries, 2001–2023**.
+This repository is the **information-sync mirror** for the three teammates.
+It is **not** the course submission: the 18 Nov 2026 "Econometric Files" and
+the 11 Dec 2026 paper are uploaded to Canvas from the team's OneDrive project.
+Changes go to OneDrive by default; this mirror is updated only when the team
+says so.
 
-## Run the current analysis
+Everything below is written so that a reader who has **only this repository**
+can work safely. Rules are justified by a filename or a web URL that anyone can
+check. If a source is missing, ask the team — do not guess.
 
-Place the [Stata do-file](oecd_childcare_live.do) and these four downloaded inputs in the same folder. In Stata, set your working directory to that folder and run `do oecd_childcare_live.do`.
+---
 
-| Local input | Source |
-|---|---|
-| `ilostat_employment.csv` | [ILOSTAT annual employment data by sex and household composition](https://ilostat.ilo.org/data/) |
-| `oecd_leave_history.xlsx` | [OECD Family Database PF2.5 historical leave entitlements](https://webfs.oecd.org/els-com/Family_Database/PF2_5_Trends_in_leave_entitlements_around_childbirth.xlsx) |
-| `oecd_socx_spending.csv` | [OECD SOCX public spending, ECEC (TP521) and maternity and parental leave (TP512)](https://www.oecd.org/en/data/datasets/social-expenditure-database-socx.html) |
-| `wdi_gdp_raw.dta` | [World Bank WDI real GDP per capita (NY.GDP.PCAP.KD)](https://data.worldbank.org/indicator/NY.GDP.PCAP.KD) |
+## 1. Read in this order
 
-The script builds the lags before merging, prepares the estimation sample, runs the diagnostics and estimates both PCSE models. It writes `oecd_childcare_live_results.log` and exports the build-up and comparison tables as Word files. Stata needs `xttest3`, `xtserial` and a release with `etable`.
+Nothing here is optional for a teammate who will touch the code.
 
-## Model and results
+| # | File | What it gives you | Why the order matters |
+|---|---|---|---|
+| 1 | `README.md` (this file) | Current state, frozen decisions, reading path, collaboration rules | One page of orientation before any detail |
+| 2 | `docs/RUBRIC_REDLINES.md` | Every 11/18 rubric clause turned into a must-do / must-not-do technical line, with the 100-point map | Grading is the binding constraint; read this before touching a submission file |
+| 3 | `HANDOVER.md` | The authoritative handover: research question, samples, current results, what is finished and what is not | The only document that describes the project as a whole |
+| 4 | `docs/COURSE_REQUIREMENTS.md` | Every graded item and point value for 18 Nov, allowed upload types, the 11 Dec gates, and the rules that are implied rather than stated | Grading is the binding constraint on every change |
+| 5 | `docs/RESEARCH_DECISIONS.md` | Why each sample, control set, subset and specification was chosen, and which decisions are closed | Prevents re-litigating settled choices |
+| 6 | `docs/PITFALLS_AND_CORRECTIONS.md` | Mistakes already made and what replaced them | Read before proposing a fix; most "improvements" have already been tried and rejected |
+| 7 | `docs/CODE_CONVENTIONS.md` | The permitted command set, the comment rules, the coding level expected, and the documented exceptions | The gate any code change must pass |
+| 8 | `docs/DATA_CITATIONS.md` | Official citation formats with URLs and the five citation strings in the do-file | Any citation edit must match these |
+| 9 | `docs/SUBMISSION_STATUS.md` | Done / manual / blocked, plus the ready-to-paste Canvas comments | Tells you what is actually left |
+| 10 | `docs/LITERATURE_SOURCES.md` | The article PDFs by filename, and the paper-writing format rules | Needed only for the 11 Dec paper |
+| 11 | `docs/HANDOVER_INDEX.md` | Full document map, and which older files are legacy background only | Stops you reading superseded material by mistake |
 
-The dependent variable is the natural log of the male-minus-female employment gap measured in percentage points. The main explanatory variable is `ln(1 + childcare)`, with prior-year public ECEC spending expressed as a percentage of GDP. The controls are `ln(1 + father’s leave)` using prior-year paid weeks in units of ten, the log of prior-year real GDP per capita, and the log of public maternity and parental leave spending as a percentage of GDP. The `+1` transformations retain zero spending and zero leave observations.
+## 2. Before you review or edit any do-file
 
-Both specifications include country and year fixed effects, country-specific linear trends, and panel-corrected standard errors (PCSE) with a common AR(1) process.
+Work through these six checks. They exist because each one has already gone
+wrong at least once.
 
-| PCSE specification | Childcare coefficient | Standard error | p-value | Country-years |
-|---|---:|---:|---:|---:|
-| Main, unwinsorized | −0.484 | 0.136 | 0.0004 | 347 |
-| All five continuous variables winsorized | −0.490 | 0.134 | 0.0002 | 347 |
+1. **Read** items 1–6 above. Skipping item 6 is the most common cause of a
+   rejected change.
+2. **Find the current number** in `log_files/`, never in a summary document.
+   `3_results_261109.log` holds the main estimates and the four diagnostic
+   tests; `4_tables_261109.log` holds the build-up, winsorized and
+   winsorized-comparison estimates.
+3. **Check whether the decision is closed.** Section 5 lists them. A patch that
+   reopens a closed decision is declined regardless of how clean it is.
+4. **Check the command against `docs/CODE_CONVENTIONS.md`.** If a command there
+   is not listed, it is not allowed. Do not substitute a package command such as
+   `reghdfe`, `csdid`, `eventdd`, `bacondecomp`, `winsor2`, `outreg2` or
+   `esttab`.
+5. **Check the comment rules** in the same file, section 3. Comments describe
+   what a block of code does. They do not record who changed what, do not cite
+   course material, do not instruct the paper's author, and do not defend a
+   command choice.
+6. **After editing, rerun `0_master` from `data_raw`.** The logs must be
+   produced by the do-files they belong to, so a do-file edit without a rerun
+   leaves the submission inconsistent.
 
-The main model uses the observed values. Capping the five continuous variables at the 1st and 99th percentiles changes the estimate only slightly. At childcare spending of 0.5% of GDP, a 1% relative increase in spending is associated with an estimated 0.16% relative reduction in the employment gap. The estimates describe conditional associations.
+## 3. What each file type is for
 
-- [Formatted Word tables](tables/oecd_childcare_pcse.docx)
-- [Stata results log](log_files/oecd_childcare_live_results.log)
-- [Canvas submission text](docs/SUBMISSION_STATUS.md#ready-to-paste-canvas-comment)
-- [Course rubric](docs/RUBRIC_REDLINES.md)
+| Folder | Role | Rule |
+|---|---|---|
+| `do_files/` | The five numbered do-files that produce everything else | Edit only these; the master calls them in order |
+| `log_files/` | Four logs, one per numbered do-file, each generated by that do-file | This is the evidence base. A number not present in a log does not exist |
+| `tables/` | Six exported tables (four Word tables plus the 2019 summary in CSV and Excel form) | Regenerated by the do-files; never hand-edited except the post-export Word formatting the assignment explicitly asks for |
+| `figures/` | Two PNG figures | Regenerated by the do-files |
+| `data_raw/` | Ten frozen source snapshots | Never overwritten. Official portals are cited as provenance, not read at run time |
+| `data_final/` | The built panel, its CSV copy, and the five intermediate files `1_build_data_261109.do` writes before the final merge | Rebuilt from `data_raw/` by `1_build_data_261109.do` |
 
-The earlier numbered do-files and their associated tables document the prior level specification. Use the standalone do-file and linked tables above for the current log specification.
+## 4. Research in one paragraph
+
+Question: does lagged public spending on early childhood education and care
+reduce the male-minus-female employment gap among parents of young children?
+Primary panel: 23 OECD countries, 2000–2024 (ILOSTAT household series), 347
+country-years in the estimation sample. Main explanatory variable: prior-year
+public ECEC spending as a share of GDP (OECD SOCX, series TP521). Controls:
+lagged father-specific paid leave weeks, lagged log real GDP per capita,
+lagged real GDP growth, and public maternity/parental leave spending. Every
+model includes year effects, country effects, and country-specific linear
+trends. The outcome and every nonnegative continuous variable are in logs, so
+the coefficients are elasticities: a 1 percent increase in prior-year spending
+is associated with a 0.582 percent smaller employment gap under
+heteroskedasticity-robust standard errors (p < 0.001), 0.477 under
+panel-corrected standard errors with common AR(1) (p < 0.001), and 0.582 in the
+full 1/99 winsorized repeat (p < 0.001). The level specification is kept as a
+comparison column (coefficient −9.456, p < 0.001).
+
+Because spending enters as ln(1 + x), the coefficient is the response of the
+gap to ln(1 + x), not to x itself. At the sample mean of 0.538 percent of GDP,
+the effect of a 1 percent relative increase in spending is about 0.20 percent
+(−0.582 × 0.538/1.538); the pure elasticity of −0.582 is the limiting case for
+small x.
+
+**Conclusion: a statistically significant negative conditional association in
+every specification.** Countries that spend more on public childcare show a
+smaller male-minus-female employment gap. This is a conditional association,
+not proof of a causal effect, and the paper must phrase it that way. The
+earlier father-specific paid leave analysis is retired; its numbers must not
+be quoted anywhere.
+
+## 5. Closed decisions — do not reopen
+
+Full reasoning and evidence in `docs/RESEARCH_DECISIONS.md`.
+
+1. **The OECD childcare panel is the primary and only analysis.** The earlier
+   Europe-primary father-leave design was retired on 16 November 2026. Do not
+   resurrect its samples, coefficients or p-values.
+2. **`lag_socx_ecec` is the main explanatory variable**, built on the full
+   SOCX annual series before any merge, in the same way as every other lag.
+3. **Heteroskedasticity-robust LSDV standard errors are the reference
+   inference; PCSE with common AR(1) is the sensitivity check.** The course
+   material demonstrates `regress ..., robust`, not cluster-robust options.
+4. **Country-specific linear trends are part of the main specification.** The
+   quadratic spending term was assessed and excluded (p = 0.8334).
+5. **Five do-files and four logs.** Each numbered do-file writes its own log.
+6. **No live downloads at run time.** `data_raw/` snapshots are the inputs.
+7. **The 2019 summary table is restricted to observations with the main
+   regressor observed** (23 rows), exported as CSV and Excel.
+8. **The subset split is the EU childcare-targets group versus other OECD
+   members**, used identically in the three-column table and the overlapping
+   histograms.
+9. **Winsorization is a robustness repeat, not the preferred specification.**
+10. **Comments and command choice follow `docs/CODE_CONVENTIONS.md`.**
+11. **No `reghdfe` or any other package estimator**, including in a "just for
+    robustness" form.
+12. **Every lag is built on its own full annual series before any merge.** A
+    lag built after the merge disappears whenever the previous year's outcome
+    is missing, which lets outcome availability decide the estimation sample.
+
+## 6. Pitfalls worth knowing before you read the code
+
+The ones that have already caused damage; the full list with evidence is in
+`docs/PITFALLS_AND_CORRECTIONS.md`.
+
+- The source workbook stores leave weeks as text, sometimes with two slash-
+  separated options; `real()` plus literal replaces handle this. Do not
+  "simplify" it to a numeric import.
+- `testparm i.country_id` only works after the LSDV `regress` form. After
+  `xtreg, fe` the country effects are absorbed and the test aborts with
+  `no such variables`.
+- The "other OECD" subset column has 38 observations and is insignificant by
+  construction of the small group; the table note must carry the warning.
+- Log page limits are measured after 80-character wrapping, not by line count.
+- A build-up table with different samples per column cannot be read as the
+  effect of adding controls.
+- Live official-source imports fail or drift; frozen snapshots do not.
+
+## 7. Reproduce
+
+Set Stata's working directory to the project root and run
+`do do_files/0_master_261109.do`. The master calls the four numbered do-files
+in order; `1_build_data` rebuilds the panel from `data_raw/`. No network
+access is used at run time.
+
+Requirements: Stata 17 or newer (developed on StataNow/BE 19) with `xttest3`,
+`xtserial` and `coefplot` installed. Use `clear`, not `clear all`: the master
+defines globals that the numbered do-files need.
+
+The master opens with one editable line, `capture noisily cd "<path>"`, which
+is the form the course itself demonstrates. Edit it to your project folder and
+run the master; on this team's machine the line already points at the OneDrive
+folder. Every other path is a global built from `global proj_main "."`, so
+nothing else needs changing.
+
+## 8. How this repository is maintained
+
+- One driver produces everything: `0_master` → four numbered do-files. Any
+  manual edit to a log, table or figure is a defect.
+- After a do-file change, the whole chain is rerun from `data_raw`. A change
+  that moves a number must be explained, not just committed.
+- Pull requests are reviewed against §2, §5 and `docs/RUBRIC_REDLINES.md`.
+  A pull request that breaks a submission gate in the rubric — restoring live
+  source imports, merging the four logs into one unlogged chain, or relaxing
+  the command rules — is closed with a written reason rather than merged.
+- Hansen and Neal own the code; Sultana owns the paper text and the formatted
+  tables. A teammate without the course's own Stata handouts should not decide
+  which commands are permitted, and should not reinterpret p-value conventions
+  — see `docs/TEAMMATE_NOTES.md`.

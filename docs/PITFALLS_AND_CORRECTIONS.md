@@ -69,3 +69,7 @@ the file or log where the correction can be verified.
 - Do not infer knowledge or agreement from silence.
 - After any do-file edit, rerun the whole chain: a stale log that still contains
   deleted commands is a grading problem.
+- Do not adopt a parallel do-file's data source into the submitted chain just
+  because it is cleaner in design. A source that is not stored in `data_raw/`
+  would force a live re-download and a rebuild of the built panel, changing the
+  sample and invalidating every frozen table and the Canvas text.

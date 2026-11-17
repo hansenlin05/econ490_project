@@ -116,7 +116,9 @@ use 309 (EU-target group) and 38 (other OECD).
   p < 0.001); `testparm ln_spending` F(1, 276) = 25.08. GDP per capita is
   already logged; GDP growth stays in level form because it is a log
   difference. The coefficient is an elasticity: 1 percent more ECEC spending
-  is associated with a 0.582 percent smaller employment gap.
+  is associated with a 0.582 percent smaller employment gap. Spending enters
+  as ln(1 + x), so at the sample mean of 0.538 percent of GDP the effect of a
+  1 percent relative increase is about 0.20 percent.
 - **PCSE, heteroskedastic panels, common AR(1):** **−0.477** (SE 0.135,
   p < 0.001); `testparm` chi2(1) = 12.54, p = 0.0004.
 - Subset columns: EU-target group −0.566 (p < 0.001); other OECD −0.340
