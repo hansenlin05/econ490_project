@@ -1,0 +1,754 @@
+-----------------------------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  /Users/jinzewen/Documents/Codex/OECD Childcare Submission/oecd_childcare_live_results.lo
+> g
+  log type:  text
+ opened on:  16 Nov 2026, 21:39:41
+
+. 
+. use "wdi_gdp_raw.dta", clear
+
+. rename (countrycode countryname) (iso country)
+
+. keep if inrange(year,1999,2024)
+(10,640 observations deleted)
+
+. 
+. preserve
+
+.     keep iso country
+
+.     bysort iso: keep if _n == 1
+(6,650 observations deleted)
+
+.     replace country = "Korea" if iso == "KOR"
+(1 real change made)
+
+.     replace country = "Türkiye" if iso == "TUR"
+(1 real change made)
+
+.     save "oecd_country_codes.dta", replace
+(file oecd_country_codes.dta not found)
+file oecd_country_codes.dta saved
+
+. restore
+
+. 
+. encode iso, generate(gdp_id)
+
+. xtset gdp_id year, yearly
+
+Panel variable: gdp_id (strongly balanced)
+ Time variable: year, 1999 to 2024
+         Delta: 1 year
+
+. generate lngdp = ln(ny_gdp_pcap_kd)
+(312 missing values generated)
+
+. generate lag_lngdp = L1.lngdp
+(559 missing values generated)
+
+. keep iso year lag_lngdp
+
+. save "oecd_gdp.dta", replace
+(file oecd_gdp.dta not found)
+file oecd_gdp.dta saved
+
+. 
+. import excel using "oecd_leave_history.xlsx", sheet("Time-Series") cellrange(A9) clear
+(20 vars, 2,166 obs)
+
+. rename (A B T) (country year total_paid_raw)
+
+. keep country year total_paid_raw
+
+. keep if inrange(year,2000,2024)
+(1,216 observations deleted)
+
+. merge m:1 country using "oecd_country_codes.dta"
+(variable country was str15, now str75 to accommodate using data's values)
+
+    Result                      Number of obs
+    -----------------------------------------
+    Not matched                           228
+        from master                         0  (_merge==1)
+        from using                        228  (_merge==2)
+
+    Matched                               950  (_merge==3)
+    -----------------------------------------
+
+. keep if _merge == 3
+(228 observations deleted)
+
+. drop _merge
+
+. 
+. generate fatherweeks = real(total_paid_raw)
+(62 missing values generated)
+
+. replace fatherweeks = 28.6 if total_paid_raw == "28.6 / 54.6"
+(7 real changes made)
+
+. replace fatherweeks = 30.17 if total_paid_raw == "30.17 / 56.17"
+(3 real changes made)
+
+. 
+. encode iso, generate(leave_id)
+
+. xtset leave_id year, yearly
+
+Panel variable: leave_id (strongly balanced)
+ Time variable: year, 2000 to 2024
+         Delta: 1 year
+
+. generate fatherweeks10 = fatherweeks / 10
+(52 missing values generated)
+
+. generate lag_fatherweeks10 = L1.fatherweeks10
+(90 missing values generated)
+
+. keep iso year lag_fatherweeks10
+
+. save "oecd_father_leave.dta", replace
+(file oecd_father_leave.dta not found)
+file oecd_father_leave.dta saved
+
+. 
+. import delimited using "oecd_socx_spending.csv", clear
+(encoding automatically selected: ISO-8859-2)
+(16 vars, 2,018 obs)
+
+. rename (ref_area time_period) (iso year)
+
+. keep iso year programme_type obs_value
+
+. reshape wide obs_value, i(iso year) j(programme_type) string
+(j = TP512 TP521)
+
+Data                               Long   ->   Wide
+-----------------------------------------------------------------------------
+Number of observations            2,018   ->   1,009       
+Number of variables                   4   ->   4           
+j variable (2 values)    programme_type   ->   (dropped)
+xij variables:
+                              obs_value   ->   obs_valueTP512 obs_valueTP521
+-----------------------------------------------------------------------------
+
+. rename obs_valueTP512 leave_gdp
+
+. rename obs_valueTP521 ecec_gdp
+
+. encode iso, generate(spending_id)
+
+. xtset spending_id year, yearly
+
+Panel variable: spending_id (unbalanced)
+ Time variable: year, 1999 to 2023
+         Delta: 1 year
+
+. generate childcare = L1.ecec_gdp
+(95 missing values generated)
+
+. keep iso year childcare leave_gdp
+
+. save "oecd_spending.dta", replace
+(file oecd_spending.dta not found)
+file oecd_spending.dta saved
+
+. 
+. import delimited using "ilostat_employment.csv", clear
+(encoding automatically selected: UTF-8)
+(11 vars, 169,678 obs)
+
+. rename (ref_area time) (iso year)
+
+. keep if classif1=="HHT_AGGREGATE_K" & classif2=="CHL_AGET6_YES"
+(165,414 observations deleted)
+
+. keep if inlist(sex,"SEX_M","SEX_F") & inrange(year,2000,2024)
+(1,487 observations deleted)
+
+. bysort iso year: egen flagged = max(obs_status!="")
+
+. keep if flagged == 0
+(27 observations deleted)
+
+. keep iso year sex obs_value
+
+. reshape wide obs_value, i(iso year) j(sex) string
+(j = SEX_F SEX_M)
+
+Data                               Long   ->   Wide
+-----------------------------------------------------------------------------
+Number of observations            2,750   ->   1,375       
+Number of variables                   4   ->   4           
+j variable (2 values)               sex   ->   (dropped)
+xij variables:
+                              obs_value   ->   obs_valueSEX_F obs_valueSEX_M
+-----------------------------------------------------------------------------
+
+. rename (obs_valueSEX_M obs_valueSEX_F) (male_rate female_rate)
+
+. generate employment_gap = male_rate - female_rate
+
+. 
+. merge 1:1 iso year using "oecd_father_leave.dta"
+
+    Result                      Number of obs
+    -----------------------------------------
+    Not matched                         1,285
+        from master                       855  (_merge==1)
+        from using                        430  (_merge==2)
+
+    Matched                               520  (_merge==3)
+    -----------------------------------------
+
+. keep if _merge == 3
+(1,285 observations deleted)
+
+. drop _merge
+
+. merge 1:1 iso year using "oecd_gdp.dta"
+
+    Result                      Number of obs
+    -----------------------------------------
+    Not matched                         6,396
+        from master                         0  (_merge==1)
+        from using                      6,396  (_merge==2)
+
+    Matched                               520  (_merge==3)
+    -----------------------------------------
+
+. keep if _merge == 3
+(6,396 observations deleted)
+
+. drop _merge
+
+. merge 1:1 iso year using "oecd_spending.dta"
+(variable iso was str3, now str4 to accommodate using data's values)
+
+    Result                      Number of obs
+    -----------------------------------------
+    Not matched                           589
+        from master                        50  (_merge==1)
+        from using                        539  (_merge==2)
+
+    Matched                               470  (_merge==3)
+    -----------------------------------------
+
+. keep if _merge == 3
+(589 observations deleted)
+
+. drop _merge
+
+. drop if missing(employment_gap, childcare, lag_fatherweeks10, lag_lngdp, leave_gdp)
+(123 observations deleted)
+
+. 
+. generate ln_gap = ln(employment_gap)
+
+. generate ln_childcare = ln(1 + childcare)
+
+. generate ln_fatherweeks10 = ln(1 + lag_fatherweeks10)
+
+. generate ln_leave_gdp = ln(leave_gdp)
+
+. 
+. encode iso, generate(country_id)
+
+. generate year_centered = year - 2010
+
+. tsset country_id year
+
+Panel variable: country_id (unbalanced)
+ Time variable: year, 2001 to 2023, but with gaps
+         Delta: 1 unit
+
+. 
+. xtreg ln_gap ln_childcare ln_fatherweeks10 lag_lngdp ln_leave_gdp ///
+>     i.year c.year_centered#i.country_id, fe
+note: 3.country_id#c.year_centered omitted because of collinearity.
+note: 23.country_id#c.year_centered omitted because of collinearity.
+
+Fixed-effects (within) regression               Number of obs     =        347
+Group variable: country_id                      Number of groups  =         23
+
+R-squared:                                      Obs per group:
+     Within  = 0.7089                                         min =          1
+     Between = 0.0177                                         avg =       15.1
+     Overall = 0.0124                                         max =         22
+
+                                                F(47, 277)        =      14.35
+corr(u_i, Xb) = -0.6388                         Prob > F          =     0.0000
+
+--------------------------------------------------------------------------------------------
+                    ln_gap | Coefficient  Std. err.      t    P>|t|     [95% conf. interval]
+---------------------------+----------------------------------------------------------------
+              ln_childcare |  -.5954929   .1490964    -3.99   0.000    -.8889988    -.301987
+          ln_fatherweeks10 |   .0556116   .0336419     1.65   0.099    -.0106148    .1218379
+                 lag_lngdp |   .3525549   .1698514     2.08   0.039     .0181914    .6869184
+              ln_leave_gdp |  -.0928729   .0350498    -2.65   0.009    -.1618707    -.023875
+                           |
+                      year |
+                     2002  |  -.0085359   .0482709    -0.18   0.860    -.1035603    .0864886
+                     2003  |  -.0411763   .0503786    -0.82   0.414    -.1403499    .0579973
+                     2004  |  -.0176119   .0578028    -0.30   0.761    -.1314004    .0961766
+                     2005  |  -.0152471    .064749    -0.24   0.814    -.1427097    .1122155
+                     2006  |  -.0311239   .0732838    -0.42   0.671    -.1753878      .11314
+                     2007  |  -.0377705   .0837441    -0.45   0.652    -.2026262    .1270852
+                     2008  |  -.0642899   .0939421    -0.68   0.494     -.249221    .1206413
+                     2009  |  -.1157682   .1016148    -1.14   0.256    -.3158035    .0842672
+                     2010  |  -.1156154   .1029854    -1.12   0.263    -.3183488     .087118
+                     2011  |  -.1204293   .1116252    -1.08   0.282    -.3401707    .0993122
+                     2012  |  -.1800885   .1206146    -1.49   0.137    -.4175262    .0573493
+                     2013  |  -.1499813   .1287892    -1.16   0.245    -.4035112    .1035487
+                     2014  |  -.1534265   .1377999    -1.11   0.267    -.4246945    .1178416
+                     2015  |  -.1294212   .1486121    -0.87   0.385    -.4219737    .1631314
+                     2016  |  -.1422906   .1598118    -0.89   0.374    -.4568906    .1723093
+                     2017  |  -.1159311   .1693114    -0.68   0.494    -.4492315    .2173694
+                     2018  |  -.1397848    .180566    -0.77   0.440    -.4952407    .2156711
+                     2019  |  -.1480778   .1915535    -0.77   0.440    -.5251633    .2290078
+                     2020  |  -.1250728   .2029204    -0.62   0.538    -.5245347    .2743892
+                     2021  |  -.2110956   .2008934    -1.05   0.294    -.6065673    .1843761
+                     2022  |   -.217752   .2236893    -0.97   0.331     -.658099     .222595
+                     2023  |  -.3100881   .2406382    -1.29   0.199       -.7838    .1636238
+                           |
+country_id#c.year_centered |
+                      AUT  |  -.0120938   .0099161    -1.22   0.224    -.0316144    .0074268
+                      BEL  |  -.0057884   .0096081    -0.60   0.547    -.0247026    .0131258
+                      CAN  |          0  (omitted)
+                      CHL  |  -.0133801   .0114686    -1.17   0.244    -.0359568    .0091965
+                      COL  |   .0137826    .012343     1.12   0.265    -.0105154    .0380805
+                      CZE  |  -.0031407   .0086735    -0.36   0.718     -.020215    .0139336
+                      DEU  |  -.0109133   .0092152    -1.18   0.237    -.0290539    .0072274
+                      ESP  |  -.0340633      .0102    -3.34   0.001    -.0541427   -.0139839
+                      EST  |   .0168213   .0094858     1.77   0.077    -.0018522    .0354947
+                      FRA  |  -.0247871   .0105488    -2.35   0.019    -.0455532   -.0040211
+                      GBR  |  -.0149205   .0106373    -1.40   0.162    -.0358607    .0060198
+                      GRC  |   .0236131   .0114156     2.07   0.040     .0011408    .0460854
+                      HUN  |  -.0092086   .0086983    -1.06   0.291    -.0263318    .0079147
+                      IRL  |  -.0313475   .0098008    -3.20   0.002    -.0506409    -.012054
+                      ITA  |   .0108127   .0171113     0.63   0.528    -.0228721    .0444975
+                      LTU  |   .0477969   .0217233     2.20   0.029     .0050332    .0905605
+                      LUX  |  -.0433623   .0114735    -3.78   0.000    -.0659487   -.0207759
+                      LVA  |  -.0178103   .0213149    -0.84   0.404      -.05977    .0241494
+                      NLD  |  -.0249934   .0098165    -2.55   0.011    -.0443179    -.005669
+                      POL  |  -.0112596   .0090818    -1.24   0.216    -.0291376    .0066184
+                      PRT  |  -.0562772   .0123902    -4.54   0.000    -.0806682   -.0318862
+                      SVN  |  -.0109463   .0214168    -0.51   0.610    -.0531067    .0312141
+                      TUR  |          0  (omitted)
+                           |
+                     _cons |  -.0244347   1.662661    -0.01   0.988    -3.297491    3.248621
+---------------------------+----------------------------------------------------------------
+                   sigma_u |  .62057063
+                   sigma_e |  .10287705
+                       rho |  .97325269   (fraction of variance due to u_i)
+--------------------------------------------------------------------------------------------
+F test that all u_i=0: F(22, 277) = 73.82                    Prob > F = 0.0000
+
+. testparm i.year
+
+ ( 1)  2002.year = 0
+ ( 2)  2003.year = 0
+ ( 3)  2004.year = 0
+ ( 4)  2005.year = 0
+ ( 5)  2006.year = 0
+ ( 6)  2007.year = 0
+ ( 7)  2008.year = 0
+ ( 8)  2009.year = 0
+ ( 9)  2010.year = 0
+ (10)  2011.year = 0
+ (11)  2012.year = 0
+ (12)  2013.year = 0
+ (13)  2014.year = 0
+ (14)  2015.year = 0
+ (15)  2016.year = 0
+ (16)  2017.year = 0
+ (17)  2018.year = 0
+ (18)  2019.year = 0
+ (19)  2020.year = 0
+ (20)  2021.year = 0
+ (21)  2022.year = 0
+ (22)  2023.year = 0
+
+       F( 22,   277) =    1.38
+            Prob > F =    0.1232
+
+. xttest3
+
+Modified Wald test for groupwise heteroskedasticity
+in fixed effect regression model
+
+H0: sigma(i)^2 = sigma^2 for all i
+
+chi2 (23)  =        5513.32
+Prob > chi2 =          0.0000
+
+
+. capture noisily xtserial ln_gap ln_childcare ln_fatherweeks10 lag_lngdp ln_leave_gdp
+
+Wooldridge test for autocorrelation in panel data
+H0: no first-order autocorrelation
+    F(  1,      21) =     15.639
+           Prob > F =      0.0007
+
+. 
+. quietly xtpcse ln_gap ln_childcare i.year i.country_id c.year_centered#i.country_id, het corr(ar1)
+
+. estimates store build1
+
+. quietly xtpcse ln_gap ln_childcare ln_fatherweeks10 i.year i.country_id ///
+>     c.year_centered#i.country_id, het corr(ar1)
+
+. estimates store build2
+
+. quietly xtpcse ln_gap ln_childcare ln_fatherweeks10 lag_lngdp i.year i.country_id ///
+>     c.year_centered#i.country_id, het corr(ar1)
+
+. estimates store build3
+
+. 
+. xtpcse ln_gap ln_childcare ln_fatherweeks10 lag_lngdp ln_leave_gdp ///
+>     i.year i.country_id c.year_centered#i.country_id, het corr(ar1)
+
+Number of gaps in sample = 5
+note: computations for rho restarted at each gap.
+note: 3.country_id#c.year_centered omitted because of collinearity.
+note: 23.country_id#c.year_centered omitted because of collinearity.
+
+Prais–Winsten regression, heteroskedastic panels corrected standard errors
+
+Group variable:   country_id                    Number of obs     =        347
+Time variable:    year                          Number of groups  =         23
+Panels:           heteroskedastic (unbalanced)  Obs per group:
+Autocorrelation:  common AR(1)                                min =          1
+                                                              avg =  15.086957
+                                                              max =         22
+Estimated covariances      =        23          R-squared         =     0.9605
+Estimated autocorrelations =         1          Wald chi2(69)     =   22373.85
+Estimated coefficients     =        70          Prob > chi2       =     0.0000
+
+--------------------------------------------------------------------------------------------
+                           |            Het-corrected
+                    ln_gap | Coefficient  std. err.      z    P>|z|     [95% conf. interval]
+---------------------------+----------------------------------------------------------------
+              ln_childcare |   -.483933   .1360529    -3.56   0.000    -.7505917   -.2172743
+          ln_fatherweeks10 |   .0565808    .026992     2.10   0.036     .0036775    .1094842
+                 lag_lngdp |    .369495   .1615173     2.29   0.022     .0529268    .6860631
+              ln_leave_gdp |  -.0820969   .0276442    -2.97   0.003    -.1362786   -.0279153
+                           |
+                      year |
+                     2002  |  -.0027476   .0350396    -0.08   0.937    -.0714239    .0659287
+                     2003  |  -.0088615   .0380859    -0.23   0.816    -.0835084    .0657855
+                     2004  |   .0207996   .0384824     0.54   0.589    -.0546245    .0962237
+                     2005  |   .0444907   .0380338     1.17   0.242    -.0300541    .1190355
+                     2006  |   .0405348   .0362459     1.12   0.263    -.0305059    .1115755
+                     2007  |   .0501049   .0369998     1.35   0.176    -.0224134    .1226233
+                     2008  |   .0380894   .0379781     1.00   0.316    -.0363464    .1125251
+                     2009  |  -.0009823   .0373937    -0.03   0.979    -.0742725    .0723079
+                     2010  |    .012347   .0373945     0.33   0.741    -.0609449    .0856388
+                     2011  |    .020389   .0380917     0.54   0.592    -.0542694    .0950475
+                     2012  |  -.0231282   .0384779    -0.60   0.548    -.0985434    .0522871
+                     2013  |   .0199336   .0397192     0.50   0.616    -.0579147    .0977819
+                     2014  |   .0358327   .0402975     0.89   0.374    -.0431489    .1148144
+                     2015  |   .0657904   .0411958     1.60   0.110    -.0149518    .1465327
+                     2016  |   .0675538   .0420764     1.61   0.108    -.0149143     .150022
+                     2017  |   .1091314    .042695     2.56   0.011     .0254507    .1928121
+                     2018  |   .0998626   .0443482     2.25   0.024     .0129418    .1867834
+                     2019  |   .1064602   .0452704     2.35   0.019     .0177319    .1951885
+                     2020  |   .1413071   .0487543     2.90   0.004     .0457504    .2368638
+                     2021  |   .0702702   .0471908     1.49   0.136     -.022222    .1627624
+                     2022  |   .0560159   .0427824     1.31   0.190     -.027836    .1398678
+                     2023  |          0  (omitted)
+                           |
+                country_id |
+                      BEL  |  -.1252008   .0428945    -2.92   0.004    -.2092724   -.0411291
+                      CAN  |  -.0633608   .0453624    -1.40   0.162    -.1522694    .0255478
+                      CHL  |    1.24041   .2051791     6.05   0.000     .8382662    1.642553
+                      COL  |   1.324608   .3362515     3.94   0.000     .6655676    1.983649
+                      CZE  |   1.487016   .1594555     9.33   0.000     1.174489    1.799543
+                      DEU  |   .4002446   .0358587    11.16   0.000     .3299629    .4705263
+                      ESP  |   .4437284   .0861112     5.15   0.000     .2749535    .6125034
+                      EST  |   1.062101   .1690525     6.28   0.000     .7307639    1.393438
+                      FRA  |   .3360973   .0710344     4.73   0.000     .1968724    .4753222
+                      GBR  |   .2239981   .0497933     4.50   0.000     .1264051     .321591
+                      GRC  |   .5948692   .1393393     4.27   0.000     .3217692    .8679691
+                      HUN  |   1.491768   .2099864     7.10   0.000     1.080202    1.903334
+                      IRL  |  -.0507522   .0521287    -0.97   0.330    -.1529226    .0514183
+                      ITA  |   .5687097   .0611778     9.30   0.000     .4488034    .6886161
+                      LTU  |   -.421752   .4730949    -0.89   0.373    -1.349001    .5054971
+                      LUX  |  -.1804671   .1524339    -1.18   0.236     -.479232    .1182978
+                      LVA  |   .7350205   .3375461     2.18   0.029     .0734423    1.396599
+                      NLD  |  -.4060545   .0804034    -5.05   0.000    -.5636424   -.2484667
+                      POL  |   .9296388   .2325298     4.00   0.000     .4738888    1.385389
+                      PRT  |  -.1171246   .1415574    -0.83   0.408     -.394572    .1603229
+                      SVN  |   .0415523   .2023619     0.21   0.837    -.3550698    .4381744
+                      TUR  |   1.423039   .2821494     5.04   0.000     .8700362    1.976041
+                           |
+country_id#c.year_centered |
+                      AUT  |  -.0261691   .0055637    -4.70   0.000    -.0370738   -.0152644
+                      BEL  |  -.0208629   .0047541    -4.39   0.000    -.0301809   -.0115449
+                      CAN  |          0  (omitted)
+                      CHL  |  -.0289327   .0058086    -4.98   0.000    -.0403173   -.0175482
+                      COL  |  -.0007118   .0063703    -0.11   0.911    -.0131974    .0117738
+                      CZE  |  -.0177849   .0053371    -3.33   0.001    -.0282454   -.0073244
+                      DEU  |  -.0269693   .0044689    -6.03   0.000    -.0357282   -.0182104
+                      ESP  |  -.0485909   .0054155    -8.97   0.000    -.0592051   -.0379768
+                      EST  |  -.0025422   .0086044    -0.30   0.768    -.0194065     .014322
+                      FRA  |  -.0389025   .0038782   -10.03   0.000    -.0465036   -.0313014
+                      GBR  |    -.02884   .0044972    -6.41   0.000    -.0376543   -.0200256
+                      GRC  |   .0099042   .0054438     1.82   0.069    -.0007655    .0205739
+                      HUN  |  -.0272519   .0096726    -2.82   0.005    -.0462098    -.008294
+                      IRL  |   -.045385   .0076385    -5.94   0.000    -.0603562   -.0304138
+                      ITA  |  -.0039375   .0047668    -0.83   0.409    -.0132802    .0054052
+                      LTU  |   .0331472   .0514101     0.64   0.519    -.0676146    .1339091
+                      LUX  |  -.0571941   .0068776    -8.32   0.000    -.0706738   -.0437143
+                      LVA  |  -.0330676   .0324636    -1.02   0.308    -.0966951    .0305599
+                      NLD  |  -.0408056   .0045875    -8.89   0.000     -.049797   -.0318143
+                      POL  |   -.030823   .0106604    -2.89   0.004    -.0517169   -.0099291
+                      PRT  |  -.0708478   .0099982    -7.09   0.000     -.090444   -.0512517
+                      SVN  |  -.0306457   .0180934    -1.69   0.090    -.0661082    .0048168
+                      TUR  |  -.0172983   .0077765    -2.22   0.026      -.03254   -.0020566
+                           |
+                     _cons |   -.852478   1.728014    -0.49   0.622    -4.239324    2.534368
+---------------------------+----------------------------------------------------------------
+                       rho |   .2926633
+--------------------------------------------------------------------------------------------
+
+. estimates store main_pcse
+
+. testparm ln_childcare
+
+ ( 1)  ln_childcare = 0
+
+           chi2(  1) =   12.65
+         Prob > chi2 =    0.0004
+
+. 
+. etable, estimates(build1 build2 build3 main_pcse) ///
+>     keep(ln_childcare ln_fatherweeks10 lag_lngdp ln_leave_gdp) ///
+>     mstat(N) showstars showstarsnote column(index) export(oecd_childcare_buildup.docx, replace)
+
+------------------------------------------------------------------
+                            1          2          3          4    
+------------------------------------------------------------------
+ln_childcare            -0.522 **  -0.576 **  -0.486 **  -0.484 **
+                       (0.132)    (0.132)    (0.139)    (0.136)   
+ln_fatherweeks10                    0.071 **   0.062 *    0.057 * 
+                                  (0.027)    (0.027)    (0.027)   
+lag_lngdp                                      0.369 *    0.369 * 
+                                             (0.168)    (0.162)   
+ln_leave_gdp                                             -0.082 **
+                                                        (0.028)   
+Number of observations     347        347        347        347   
+------------------------------------------------------------------
+** p<.01, * p<.05
+(collection ETable exported to file oecd_childcare_buildup.docx)
+
+. 
+. quietly su ln_gap, detail
+
+. generate ln_gap_winsor = ln_gap
+
+. replace ln_gap_winsor = r(p1) if ln_gap_winsor < r(p1) & ln_gap_winsor != .
+(3 real changes made)
+
+. replace ln_gap_winsor = r(p99) if ln_gap_winsor > r(p99) & ln_gap_winsor != .
+(3 real changes made)
+
+. 
+. quietly su lag_lngdp, detail
+
+. generate lag_lngdp_winsor = lag_lngdp
+
+. replace lag_lngdp_winsor = r(p1) if lag_lngdp_winsor < r(p1) & lag_lngdp_winsor != .
+(3 real changes made)
+
+. replace lag_lngdp_winsor = r(p99) if lag_lngdp_winsor > r(p99) & lag_lngdp_winsor != .
+(3 real changes made)
+
+. 
+. quietly su ln_childcare, detail
+
+. generate ln_childcare_winsor = ln_childcare
+
+. replace ln_childcare_winsor = r(p1) if ln_childcare_winsor < r(p1) & ln_childcare_winsor != .
+(0 real changes made)
+
+. replace ln_childcare_winsor = r(p99) if ln_childcare_winsor > r(p99) & ln_childcare_winsor != .
+(3 real changes made)
+
+. 
+. quietly su ln_fatherweeks10, detail
+
+. generate ln_fatherweeks10_winsor = ln_fatherweeks10
+
+. replace ln_fatherweeks10_winsor = r(p1) if ln_fatherweeks10_winsor < r(p1) & ln_fatherweeks10_winso
+> r != .
+(0 real changes made)
+
+. replace ln_fatherweeks10_winsor = r(p99) if ln_fatherweeks10_winsor > r(p99) & ln_fatherweeks10_win
+> sor != .
+(0 real changes made)
+
+. 
+. quietly su ln_leave_gdp, detail
+
+. generate ln_leave_gdp_winsor = ln_leave_gdp
+
+. replace ln_leave_gdp_winsor = r(p1) if ln_leave_gdp_winsor < r(p1) & ln_leave_gdp_winsor != .
+(3 real changes made)
+
+. replace ln_leave_gdp_winsor = r(p99) if ln_leave_gdp_winsor > r(p99) & ln_leave_gdp_winsor != .
+(3 real changes made)
+
+. 
+. xtpcse ln_gap_winsor ln_childcare_winsor ln_fatherweeks10_winsor ///
+>     lag_lngdp_winsor ln_leave_gdp_winsor i.year i.country_id ///
+>     c.year_centered#i.country_id, het corr(ar1)
+
+Number of gaps in sample = 5
+note: computations for rho restarted at each gap.
+note: 3.country_id#c.year_centered omitted because of collinearity.
+note: 23.country_id#c.year_centered omitted because of collinearity.
+
+Prais–Winsten regression, heteroskedastic panels corrected standard errors
+
+Group variable:   country_id                    Number of obs     =        347
+Time variable:    year                          Number of groups  =         23
+Panels:           heteroskedastic (unbalanced)  Obs per group:
+Autocorrelation:  common AR(1)                                min =          1
+                                                              avg =  15.086957
+                                                              max =         22
+Estimated covariances      =        23          R-squared         =     0.9614
+Estimated autocorrelations =         1          Wald chi2(69)     =   23185.44
+Estimated coefficients     =        70          Prob > chi2       =     0.0000
+
+--------------------------------------------------------------------------------------------
+                           |            Het-corrected
+             ln_gap_winsor | Coefficient  std. err.      z    P>|z|     [95% conf. interval]
+---------------------------+----------------------------------------------------------------
+       ln_childcare_winsor |  -.4899709    .133687    -3.67   0.000    -.7519925   -.2279492
+   ln_fatherweeks10_winsor |   .0562071   .0269098     2.09   0.037     .0034648    .1089493
+          lag_lngdp_winsor |    .426443   .1606803     2.65   0.008     .1115154    .7413707
+       ln_leave_gdp_winsor |  -.0756108    .027967    -2.70   0.007    -.1304252   -.0207965
+                           |
+                      year |
+                     2002  |  -.0033228   .0349203    -0.10   0.924    -.0717654    .0651198
+                     2003  |  -.0079419   .0379765    -0.21   0.834    -.0823745    .0664907
+                     2004  |   .0228397   .0383235     0.60   0.551     -.052273    .0979524
+                     2005  |   .0459052   .0378942     1.21   0.226     -.028366    .1201765
+                     2006  |   .0384485   .0360619     1.07   0.286    -.0322315    .1091286
+                     2007  |   .0480562   .0366603     1.31   0.190    -.0237966    .1199091
+                     2008  |    .037284   .0371718     1.00   0.316    -.0355714    .1101393
+                     2009  |  -.0025727   .0366416    -0.07   0.944    -.0743889    .0692436
+                     2010  |    .013624   .0370675     0.37   0.713     -.059027     .086275
+                     2011  |    .022269   .0377172     0.59   0.555    -.0516553    .0961933
+                     2012  |  -.0203247   .0379806    -0.54   0.593    -.0947654    .0541159
+                     2013  |   .0246145   .0392035     0.63   0.530     -.052223    .1014521
+                     2014  |     .04153   .0398597     1.04   0.297    -.0365936    .1196536
+                     2015  |   .0697368   .0405011     1.72   0.085    -.0096439    .1491175
+                     2016  |   .0777945   .0409235     1.90   0.057    -.0024141    .1580031
+                     2017  |   .1129107   .0414608     2.72   0.006      .031649    .1941723
+                     2018  |   .1031316   .0428016     2.41   0.016      .019242    .1870211
+                     2019  |   .1100189    .043658     2.52   0.012     .0244509     .195587
+                     2020  |    .148238   .0470021     3.15   0.002     .0561157    .2403604
+                     2021  |   .0805371   .0462934     1.74   0.082    -.0101963    .1712705
+                     2022  |   .0600258   .0412804     1.45   0.146    -.0208822    .1409339
+                     2023  |          0  (omitted)
+                           |
+                country_id |
+                      BEL  |  -.1212819   .0433676    -2.80   0.005     -.206281   -.0362829
+                      CAN  |  -.0657239   .0457433    -1.44   0.151    -.1553791    .0239313
+                      CHL  |   1.309756   .2045207     6.40   0.000     .9089032     1.71061
+                      COL  |   1.418125    .323644     4.38   0.000     .7837947    2.052456
+                      CZE  |   1.532921   .1587515     9.66   0.000     1.221774    1.844068
+                      DEU  |   .4038747   .0364456    11.08   0.000     .3324426    .4753068
+                      ESP  |    .470677   .0865644     5.44   0.000     .3010139    .6403401
+                      EST  |   1.103762   .1681481     6.56   0.000     .7741974    1.433326
+                      FRA  |   .3450132   .0713426     4.84   0.000     .2051842    .4848422
+                      GBR  |   .2235091   .0493648     4.53   0.000     .1267558    .3202624
+                      GRC  |    .634463   .1379015     4.60   0.000     .3641809     .904745
+                      HUN  |   1.557152   .2102598     7.41   0.000     1.145051    1.969254
+                      IRL  |  -.0586727   .0518489    -1.13   0.258    -.1602948    .0429494
+                      ITA  |   .5861233   .0618326     9.48   0.000     .4649336    .7073129
+                      LTU  |  -.2808776    .433445    -0.65   0.517    -1.130414    .5686589
+                      LUX  |  -.2340194   .1512229    -1.55   0.122    -.5304109    .0623721
+                      LVA  |   .8024881   .3372667     2.38   0.017     .1414576    1.463519
+                      NLD  |  -.3921842    .080736    -4.86   0.000    -.5504238   -.2339446
+                      POL  |    1.00705   .2318519     4.34   0.000     .5526283    1.461471
+                      PRT  |  -.0798373   .1408806    -0.57   0.571    -.3559582    .1962837
+                      SVN  |    .082465    .199975     0.41   0.680    -.3094789    .4744088
+                      TUR  |   1.530808   .2809918     5.45   0.000     .9800744    2.081542
+                           |
+country_id#c.year_centered |
+                      AUT  |  -.0267412   .0056017    -4.77   0.000    -.0377203    -.015762
+                      BEL  |   -.021743   .0047838    -4.55   0.000     -.031119   -.0123669
+                      CAN  |          0  (omitted)
+                      CHL  |  -.0299007   .0058972    -5.07   0.000    -.0414591   -.0183423
+                      COL  |   .0011633   .0055096     0.21   0.833    -.0096354     .011962
+                      CZE  |   -.019465   .0053725    -3.62   0.000    -.0299948   -.0089352
+                      DEU  |  -.0280881   .0045096    -6.23   0.000    -.0369267   -.0192495
+                      ESP  |  -.0493322   .0054077    -9.12   0.000    -.0599311   -.0387333
+                      EST  |    -.00403    .008693    -0.46   0.643     -.021068     .013008
+                      FRA  |   -.039398   .0038772   -10.16   0.000    -.0469973   -.0317988
+                      GBR  |  -.0294457   .0044936    -6.55   0.000    -.0382531   -.0206384
+                      GRC  |   .0098712   .0053787     1.84   0.066    -.0006709    .0204132
+                      HUN  |  -.0290479   .0097754    -2.97   0.003    -.0482073   -.0098885
+                      IRL  |  -.0476548   .0077039    -6.19   0.000    -.0627542   -.0325553
+                      ITA  |  -.0046112    .004632    -1.00   0.319    -.0136898    .0044674
+                      LTU  |   .0236236   .0461786     0.51   0.609    -.0668848     .114132
+                      LUX  |  -.0578801    .006763    -8.56   0.000    -.0711353   -.0446249
+                      LVA  |  -.0352374   .0324562    -1.09   0.278    -.0988503    .0283755
+                      NLD  |  -.0416483   .0046109    -9.03   0.000    -.0506854   -.0326112
+                      POL  |  -.0338811   .0107082    -3.16   0.002    -.0548688   -.0128933
+                      PRT  |  -.0684993   .0100346    -6.83   0.000    -.0881668   -.0488318
+                      SVN  |  -.0325653    .017869    -1.82   0.068    -.0675879    .0024574
+                      TUR  |  -.0206975   .0077677    -2.66   0.008     -.035922    -.005473
+                           |
+                     _cons |  -1.447489   1.718384    -0.84   0.400     -4.81546    1.920482
+---------------------------+----------------------------------------------------------------
+                       rho |   .2975379
+--------------------------------------------------------------------------------------------
+
+. estimates store winsor_pcse
+
+. testparm ln_childcare_winsor
+
+ ( 1)  ln_childcare_winsor = 0
+
+           chi2(  1) =   13.43
+         Prob > chi2 =    0.0002
+
+. 
+. etable, estimates(main_pcse winsor_pcse) ///
+>     keep(ln_childcare ln_fatherweeks10 lag_lngdp ln_leave_gdp ///
+>          ln_childcare_winsor ln_fatherweeks10_winsor lag_lngdp_winsor ln_leave_gdp_winsor) ///
+>     mstat(N) showstars showstarsnote column(index) export(oecd_childcare_comparison.docx, replace)
+
+---------------------------------------------
+                             1          2    
+---------------------------------------------
+ln_childcare             -0.484 **           
+                        (0.136)              
+ln_fatherweeks10          0.057 *            
+                        (0.027)              
+lag_lngdp                 0.369 *            
+                        (0.162)              
+ln_leave_gdp             -0.082 **           
+                        (0.028)              
+ln_childcare_winsor                 -0.490 **
+                                   (0.134)   
+ln_fatherweeks10_winsor              0.056 * 
+                                   (0.027)   
+lag_lngdp_winsor                     0.426 **
+                                   (0.161)   
+ln_leave_gdp_winsor                 -0.076 **
+                                   (0.028)   
+Number of observations      347        347   
+---------------------------------------------
+** p<.01, * p<.05
+(collection ETable exported to file oecd_childcare_comparison.docx)
+
+. 
+. capture log close
