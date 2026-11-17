@@ -3,6 +3,12 @@
 Generated: 12 November 2026
 Companion to the 18 November Econometric Files package.
 
+> Direction note (16 November 2026): this skeleton was written for the retired
+> father-specific-leave question. The structure, section budgets and format
+> rules still apply, but the question, variables, sample and results framing
+> must be updated to the OECD childcare chain (see `HANDOVER.md` §2 and §4)
+> before any prose is drafted.
+
 ## Scope note
 
 The 18 November submission is **one set of do-, log-, data-, and image files** uploaded per team to Canvas (Course Outline, "Econometric Files · 10%"; START HERE, Step 6: "Prepare one complete set of do-, log-, data-, and image files for the Canvas submission"). It contains **no stand-alone written document**. The graded written deliverable is the Final Paper due 11 December (30%), drafted 16–25 November. This skeleton therefore covers the Final Paper; a short README skeleton for the 11/18 package is included at the end in case the posted Canvas checklist asks for a file guide.

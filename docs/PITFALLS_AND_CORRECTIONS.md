@@ -1,6 +1,6 @@
 # Pitfalls and corrections — what went wrong and what replaced it
 
-Last updated 14 November 2026. Read this before proposing a "fix": several
+Last updated 16 November 2026. Read this before proposing a "fix": several
 plausible-looking fixes have already been tried and rejected. Every row names
 the file or log where the correction can be verified.
 
@@ -8,9 +8,8 @@ the file or log where the correction can be verified.
 
 | Pitfall | Correction | Evidence |
 |---|---|---|
-| "The European subsample gives more meaningful p-values" | False. The Test7 subsample condition is high-income countries and includes Chile and Colombia, not a Europe-only group | `OECD_WEEK_LENGTH_TEST7.do`, its original log |
-| Earlier wage-gap / 17-industry / 26-European-country significant results | Retired research direction (21 Oct). Do not reuse any coefficient | `START_HERE_Research_Context.txt` |
-| "Europe-only p-values are significant, so roll back the specification" | All historically significant p-values came from unclustered SEs, a broken lag, or the retired direction. Rolling back for stars conflicts with academic integrity and the checklist | `log_files/3_results_261109.log` |
+| Quoting numbers from the retired father-leave chain | The Europe-primary design (N=292/295, OECD extension 348/463, DiD, event study, Test7 interaction) was retired on 16 November 2026 when the team adopted the OECD childcare panel. None of its coefficients or p-values may appear in the submission | `docs/RESEARCH_DECISIONS.md` §0 |
+| "Roll back the specification to get stars" | Any historically significant reading traced to unclustered SEs, a broken lag, or a retired direction stays retired. Rolling back for significance conflicts with academic integrity and the checklist | `log_files/3_results_261109.log` |
 | "Only one course checklist exists, so there is no separate 18 Nov requirement" | Over-inference. The Course Outline's "posted checklist" is the Canvas assignment page `Econometric Files for Final Paper.pdf`, which is a different document from `Final Paper Checklist_ ... .pdf` | Both PDFs; `docs/COURSE_REQUIREMENTS.md` §0 |
 | "March 23rd is the deadline" in the Canvas PDF | Stale template from an earlier term; header says "Due No Due Date". Deadline is 18 Nov 2026 per `ECON 490 Course Outline.pdf` p.14 | Both PDFs |
 
@@ -18,45 +17,46 @@ the file or log where the correction can be verified.
 
 | Pitfall | Correction |
 |---|---|
-| A newly uploaded "new version" of Test7 was assumed to be different | md5 and line-by-line diff proved it was byte-identical to the 5 Nov handoff. Always compare content, not filename or timestamp |
-| GDP lag computed inside the research panel | Dropped the first year and the year before each gap. Now the lag is taken on the full annual WDI series before merging: Europe 295/295, OECD 477/477. The old event-study k=+1 `+2.020 (p=0.034)` and DiD `+0.265 (p=0.843)` are void |
-| Winsorization reported as "handled" | All four `replace` commands returned `0 real changes made`. Current chain uses `generate` -> `recast double` -> `replace` and prints the real change counts (4 outcome rows, 4 lagged-GDP rows) |
-| `generate double` used for precision | Not in the permitted command vocabulary; the three-step `generate` / `recast double` / `replace` construction preserves precision with allowed syntax |
+| A newly uploaded "new version" of a file was assumed to be different | md5 and line-by-line diff proved one such file byte-identical to its predecessor. Always compare content, not filename or timestamp |
+| A lag computed inside the research panel | It drops the first year and the year before each gap, letting outcome availability select the sample. Every lag in the current chain — GDP, father-specific leave weeks, maternity/parental leave spending, and the SOCX spending lag — is computed on its own full annual series before any merge |
+| The UTF-8 leave timeseries broke the merge | Stata misread the workbook's UTF-8 export as ISO-8859-1, so the Türkiye rows failed to match and 56 observations dropped. The pre-converted CSV is written in latin-1 (`data_raw/oecd_leave_timeseries.csv`) |
+| Leave weeks stored as text with slash-separated options | Parsed with `real()`; the two slash options are replaced by their lower bound; the three year corrections and four late-snapshot corrections are hardcoded literal values taken from the recorded next year. The `string()` construction was removed on 16 Nov 2026 for lack of a first-hand course source; the literal version leaves the built panel bit-identical |
+| Winsorization reported as "handled" | An earlier attempt left every `replace` at "(0 real changes made)". The current repeat covers all six continuous model variables with `summarize, detail` percentiles plus `generate` / `replace` |
+| `generate double` / `recast double` used for precision | Not in the permitted command vocabulary; neither is needed now that corrections are literal replaces |
 | Four `destring` commands were no-ops | Log printed "already numeric; no replace"; removed |
-| Two verbatim-duplicated policy-history build blocks | Merged into one; `1_build_data_261109.do` shrank from 357 to 275 lines |
-| Removing `stringcols(_all)` / `allstring` changed CSV md5 | Only float/double storage precision (max 1.03e-05 pp Europe, 7.08e-06 pp OECD). All coefficients, SEs, p-values and N unchanged. Team rule: prefer full whitelist compliance over byte-identical CSVs when only precision changes |
-| Assuming dropping `leave_gdp` restores OECD N=477 | It does not: N stays 463 because `lag_fatherweeks10` binds | 
-| Leave lag built after the merge | `L1.` was computed on the assembled panel, so a country-year whose outcome was missing in year t-1 lost the lag in year t even though the policy value was known, letting outcome availability choose the sample. The series and its lag are now built on the policy panel before merging: 20 country-years return in each sample, no existing value changes, and the Europe country-clustered p moves from 0.065 to 0.113 |
-| `CheatSheet` literally shows `cellrange()` but it had been listed as out-of-bounds | Index corrected |
-| Splitting countries by initial leave generosity | Median initial father-specific entitlement is 0 across 26 countries, so all fell into one group. Rejected |
+| Two verbatim-duplicated build blocks | Merged into one build per raw source |
+| Removing `stringcols(_all)` / `allstring` changed CSV md5 | Only float/double storage precision changed. All coefficients, SEs, p-values and N unchanged. Team rule: prefer full whitelist compliance over byte-identical CSVs when only precision changes |
+| Assuming dropping a control restores the full panel | The complete-case count is set by whichever variable binds first. Check the `childcare_sample` breakdown in the build log before claiming an N |
+| Splitting countries by initial leave generosity | Median initial father-specific entitlement is 0 across the OECD panel, so all countries fell into one group. Rejected |
 
 ## C. Stata syntax and workflow errors
 
 | Pitfall | Correction |
 |---|---|
 | `etable drop()` | Returns r(198); use `keep()` everywhere |
-| `dtable` expected to give min/max | It does not; `collapse` + `export excel` is used |
+| `dtable` expected to give min/max | It does not; `collapse` plus `export excel` / `export delimited` is used |
+| `testparm i.country_id` after `xtreg, fe` | Aborts with "no such variables" (r(111)) because the fixed-effects estimator absorbs the country effects. Run it after the LSDV `regress` that includes `i.country_id` |
 | `inlist()` with 19 string country codes | Stata hangs; split into three `replace` lines of at most 9 codes each |
 | `clear all` in a numbered do-file | Wipes the globals defined by the master and breaks the chain. Master uses `clear`; sub-do-files keep log blocks only |
-| Six added regressions made `3_results` ~30-33 pages | Moved the build-up and subset tables into a fifth numbered do-file with its own log; every log is now under 25 pages |
+| Table work pushing a log past its page limit | The build-up and winsorized work live in a fourth numbered do-file with its own log; Workflow Guide 18 §18.2.2 allows it |
 | `bin()` and `subtitle()` in the two-group histogram | Neither option appears in the course handouts. Removed, and `lcolor(black)` added from the handouts' literal two-histogram example so both overlaid series remain visible |
 | `quietly` suggested to shorten logs | Zero occurrences in the course handouts; not used |
-| `split parse()`, `egen rowmin/rowmax/rownonmiss`, `cond()`, `[_n-1]` subscripts | Replaced with `generate` / `replace` / `real()` / `missing()` and the course-taught `L1.` / `F1.` operators after `encode` + `xtset` + `sort` |
+| `split parse()`, `egen rowmin/rowmax/rownonmiss`, `cond()`, `[_n-1]` subscripts | Replaced with `generate` / `replace` / `missing()` and the course-taught `L1.` / `F1.` operators after `encode` + `xtset` + `sort` |
 | Live official-endpoint imports (PR #1, commit `8efda45`) | Rejected, on reproducibility rather than availability. The ILOSTAT API endpoint returns HTTP 200 with 0 bytes for `.csv` and `.csv.gz` and the Eurostat SDMX 3.0 call did not finish in 20 s, but the ILOSTAT bulk download works: a 15 November re-download was byte-identical to the snapshot. The decisive reason is that a live revision would change the numbers the submitted log reports |
-| Do-file comments that read like delivery notes | Removed change logs, date/version tags, module numbers, course-checklist references, paper-writing hints and syntax justifications. One short `* ` line per block now. `display` is kept only for two `r()` counts |
+| Do-file comments that read like delivery notes | Removed change logs, date/version tags, module numbers, course-checklist references, paper-writing hints and syntax justifications. One short `* ` line per block now |
 
 ## D. Submission-format traps
 
 | Pitfall | Correction |
 |---|---|
-| `.xlsx` submitted as the summary table | Canvas allows only log, csv, png, do, docx, jpeg. Both `.csv` and `.xlsx` are produced locally; upload the `.csv` (and a `.docx` version if a Word table is wanted) |
+| `.xlsx` submitted as the summary table | Canvas lists only log, csv, png, do, docx, jpeg. The summary table is exported as both `.xlsx` and `.csv`; try the Excel file first and fall back to the CSV if Canvas rejects it |
 | `.dta` uploaded | Not an allowed type. Upload the `.csv` copies from `data_raw/` and `data_final/` |
-| One merged log | Would be roughly 55 pages. Four numbered logs are kept separate, each generated by its own do-file, as Workflow Guide 18 allows |
-| Build-up table with mixed estimation samples | The first three columns used 463 observations and the fourth 348 because `leave_gdp` is missing for 115 country-years; coefficient changes across columns were not interpretable as control-variable effects. All four columns now share one `same_sample` flag (`generate` then one `replace` per covariate with `missing()`), while the subset table keeps a separate 463-observation all-countries column so 350 + 113 closes |
-| "All variables winsorized" applied to only two variables | The original repeat winsorized the outcome and lagged log GDP. It now covers all five continuous variables with course-taught `summarize, detail` + `generate` / `recast double` / `replace`, and records that lagged leave weeks changes 0 observations under a 1/99 rule rather than claiming it was "handled" |
-| Canvas comments quoting N=295 beside a smaller estimation-sample figure | 295 is the input panel and the DiD / event-study N; all main FE regressions use 292. The draft now separates the two and also distinguishes unmatched merge rows from matched rows lost to missing covariates |
-| Build-up table without FE "yes/no" rows | Stata's `etable` can only put this in a note using permitted commands. The assignment explicitly says the exported Word file needs editing afterwards; adding the two rows is a manual step for the person formatting tables |
-| Non-European subset column read as a real estimate | 7 country groups, one of them contributing a single observation, and 113 observations, coefficient 20.247. Kept for the required three columns, but the table note and this handover say it must not be interpreted |
+| One merged log | Would be roughly 50 pages. Four numbered logs are kept separate, each generated by its own do-file, as Workflow Guide 18 allows |
+| Build-up table with mixed estimation samples | All five build-up columns share the same 347-observation complete-case sample, so coefficient changes read purely as the effect of added controls |
+| "All variables winsorized" applied to only some variables | The current repeat covers all six continuous model variables (outcome, lagged spending, lagged leave weeks, lagged log GDP, lagged GDP growth, leave spending) |
+| Canvas comments quoting the panel N beside the estimation N | 477 is the input panel; 347 is the complete-case estimation sample; 309 + 38 = 347 in the subset table. The draft separates the two and also distinguishes unmatched merge rows from matched rows lost to missing covariates |
+| Build-up table without FE "yes/no" rows | `etable` has no fixed-effects row option in the permitted vocabulary. The assignment explicitly says the exported Word file needs editing afterwards; adding the two rows is a manual step for the person formatting tables |
+| "Other OECD" subset column read as a real estimate | 4 country groups, 38 observations, coefficient −4.111 (p = 0.411). Kept for the required three columns, but the table note and this repository say it must not be interpreted |
 | Assuming a GitHub commit equals a Canvas submission | It does not. Canvas upload is a manual team action |
 
 ## E. Method of working (process rules)

@@ -12,9 +12,8 @@ source: as of 16 November 2026 it has been removed from the whitelist, and
 nothing is permitted on the strength of that handout alone.
 
 Commands that appeared only in the CheatSheet, and are therefore no longer
-permitted, are listed in §7. Several of them are still present in the current
-do-files; those are named explicitly as outstanding items to replace before
-submission, not silently treated as allowed.
+permitted, are listed in §7. All of them were removed from the do-files by
+16 November 2026; §7 records what replaced them.
 
 ## 1. Permitted command set
 
@@ -46,13 +45,20 @@ only in the CheatSheet and are now out (see §7).
 **Variable construction**
 
 - `generate`, `replace`
-- `egen ... = mean()`; see the documented extension below for `min()` / `max()`
-- functions `missing()`, `inlist()`, `inrange()`, `log()`, `real()`, `string()`
+- `egen ... = mean()`; see the documented extensions below for `min()` / `max()`
+- functions `missing()`, `inlist()`, `inrange()`, `log()`; `real()` is a
+  documented extension (§2)
 - operators `== != > < >= <=`, `& | !`
 - factor notation `i.` `c.` `#` `##`; lag and lead operators `L1.` `L2.` `F1.`
+- reshaping: `reshape long`, `reshape wide`
 - `foreach`, `forvalues`, `local`, `global`, `if` / `else`
 
 `recast double` is not on this list; it appeared only in the CheatSheet (see §7).
+The `string()` function is not on this list either: two targeted searches of
+the two source sets found no verbatim use, and the one place the do-files
+needed it (writing corrected leave weeks back into a text column) was replaced
+on 16 November 2026 by numeric parsing plus literal `replace` values, which
+left every downstream number unchanged.
 
 **Estimation**
 
@@ -108,20 +114,22 @@ are demonstrated only in the CheatSheet, which is no longer a source. The
 any of the three source sets. None is demonstrated in the COMET or Test/Quiz
 course text. §7 names which of them the current do-files still use.
 
-## 2. The one documented exception
+## 2. The two documented exceptions
 
-This one is deliberate and is described here so that it is not treated as a
-violation. It cannot change a coefficient, a standard error or a sample size.
+These are deliberate and are described here so that they are not treated as
+violations. Neither can change a coefficient, a standard error or a sample
+size.
 
 | Exception | Where | Why | What the handouts do show |
 |---|---|---|---|
-| `egen min()` / `egen max()` | `1_build_data_261109.do` | Smallest and largest policy year per country | `egen ... = mean()` in the COMET within-group module; `min()` and `max()` are the same function family |
+| `egen min()` / `egen max()` | `1_build_data_261109.do` (ILOSTAT unreliability flag) | Flag a country-year when any underlying row is flagged; `max()` of a 0/1 expression is the direct form | `egen ... = mean()` in the COMET within-group module; `min()` and `max()` are the same function family |
+| `real()` | `1_build_data_261109.do` (leave-week parsing) | The OECD workbook ships leave weeks as text, sometimes with two slash-separated options; the numeric value must be parsed from the text and the slash options replaced by their lower bound | No verbatim form was found in either source set; `destring` is not course material either, so parsing with `real()` plus literal `replace` values is the only in-vocabulary reading |
 
 There used to be four exceptions. The other three relied on the CheatSheet and
 were removed with it on 16 November 2026: the three-step `generate` +
 `recast double` + `replace` pattern, the `dtable ..., continuous(...,
-statistic(...))` form, and `etable ..., note(...)`. They are now listed in §1
-as removed commands, and §7 names where the do-files still use them.
+statistic(...))` form, and `etable ..., note(...)`. The `string()` function was
+removed from the do-files the same day for lack of a first-hand source.
 
 ## 3. Comment rules
 
@@ -151,9 +159,8 @@ The test: a grader who has never seen this project should be able to read the
 comment and learn what the code does — not what the team did last week.
 
 **`display` is not a commenting device.** It is used only where an `r()` result
-has to be written into the log. Currently that is the five winsorization change
-counts in `4_tables_261109.do`. Sample sizes, section headers and "done"
-messages are not printed.
+has to be written into the log. None of the current do-files needs it; sample
+sizes, section headers and "done" messages are not printed.
 
 ## 4. Coding level
 
@@ -168,13 +175,18 @@ line.
 - Panel setup is explicit: `encode`, `xtset`, then `sort`.
 - No macro metaprogramming beyond `global` for paths and controls and `local`
   for percentile cut-offs.
-- One build of each raw source, reused rather than rebuilt under different
-  suffixes. The current build uses `tempfile` for this, but `tempfile` is no
-  longer on the whitelist (§7); the replacement has not been made yet.
-- No no-op commands. A `destring` that prints "already numeric; no replace", or
-  a winsorization step that changes zero observations, must be removed or
-  recorded. The current code records zero-change winsorization with `count`,
-  which is likewise no longer on the whitelist (§7).
+- One build of each raw source, written to fixed intermediate files
+  (`tmp_*.dta` in `data_final/`) and reused by the later `use` and `merge`
+  steps.
+- No no-op commands. A command that prints "already numeric; no replace" or
+  "(0 real changes made)" must be removed or restructured. The two `weeks_all`
+  slash-option replaces print "(0 real changes made)" because the slash text
+  occurs only in the paid column; they stay as the symmetric counterpart of the
+  `fatherweeks` replaces and are documented here.
+- Fixed-effects tests belong where the coefficients exist: `testparm
+  i.country_id` runs after the LSDV `regress` that includes `i.country_id`.
+  After `xtreg, fe` the country effects are absorbed and the test aborts with
+  "no such variables".
 
 ## 5. Structure of a do-file
 
@@ -214,15 +226,14 @@ Run these before any push. All six are cheap and each has caught a real defect.
 5. Recheck the four log lengths after 80-character wrapping against the
    assignment's log limit (the instructor confirmed a 35-page ceiling on
    16 November 2026).
-6. Confirm the root do-file copies and the `do_files/` copies are identical.
 
 ## 7. Where each permitted command is demonstrated
 
 This table records the two remaining sources only: the COMET Notebook modules
 and the StataTest / ECON490Quizzes question sets. It replaces the two
 Chinese-language command indexes that used to sit in `docs/`. If a command is
-not demonstrated in one of those two sources and is not the single exception in
-§2, it is not permitted. The CheatSheet is not a source.
+not demonstrated in one of those two sources and is not one of the two
+exceptions in §2, it is not permitted. The CheatSheet is not a source.
 
 **COMET Notebook modules 02–18** (`02 - Working with Do-Files` through
 `18 - Stata Workflow Guide`) and the **Test / Quiz** question sets, combined:
@@ -236,6 +247,7 @@ not demonstrated in one of those two sources and is not the single exception in
 | 06 Generating variables | `generate`, `replace`, `label variable`, `rename`, `encode`, `xtset`, arithmetic and comparison operators |
 | 07 Within-group analysis | `bysort`, `collapse (mean) (sd) (min) (max) (count)`, `preserve`, `restore`, `keep if`, `egen ... = mean()` |
 | 08 Combining datasets | `merge m:1`, `merge 1:1`, `duplicates report` |
+| 08a Reshaping | `reshape long`, `reshape wide` |
 | 09 Visuals | `twoway (scatter) (lfit) (connected) (histogram)`, `histogram`, `title()`, `xtitle()`, `ytitle()`, `legend()`, `graphregion(color(white))`, `graph export ..., as(png) replace` |
 | 11 Regression | `regress`, `i.var`, `c.var`, `#`, `##`, `predict` |
 | 12 Exporting output | `etable, estimates() mstat(N) mstat(r2) showstars showstarsnote varlabel column(dvlabel) keep() export()`, `coefplot` |
@@ -245,24 +257,22 @@ not demonstrated in one of those two sources and is not the single exception in
 | 16 Differences-in-differences | `1.treated#1.post`, event-time dummies built with `generate` + `replace` |
 | 18 Stata Workflow Guide | `/* Project info */` header, directory globals, `capture noisily do` in a fixed order, `clear` rather than `clear all` |
 
-**Dropped with the CheatSheet, and still used in the current do-files.** These
-are recorded so the gap is visible. They are not permitted under this
-whitelist, and must be replaced before the files are submitted. The do-files
-were deliberately left unchanged in this round.
+**Removed with the CheatSheet, and no longer used anywhere.** Each row names
+what replaced it in the current do-files.
 
-| Command or option | Where the current do-files use it |
+| Command or option | Replacement in the current chain |
 |---|---|
-| `isid` | `1_build_data_261109.do` (main); `1_build_data_261116.do` (childcare branch) |
-| `tempfile` | `1_build_data_261109.do` (main); `1_build_data_261116.do`, `5_childcare_robust_261116.do` (childcare branch) |
-| `recast double` | `1_build_data_261109.do`, `4_tables_261109.do` (main); `1_build_data_261116.do`, `4_tables_261109.do` (childcare branch) |
-| `count` | `4_tables_261109.do` in both directions |
-| `dtable` | `2_descriptive_261109.do` in both directions |
-| `vce(cluster id)` | `3_results_261109.do` (main only) |
-| `vce(robust)` | `3_results_261109.do`, `4_tables_261109.do`, `2_descriptive_261109.do` in both directions, plus `5_childcare_robust_261116.do`, `5b_childcare_extensions_261116.do`, `6_childcare_figures_261116.do` |
-| `test coef = 0` | `3_results_261109.do` in both directions |
-| `column(index)` | `3_results_261109.do`, `4_tables_261109.do`, `2_descriptive_261109.do` in both directions |
-| `note()` on `etable` | `3_results_261109.do`, `4_tables_261109.do`, `2_descriptive_261109.do` in both directions |
-| `sheet()`, `cellrange()` on `import excel` | `1_build_data_261109.do` (main); `1_build_data_261116.do` (childcare branch) |
+| `isid` | `duplicates report` on the panel key |
+| `tempfile` | fixed intermediate files `tmp_*.dta` written to `data_final/` and reused by `use` / `merge` |
+| `recast double` | not needed; the corrections are literal numeric replaces |
+| `count` | `tabulate`, `duplicates report`, or the per-variable `(count)` statistics in `collapse` |
+| `dtable` / `collect export` | `collapse` with `(mean) (sd) (min) (max) (count)` plus `export excel` / `export delimited` |
+| `vce(cluster id)` / `vce(robust)` | the course-demonstrated `regress ..., robust` spelling; PCSE with `het corr(ar1)` as the serial-correlation correction |
+| `test coef = 0` | `testparm` on the same term |
+| `column(index)` | `column(dvlabel)` |
+| `note()` on `etable` | the fixed-effects statement goes into the exported Word table by post-export editing |
+| `sheet()`, `cellrange()`, `firstrow()` on `import excel` | the workbook content is pre-converted to a plain CSV (`oecd_leave_timeseries.csv`, latin-1) and read with `import delimited ..., varnames(1)` |
+| `string()` function | numeric parsing with `real()` plus literal `replace` values; the built panel is bit-identical |
 
 **Not used, and not to be introduced:** `reghdfe`, `csdid`, `eventdd`,
 `bacondecomp`, `winsor2`, `outreg2`, `estout`, `esttab`, `putdocx`, `collect

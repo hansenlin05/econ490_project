@@ -6,10 +6,13 @@ citation for all of your data in the do file". This document records where the
 citation format came from and the exact strings now used in
 `1_build_data_261109.do` (`* Data sources` block).
 
-**Access date for all five sources: 14 November 2026** (local date, MST). The
-previous version only said "accessed October 2026". Version / last-update
-information below was read from the publisher pages and from the five PDFs the
-team saved as evidence (their filenames are listed at the end).
+**Access dates (local date, MST): 14 November 2026 for ILOSTAT, the OECD
+Family Database PF2.5 workbook and the World Bank WDI extract; 15 November
+2026 for OECD SOCX** (the SOCX access date was set when the childcare chain's
+citation block was written and is kept exactly as printed in the do-file).
+Version / last-update information below was read from the publisher pages and
+from the PDFs the team saved as evidence (their filenames are listed at the
+end).
 
 ## 1. Where the "How to cite" rules come from
 
@@ -25,35 +28,32 @@ The do-file uses AER / Chicago author-date form (institution, year, dataset
 title, publisher, URL, access day), which is consistent with all five of the
 above and with the paper's AER-style bibliography requirement.
 
-## 2. The five citation strings now in `1_build_data_261109.do`
+## 2. The four citation strings now in `1_build_data_261109.do`
 
-Only these five sources are actually read by the do-file. Variables that exist
-in a donor file but are never read (wage replacement rates, nominal GDP,
-unemployment, total fertility) are **not** cited as used sources.
+Only these four external sources are actually read by the do-file. Variables
+that exist in a donor file but are never read (wage replacement rates, nominal
+GDP, unemployment, total fertility) are **not** cited as used sources. The
+Eurostat series the earlier father-leave chain used is no longer read by any
+do-file and is therefore no longer cited.
 
-1. **Eurostat** — `Eurostat. 2026. "Adults by number of children, age of
-   youngest child and labour status" [lfst_hhacwnc] (dataset). DOI
-   10.2908/lfst_hhacwnc, last update 10/09/2026 15:00. Luxembourg: European
-   Commission, Eurostat.
-   https://ec.europa.eu/eurostat/databrowser/view/lfst_hhacwnc/default/table
-   (accessed 14 November 2026).`
-2. **OECD Family Database PF2.5** — `OECD. 2026. "PF2.5 Trends in leave
+1. **ILOSTAT** — `International Labour Organization. 2026. "Employment rate by
+   sex and household composition" [GED_PEPR_SEX_HHT_CHL_RT_A] (database),
+   ILOSTAT. Geneva: ILO. https://ilostat.ilo.org/data/ (accessed 14 November
+   2026).`
+2. **OECD SOCX** — `OECD. 2026. Social Expenditure Database (SOCX) (dataset),
+   public spending on early childhood education and care (TP521) and on
+   maternity and parental leave, percent of GDP. Paris: OECD.
+   https://doi.org/10.1787/data-00167-en (accessed 15 November 2026).`
+3. **OECD Family Database PF2.5** — `OECD. 2026. "PF2.5 Trends in leave
    entitlements around childbirth" (dataset), OECD Family Database, updated
    November 2026. Paris: OECD.
    https://webfs.oecd.org/els-com/Family_Database/PF2_5_Trends_in_leave_entitlements_around_childbirth.xlsx
    (accessed 14 November 2026).`
-3. **ILOSTAT** — `International Labour Organization. 2026. "Employment rate by
-   sex and household composition" [GED_PEPR_SEX_HHT_CHL_RT_A] (database),
-   ILOSTAT. Geneva: ILO. https://ilostat.ilo.org/data/ (accessed 14 November
-   2026).`
 4. **World Bank WDI** — `World Bank. 2026. World Development Indicators
    (dataset), NY.GDP.PCAP.KD and NY.GDP.MKTP.KD.ZG, last updated 11 November
    2026. Washington, DC: World Bank.
    https://databank.worldbank.org/source/world-development-indicators
    (accessed 14 November 2026).`
-5. **OECD SOCX** — `OECD. 2026. Social Expenditure Database (SOCX) (dataset),
-   public maternity and parental leave spending. Paris: OECD.
-   https://doi.org/10.1787/data-00167-en (accessed 14 November 2026).`
 
 ## 3. Version evidence saved by the team (PDF filenames)
 
@@ -65,11 +65,14 @@ unemployment, total fertility) are **not** cited as used sources.
   and its PDF are timestamped 11/5/2026.
 - `PF2_5_Trends_in_leave_entitlements_around_childbirth.pdf` — "UPDATED:
   NOVEMBER 2026", "OECD Family Database, oe.cd/fdb", covers 1970-2026; its
-  "Further Reading" cites EU Directive (EU) 2019/1158, which supports the
-  Europe / non-Europe subset split.
+  "Further Reading" cites EU Directive (EU) 2019/1158, part of the EU policy
+  context that separates the EU childcare-targets group from the other OECD
+  members in the subset table.
 - `[lfst_hhacwnc] Adults by number of children, age of youngest child and
   labour status.pdf` — Eurostat Data Browser page: "Online data code:
   lfst_hhacwnc | DOI: 10.2908/lfst_hhacwnc | last update: 10/09/2026 15:00".
+  Kept as version evidence only; the series itself is no longer read by the
+  current chain.
 - `Econometric Files for Final Paper.pdf` — the assignment that requires the
   citations.
 

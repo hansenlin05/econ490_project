@@ -12,8 +12,8 @@ document collection.
 |---|---|
 | `../README.md` | Reading order, what each document is for, closed decisions, pre-edit checklist, collaboration rules |
 | `../HANDOVER.md` | Full project state: research direction, progress, results, explicit and implicit course rules, pitfalls, frozen decisions, open items, reproduction |
-| `CODE_CONVENTIONS.md` | Permitted command set, banned commands, the four documented exceptions, comment rules, coding level, pre-commit checks |
-| `COURSE_REQUIREMENTS.md` | All 18 Nov rubric items with point values, allowed file types, 12 Dec gates, implicit course conventions |
+| `CODE_CONVENTIONS.md` | Permitted command set, banned commands, the two documented exceptions, comment rules, coding level, pre-commit checks |
+| `COURSE_REQUIREMENTS.md` | All 18 Nov rubric items with point values, allowed file types, 11 Dec gates, implicit course conventions |
 | `RUBRIC_REDLINES.md` | Every 11/18 rubric clause turned into a must-do / must-not-do technical line, with the 100-point map |
 | `SUBMISSION_STATUS.md` | What is done, the manual Canvas checklist, ready-to-paste Canvas comments |
 | `TEAMMATE_NOTES.md` | Short rules for a teammate joining the project: course constraints, frozen decisions, current numbers |
@@ -23,15 +23,15 @@ document collection.
 
 | File | What it answers |
 |---|---|
-| `RESEARCH_DECISIONS.md` | Every sample / subset / control / specification decision and its reason, including the non-European column |
+| `RESEARCH_DECISIONS.md` | Every sample / subset / control / specification decision and its reason, including the EU-targets subset split |
 | `PITFALLS_AND_CORRECTIONS.md` | Mistakes already made and what replaced them. Read before proposing a fix |
-| `DATA_CITATIONS.md` | Official "How to cite" rules with URLs, and the five citation strings used in the do-file (accessed 14 November 2026) |
+| `DATA_CITATIONS.md` | Official "How to cite" rules with URLs, and the four citation strings used in the do-file (SOCX accessed 15 November 2026, the others 14 November 2026) |
 
 ## 3. Paper writing and people
 
 | File | What it answers |
 |---|---|
-| `LITERATURE_SOURCES.md` | Ten article PDFs by filename, plus AER / Chicago paper-format rules |
+| `LITERATURE_SOURCES.md` | Article PDFs by filename, the EU policy sources for the subset split, plus AER / Chicago paper-format rules |
 | `ECON490_PAPER_OUTLINE_EN_261112.md` | Final-paper outline with word budgets |
 | `ECON490_SULTANA_TASKS_261111.txt` | Division of labour; Sultana owns paper text and formatted tables |
 
@@ -46,7 +46,7 @@ language:
 |---|---|
 | `COMET_Notebook_命令与语法汇总.md`, `StataTest与ECON490Quizzes_命令与语法汇总.md` | `CODE_CONVENTIONS.md` §1 (permitted set), §2 (documented exceptions), §7 (module-by-module provenance) |
 | `ECON490_DECISION_2026-11-11.txt` (interaction term) | `README.md` §7 and `RESEARCH_DECISIONS.md` |
-| `ECON490_SAMPLE_SCOPE_NOTE_261112.txt` (Europe stays primary) | `RESEARCH_DECISIONS.md` |
+| `ECON490_SAMPLE_SCOPE_NOTE_261112.txt` (Europe stays primary) | superseded — the OECD childcare panel is now the primary and only analysis; see `RESEARCH_DECISIONS.md` §0 |
 | `ECON490_PRECISION_STYLE_DECISION_261114.txt` (float vs double) | `RESEARCH_DECISIONS.md` §4 |
 | `ECON490_ECONOMETRIC_FILES_GAP_261114.txt` (rubric gap audit) | `COURSE_REQUIREMENTS.md` and `SUBMISSION_STATUS.md` |
 | `ECON490_NEAL_REPORT_261113_CN.txt` (status report) | `HANDOVER.md` §3 and `CHANGELOG.md` |
@@ -56,7 +56,8 @@ language:
 ## 5. Authoritative outputs elsewhere in this repository
 
 - `log_files/3_results_261109.log` — all main regression numbers. Highest authority.
-- `log_files/4_tables_261109.log` — build-up and subset table estimates.
+- `log_files/4_tables_261109.log` — build-up, winsorized and quadratic-check estimates.
+- `log_files/2_descriptive_261109.log` — 2019 summary table, figures and subset columns.
 - `log_files/1_build_data_261109.log` — sample construction and coverage counts.
-- `tables/results_europe_261109.docx` — main result table.
-- `1_build_data_261109.do` (`* Data sources` block) — the five data citations.
+- `tables/results_oecd_childcare_261109.docx` — main result table.
+- `1_build_data_261109.do` (`* Data sources` block) — the four data citations.

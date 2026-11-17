@@ -3,6 +3,25 @@
 All entries describe the local OneDrive project; this repository only mirrors
 them for teammate handoff. Dates are local (MST).
 
+## 2026-11-16 (evening) — OECD childcare chain becomes the current chain
+
+The team adopted the OECD public-childcare panel as the primary and only
+analysis, on the basis of the childcare work already on this branch. The
+father-specific-leave design and all of its numbers are retired. Changes: the
+`string()` / `F1.snapshot` leave corrections were replaced by literal numeric
+replaces (no first-hand course source; the built panel is bit-identical);
+`testparm i.country_id` was added after the LSDV model so the rubric's panel
+fixed-effects test is in the log (F(22, 276) = 330.06, p < 0.001); the whole
+chain was rerun (logs 551 / 417 / 622 / 835 lines, no `r()` errors, N = 347,
+PCSE p = 0.0044); the OneDrive submission folder now holds only the childcare
+deliverables and the retired father-leave files were archived outside it. The
+`childcare-neal-261116` branch was aligned with the OneDrive folder and merged
+into `main`; every handover document (README, HANDOVER, research decisions,
+rubric red lines, course requirements, submission status, code conventions,
+pitfalls, data citations, literature sources) was rewritten for the childcare
+direction. The command whitelist lost the `string()` function and gained a
+second documented exception (`real()` for the slash-text leave column).
+
 ## 2026-11-16 — Stata CheatSheet removed from the command whitelist
 
 The permitted source list is now the COMET Notebook modules and the StataTest /

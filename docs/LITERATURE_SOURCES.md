@@ -1,17 +1,21 @@
 # Literature sources and paper-writing format rules
 
-Last updated 14 November 2026. Replaces the older Chinese literature note.
+Last updated 16 November 2026. Replaces the older Chinese literature note.
 Written for a teammate who only has this repository: the PDFs themselves are
 **not** in this mirror, but their filenames and the corresponding citations are
 listed below so they can be requested from the team or looked up by DOI/journal.
 
-## 1. The ten papers used in the literature review
+## 1. The papers in the team's literature folder
 
 The team's course folder `Referece/` holds nine of these PDFs, and `703115.pdf`
-is at the folder root. These ten correspond to the formal References list on
-pages 20-21 of `ECON 490 Research (1).pdf`. They satisfy the `Final Paper
+is at the folder root. They correspond to the formal References list on pages
+20-21 of `ECON 490 Research (1).pdf` and satisfy the `Final Paper
 Instructions` requirement of at least eight peer-reviewed economics journal
-articles.
+articles. They were collected for the father-specific-leave question and now
+serve as the related-policy literature: the childcare analysis keeps them as
+context on parental-leave policy, while the core early-childhood-education-
+and-care literature still needs to be added from Sultana's childcare direction
+package. Request those PDFs from Hansen before writing the Literature Review.
 
 | PDF filename | Citation |
 |---|---|
@@ -26,16 +30,16 @@ articles.
 | `The Impact of Paternity Leave on Fathers' Future...pdf` | Rege & Solli (2013), Demography 50(6) |
 | `Dahl-PeerEffectsProgram-2014.pdf` | Dahl, Løken & Mogstad (2014), American Economic Review 104(7) |
 
-Useful for `Final Paper Checklist_ ... .pdf`: "The source of the data used in
-each paper is stated" and "relevant empirical results ... properly cited with a
-page number". Both require the original PDFs, so request them from Hansen before
-writing the Literature Review rather than paraphrasing a summary.
+## 1a. Policy sources for the subset split
 
-**Conditional / background only** (no original PDF in the team folder; find the
-source before citing): Persson & Rossin-Slater (2024), Kluve & Tamm (2013),
-Avdic & Karimi (2018), Canaan et al. (2022, metadata incomplete), Duvander &
-Johansson (2012). Do **not** use Silva (2026) on the gender wage gap / monopsony:
-it belongs to the retired research direction.
+The subset table splits the sample into the EU countries covered by the EU
+childcare targets and the other OECD members. The primary policy source is the
+Council Recommendation of 5 December 2022 on early childhood education and
+care, which restates and updates the Barcelona targets
+(https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32022H1220(01)).
+The earlier rationale based on EU Directive (EU) 2019/1158 (paternity leave)
+is superseded for this purpose, though the directive remains relevant to the
+parental-leave control.
 
 ## 2. Paper-writing format rules (11 Dec checklist and instructions)
 

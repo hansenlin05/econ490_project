@@ -44,39 +44,44 @@ p-values or standard-error conventions — the reading used in the logs is the
 one the course notes teach. Raise a question rather than changing the
 specification on an unverified convention.
 
-Also avoid: pooling the two panels, reintroducing a retired p-value, changing
-the subset definition without changing both `4_tables_261109.do` and
-`2_descriptive_261109.do`, or treating a GitHub commit as a Canvas submission.
+Also avoid: quoting any number from the retired father-leave chain,
+reintroducing a retired p-value, changing the subset definition without
+changing both `2_descriptive_261109.do` and the subset table export, or
+treating a GitHub commit as a Canvas submission.
 
 ## Frozen decisions (need a written group decision to reopen)
 
-- Europe (23 countries, 2006-2019, N=295) is primary; OECD (26 countries,
-  2000-2024, N=477) is an extension. Never pooled.
-- Two-way fixed effects with lagged father-specific paid leave; DiD and the
-  event study are supplementary within the same framework.
-- Every regression includes lagged log real GDP per capita.
-- Country-clustered standard errors are the reference inference.
-- The `weeks x pay_c` interaction and the quadratic term are not in the main
-  model; the unwinsorized specification is preferred.
-- The 18 Nov tables use the 26-country OECD panel as "all countries", 2019 as
-  the representative year, and 19 European / 7 non-European subsets. The
-  non-European column is kept for the required three columns but is disclosed
-  as low-power (6 groups, 102 observations) and must not be interpreted.
-- Conclusion: no robustly significant policy effect / conditional association.
-- All historically significant p-values are retired.
+- The OECD childcare panel (23 countries, 2000-2024, 477 panel rows, 347
+  complete-case estimation rows) is the primary and only analysis. The earlier
+  Europe-primary father-leave design was retired on 16 November 2026.
+- Main explanatory variable: lagged public ECEC spending (SOCX TP521).
+  Father-specific leave weeks stay in the model as a control. Every regression
+  includes lagged log real GDP per capita.
+- Year effects, country effects and country-specific linear trends are in the
+  main specification; heteroskedasticity-robust LSDV standard errors are the
+  reference inference and PCSE with common AR(1) is the sensitivity check.
+- The quadratic spending term is not in the main model; the unwinsorized
+  specification is preferred.
+- The 18 Nov tables use 2019 as the representative year and the EU
+  childcare-targets group vs other OECD members as the subsets. The small
+  other-OECD column is kept for the required three columns but is disclosed as
+  low-power (38 observations) and must not be interpreted.
+- Conclusion: a statistically significant negative conditional association,
+  phrased as an association rather than a causal effect.
+- All coefficients and p-values of the retired father-leave chain are retired.
 
 Full rationale in `docs/RESEARCH_DECISIONS.md`.
 
 ## Current headline numbers (from `log_files/3_results_261109.log`)
 
-Europe main table N = 292 / 292 / 292 / 295 / 292 / 295; OECD N = 348 / 348 / 463.
-`lag_fatherweeks10` = +0.617 with FE p=0.028, robust p=0.099,
-country-cluster p=0.113; AR(1) PCSE +0.493 (p=0.021). DiD -0.626 (p=0.653).
-Event-study periods p=0.878 / 0.815 / 0.817 / 0.603. OECD columns
-p=0.857 / 0.936 / 0.876. With only 23 country clusters, the lecture note
-`Preparing for Panel Data Analysis` ("always cluster your SEs", rough floor
-30-50) means the clustered p=0.113 is itself optimistic; PCSE is a sensitivity
-check only.
+All regressions use N = 347; the subset columns use 309 (EU-target group) and
+38 (other OECD). `lag_socx_ecec`: −12.856 without country trends, **−9.456**
+with year and country effects plus country trends (robust SE 2.113,
+p < 0.001), **−7.735** under PCSE with common AR(1) (p = 0.004), −9.442 in the
+full 1/99 winsorized repeat (p < 0.001). Diagnostics: `xttest3` p < 0.001,
+`xtserial` p = 0.0129, `testparm i.year` p = 0.0391, `testparm i.country_id`
+p < 0.001, quadratic term p = 0.1208. The robust-LSDV form is the reference
+inference because it is the one the course material demonstrates.
 
 ## Evidence hierarchy
 

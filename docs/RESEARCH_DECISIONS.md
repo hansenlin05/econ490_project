@@ -5,82 +5,84 @@ writes a new decision. Each row names the evidence that supports it. For the
 purpose of a handover, a "frozen" decision means: do not reopen it to chase a
 better p-value, and do not reintroduce a retired result.
 
-## 1. Scope and samples
+## 0. Direction change of 16 November 2026
+
+The team retired the earlier Europe-primary father-specific-leave design and
+adopted the OECD public-childcare panel as the primary and only analysis. The
+instructor had suggested focusing on public childcare spending and the
+winsorized repeat; the retired father-leave chain remains reproducible from
+the git history but none of its samples, coefficients or p-values may be
+quoted in the submission. Every decision below belongs to the current chain.
+
+## 1. Scope and sample
 
 | Decision | Rationale | Evidence |
 |---|---|---|
-| Europe (23 countries, 2006-2019, N=295) is the primary sample | Eurostat outcome is defined for ages 25-54 with a child under 6 and is comparable across the 23 countries | `docs/ECON490_SAMPLE_SCOPE_NOTE_261112.txt`, `1_build_data_261109.do` |
-| OECD (26 countries, 2000-2024, N=477) is an extension, reported separately | ILOSTAT household-series outcome has a different population definition; pooling would mix two outcome concepts | `3_results_261109.do` project-info block |
-| Never swap primary/extension, never delete the `euro` variable | Group decision; instructor's "use OECD only" suggestion was verbal and has no written course requirement behind it | `docs/ECON490_SAMPLE_SCOPE_NOTE_261112.txt` |
-| All regressions include lagged log real GDP per capita | The assignment's "single properly specified regression" requires a convergence variable | `Econometric Files for Final Paper.pdf`, rubric p.3; `0_master_261109.do` global `controls` |
+| OECD panel (23 countries, 2000-2024, 477 country-years; estimation sample 347) is the primary and only analysis | ILOSTAT household series is defined for parents of children under 6 in every OECD member; the outcome concept is one series, so no pooling question arises | `1_build_data_261109.do`, `3_results_261109.log` |
+| Estimation sample is the complete-case flag `childcare_sample` | Every model variable must be observed; the flag is built with `generate`/`replace`/`missing()` and labelled | `1_build_data_261109.do` end block; `tabulate childcare_sample` in `1_build_data_261109.log` |
+| `lag_socx_ecec` (prior-year public ECEC spending, % of GDP) is the main explanatory variable | Instructor's suggested direction; SOCX TP521 is the official OECD series for publicly funded early childhood education and care | OECD SOCX; citation block in `1_build_data_261109.do` |
+| Every lag is built on its own full annual series before any merge | A lag built after the merge disappears whenever the previous year's outcome is missing, which lets outcome availability decide the estimation sample. Applies to GDP, leave weeks, leave spending and ECEC spending alike | `1_build_data_261109.do` lag blocks |
+| `lag_fatherweeks10` stays in the model as a control | Father-specific leave is the strongest competing policy explanation for the same outcome; dropping it would confound the childcare association | `0_master_261109.do` global `controls` |
+| All regressions include `lag_lngdp` | The assignment's "single properly specified regression" requires a convergence variable | `Econometric Files for Final Paper.pdf`, rubric p.3; `0_master_261109.do` global `controls` |
 
 ## 2. Specification and inference
 
 | Decision | Rationale |
 |---|---|
-| Two-way country + year FE; heteroskedasticity and AR(1) serial-correlation correction; DiD and event study are supplements, not separate research designs | One coherent framework keeps the paper's "all work in do and log" gate satisfiable |
-| Country-clustered SEs are the reference inference; AR(1) PCSE is a sensitivity check | `Preparing for Panel Data Analysis` says "always cluster your SEs"; with 23 clusters, below the note's rough 30-50 floor, even p=0.113 is optimistic |
-| No `weeks x pay_c` interaction in the main model | Five reasons, in order: (i) an interaction is a different question — the coefficient on weeks becomes a conditional slope, not an average association; (ii) the data cost is prohibitive — joining Test7's `policy.dta` to the current panels leaves about 62 European and 71 OECD usable rows against 292 and 348; (iii) weeks, the replacement rate and their product are highly collinear; (iv) bad-control risk — leave length and replacement rate are both set by the same policy design; (v) `pay_c = pay_pct - 100` is never positive, so the interaction cannot identify the hypothesised direction. Test7 is kept as a reproducible artifact only |
-| No quadratic term in the main model | The assignment permits non-linearity only if it improves fit and theory predicts it; both coefficients are insignificant (linear -1.299, squared +0.653, cluster p>0.05) and the fit does not improve. Reported as a robustness column in `tables/results_europe_robust_261109.docx` |
-| Unwinsorized specification preferred | 1/99 winsorization changes only 4 outcome and 4 lagged-GDP observations; sign, magnitude and significance of the main coefficient are unchanged |
-| Conclusion: no robustly significant policy effect, only a conditional association | Clustered p=0.113, DiD p=0.653, OECD p=0.857/0.936/0.876, all event-study leads/lags insignificant. The sign is positive throughout, i.e. opposite to the hypothesis, so the PCSE result (p=0.021) does not support it either |
-| Leave series and its lag built on the policy panel, before any merge | The earlier build computed `L1.` on the assembled panel, so a country-year whose outcome was missing in t-1 also lost the lag in t. Building the lag on the policy panel returns 20 country-years in each sample, leaves every existing value unchanged, and removes the channel through which outcome availability selected the sample. The whole chain was rerun; Europe clustered p moves 0.065 -> 0.113, OECD 0.352/0.583 -> 0.936/0.857 |
-| Specification search declined: country-specific trends, lagged unemployment, lagged childcare spending, switching `leave_gdp` to its own lag, and a two-year lag as the headline | Each was tried and none is adopted for the 18 Nov submission. Country trends take 23 degrees of freedom from a 292-row panel, are not demonstrated in the course material, and were already insignificant in the earlier draft (0.500, p=0.426, N=266). Adding controls the assignment does not ask for confounds "one variable added at a time". A two-year lag gives -0.015 (p=0.961) in this data, and choosing the lag length by which one is significant is precisely what "a single properly specified regression" excludes. |
+| LSDV `regress` with `i.year i.country_id c.year_centered#i.country_id` and `robust` standard errors is the main specification | The course demonstrates `regress ..., robust` and factor-variable syntax; the LSDV form also makes the country-effect test possible, which `xtreg, fe` does not (`testparm i.country_id` aborts there) |
+| Heteroskedasticity-robust SEs are the reference inference; PCSE with common AR(1) is the sensitivity check | `xttest3` rejects groupwise homoskedasticity (chi2(23) = 5496.51, p < 0.001) and `xtserial` rejects no serial correlation (p = 0.0129), so both corrections matter; the course material does not demonstrate cluster-robust options, so none is used |
+| Country-specific linear trends are part of the main specification | They absorb divergent post-2000 employment trajectories across countries; the model without them is reported as a comparison column (coefficient −12.856 vs −9.456), so the choice is transparent |
+| No quadratic term in the main model | The assignment permits non-linearity only if it improves fit and theory predicts it; the squared term is insignificant (F(1, 275) = 2.42, p = 0.1208) and no theory is offered for curvature in this range |
+| Unwinsorized specification preferred | The full 1/99 winsorized repeat of all six continuous model variables moves the main coefficient from −9.456 to −9.442, same sign and significance; the do-file comment states the preference, as rubric item 7 requires |
+| Conclusion: a statistically significant negative conditional association | The main coefficient is negative and significant with robust SEs (p < 0.001), under PCSE AR(1) (p = 0.0044), and winsorized (p < 0.001). It is an association across countries and years, not a causal effect; the paper must say so |
+| Year and country effects are tested, not assumed | `testparm i.year` F(22, 276) = 1.63, p = 0.0391; `testparm i.country_id` F(22, 276) = 330.06, p < 0.001, both printed in `3_results_261109.log` |
 
-**Retired results, do not resurrect:** any historically significant p-value came
-from (a) unclustered standard errors, (b) a GDP lag built inside the research
-panel that dropped the first year and the pre-gap year, or (c) the research
-direction retired on 21 October. The event-study k=+1 `+2.020 (p=0.034)` and
-DiD `+0.265 (p=0.843)` from the broken lag version are void.
+**Retired results, do not resurrect:** every coefficient and p-value of the
+retired father-leave chain (Europe N=292/295, OECD extension N=348/463, DiD,
+event study, Test7 interaction). They came from a different research question
+and a different panel, and several of their significant readings were traced
+to unclustered standard errors or a broken lag construction.
 
-## 3. The 18 Nov rubric tables — including the non-European column
+## 3. The 18 Nov rubric tables and figures
 
 These choices were made against the hard rubric in
 `Econometric Files for Final Paper.pdf`, not for statistical convenience.
 
 | Choice | Decision | Why it meets the rubric |
 |---|---|---|
-| "All countries" column | 26-country OECD panel | The rubric asks for one regression with all countries plus two subsets. Team agreement |
-| Representative year | 2019 | Single-year summary table, broad coverage, 23 non-missing rows on the main regressor (`tables/descriptive_2019_oecd_261109.csv` and `.docx`) |
-| Subsets | European OECD 19 / non-European OECD 7 | Rubric p.3: "The choice of subsets must be a reasonable one ... dedicated by the economic theory that explains the hypothesis." European OECD members share supranational work-life-balance mandates; EU Directive (EU) 2019/1158 is listed in "Further Reading" of `PF2_5_Trends_in_leave_entitlements_around_childbirth.pdf` (https://eur-lex.europa.eu/eli/dir/2019/1158/oj/eng). No supranational mandate exists for the others, so the policy regime genuinely differs |
-| Alternative subset rejected | Split by initial leave generosity | The median initial father-specific entitlement in the 26-country panel is 0, so all countries fell into one group (checked on the built CSV) |
-| Keep the weak non-European column | **Keep it**, with an explicit warning | Deleting it would break the explicit three-column requirement (10 pts) and the overlapping subset histogram (6 pts), which uses the same split. The column has 7 country groups, one contributing a single observation, and 113 observations; its coefficient 20.247 is a small-sample artifact. The table note now states it must not be read as a policy effect, and the paper should base conclusions on the all-countries and European columns only |
-| Controls in the subset table | Core controls (`lag_fatherweeks10 lag_lngdp lag_gdp_growth`), estimated once for all countries and once per subset | `leave_gdp` (SOCX) is sparse outside Europe; using the full control set would leave only 33 observations in the non-European column. The all-countries column is estimated on the full 463 observations (not on the 348-observation build-up sample) so that 350 + 113 adds back to 463 and the denominator closes |
-| Estimation sample in the build-up table | All four columns fixed at the 348 observations with complete data on every variable | Previously the first three columns used 463 and only the fourth used 348 because `leave_gdp` is missing for 115 country-years. Comparing coefficients across columns then mixed the effect of an added control with a change of sample. `4_tables_261109.do` now builds one `same_sample` flag with `generate` then one `replace ... if missing()` per covariate and applies `if same_sample==1` to all four regressions. This is the stricter reading of "a series of regressions with one variable added at a time" (15 pts) |
-| Histogram | Two overlapping histograms of `lag_fatherweeks10` by the same two subsets | Rubric item 10 asks for histograms for the subsets chosen above; `figures/histogram_leave_byregion_261109.png` |
-
-**Net assessment.** The non-European column is the weakest part of the
-submission, but removing it loses two explicit rubric items and breaks the
-link between the table and the histogram. Keeping it with a clear caveat is the
-higher-scoring and more honest choice. If the team later changes the subset
-definition, BOTH `4_tables_261109.do` and `2_descriptive_261109.do` must change
-together, and the whole chain must be rerun.
+| Representative year | 2019 | Single-year summary table; 23 country-years have the main regressor observed; `leave_gdp` has 20 (`tables/descriptive_2019_oecd_childcare_261109.csv` and `.xlsx`) |
+| Subsets | EU childcare-targets group (19 members) vs other OECD members (4) | Rubric p.3: "The choice of subsets must be a reasonable one ... dedicated by the economic theory that explains the hypothesis." The EU's Barcelona targets and the 2022 Council Recommendation link ECEC provision to parental employment (https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32022H1220(01)); no comparable supranational target exists outside the EU |
+| Keep the weak "other OECD" column | **Keep it**, with an explicit warning | Deleting it would break the explicit three-column requirement (10 pts) and the overlapping subset histogram (6 pts), which uses the same split. The column has 38 observations and its coefficient (−4.111, p = 0.411) is not readable as a policy effect; the table note states this, and the paper bases conclusions on the all-countries and EU columns |
+| Build-up table sample | All five columns on the same 347-observation estimation sample | Comparing coefficients across columns then reads purely as the effect of adding controls, the stricter reading of "a series of regressions with one variable added at a time" (15 pts) |
+| Histograms | Two overlapping histograms of `lag_socx_ecec` by the same two subsets | Rubric item 10 asks for the subsets chosen above; `figures/histogram_childcare_byregion_261109.png` |
+| Scatter | Spending versus the employment gap with a linear fit, estimation sample | Rubric item 3 asks for a graph that illustrates the story; `figures/scatter_gap_childcare_261109.png` |
+| Fixed-effects rows in the Word tables | `etable` has no fixed-effects row option, so the exported tables get "Year FE yes / Country FE yes" rows in post-export Word editing | The rubric itself says the exported table "will need to be edited after it has been exported" |
 
 ## 4. Code, data and logistics
 
 | Decision | Rationale |
 |---|---|
-| Five numbered do-files, four numbered logs | Added regressions repeatedly pushed a single log past 25 pages. Workflow Guide 18 §18.2.2 permits a separate do-file for tables. On 15 Nov the quadratic specification, the full winsorized repeat and their robustness table moved from `3_results_261109.do` into `4_tables_261109.do`; conservative page estimates are now 15.1 / 7.3 / 18.1 / 22.9 |
-| Full 1/99 winsorized repeat | Rubric item 7 says "with all variables winsorized". The repeat now winsorizes all five continuous variables; country and year dummies keep their coding. Measured changes: outcome 4, lagged leave weeks 0, lagged log GDP 4, lagged GDP growth 5, leave spending 5 observations. The main coefficient moves +0.493 -> +0.491 with the same sign and significance, so the unwinsorized model stays preferred |
-| 2019 summary table as Word | Rubric p.4 requires "an Excel or Word document" while Canvas file types exclude `.xlsx`. `2_descriptive_261109.do` now exports a `.docx` alongside the existing `.xlsx` and `.csv`; the CSV remains the byte-for-byte content authority |
-| Frozen snapshots in `data_raw/`, no live endpoint reads | A live-revision source would make the submitted log irreproducible. Measured failures: ILOSTAT HTTP 200 with 0 bytes for `.csv` and `.csv.gz`; Eurostat SDMX 3.0 response 12.7 MB and unfinished after 20 s. Official sites are cited as provenance only |
-| One editable `capture noisily cd "<path>"` line in the master | The course index shows this verbatim (module 02 prefix commands), so it is the fully permitted form of the Workflow 18 directory block. A relative-path design without `cd` was tried on 15 November and reverted the same evening: running the master from any other working directory failed with four silent "file not found" errors, and the working-directory guard that replaced the `cd` line needed `confirm` / `_rc` / `exit`, none of which is in the course material. An editable path is the course's own expectation; after a folder rename or a new machine, edit that one line |
-| Only demonstrated Stata syntax; `L1.` / `F1.` after `encode` + `xtset` + `sort` | Course handout constraint; the permitted list, the banned list and the four documented exceptions are in `docs/CODE_CONVENTIONS.md` |
-| Prefer whitelist compliance over byte-identical CSVs when only storage precision changes | Removing the two import options (`stringcols(_all)`, `allstring`) changed at most 1.03e-05 percentage points in three rate columns (Europe) and 7.08e-06 (OECD); every coefficient, standard error, p-value and sample size was unchanged, and the only discrete side effect was that outcome winsorization changed 4 instead of 5 observations. The rule that follows: if a change affects only float/double storage, take the fully permitted syntax |
-| All five data sources "accessed 14 November 2026" | Team decision on the day the final citations were written; see `docs/DATA_CITATIONS.md` |
+| Five numbered do-files, four numbered logs | Workflow Guide 18 §18.2.2 permits a separate do-file for tables; the fourth do-file keeps every log under the 35-page limit the instructor confirmed on 16 November 2026 (conservative estimates 11.5 / 8.7 / 12.4 / 17.4 pages) |
+| Leave-week corrections as literal numeric replaces | The workbook stores weeks as text with occasional slash-separated options; values are parsed with `real()` and every year correction is a hardcoded literal taken from the recorded next year. The `string()`/`F1.snapshot` construction was removed on 16 November 2026 as it had no first-hand course source; the literal version is bit-identical in the built panel |
+| `real()` is a documented exception | The slash-text column cannot be parsed without it; `destring` is not course material either. Documented in `docs/CODE_CONVENTIONS.md` |
+| Full 1/99 winsorized repeat | Rubric item 7 says "with all variables winsorized"; the repeat covers all six continuous model variables via `summarize, detail` percentiles plus `generate`/`replace` |
+| 2019 summary table as `.csv` + `.xlsx` | Rubric p.4 requires "an Excel or Word document" while Canvas file types do not list `.xlsx`; the CSV is the upload-safe fallback and the content authority |
+| Frozen snapshots in `data_raw/`, no live endpoint reads | A live-revision source would make the submitted log irreproducible. Measured failures: ILOSTAT HTTP 200 with 0 bytes for `.csv` and `.csv.gz`; Eurostat SDMX 3.0 response unfinished after 20 s. Official sites are cited as provenance only |
+| One editable `capture noisily cd "<path>"` line in the master | The course index shows this verbatim (module 02 prefix commands), so it is the fully permitted form of the Workflow 18 directory block. A relative-path design without `cd` was tried on 15 November and reverted the same evening: running the master from any other working directory failed with silent "file not found" errors. An editable path is the course's own expectation |
+| Only demonstrated Stata syntax; `L1.` / `F1.` after `encode` + `xtset` + `sort` | Course handout constraint; the permitted list, the banned list and the documented exceptions are in `docs/CODE_CONVENTIONS.md` |
+| Prefer whitelist compliance over byte-identical CSVs when only storage precision changes | The `string()` removal is the latest application: the built panel's values were unchanged bit-for-bit, so every coefficient, standard error, p-value and sample size was unchanged |
+| Access dates: SOCX 15 November 2026, the other four sources 14 November 2026 | Kept exactly as written in the do-file citation block; see `docs/DATA_CITATIONS.md` |
 | OneDrive is the submission source; GitHub is a mirror | Standing instruction. GitHub is updated only on explicit request |
 
 ## 5. Still open (team decisions, not yet settled)
 
-- Written group freeze of the final model, including how to record the
-  instructor's verbal "OECD only" suggestion.
-- Whether to keep or drop the non-European column after seeing TA feedback
-  (current answer: keep).
-- Whether to ask the TA about the four documented command extensions
-  (`egen min()/max()`, the three-step double-precision construction, the
-  `dtable, continuous() statistic()` options used for the Word summary table, and
-  `etable`'s `note()` used to carry the fixed-effects statement). All four are
-  option-level and cannot change a coefficient; none is a banned add-on package.
-  See `docs/CODE_CONVENTIONS.md` §2.
+- Whether Canvas accepts the `.xlsx` summary table; if it rejects the file,
+  upload the `.csv` instead.
+- Post-export Word editing of the four tables, including the "Year FE yes /
+  Country FE yes" rows.
+- Whether to ask the TA about the two documented command extensions
+  (`egen min()/max()` and `real()` for the slash-text column). Both are
+  option-level and cannot change a coefficient; neither is a banned add-on
+  package. See `docs/CODE_CONVENTIONS.md` §2.
 - Whether `format %10.0g` is acceptable in the final paper tables.
-- Exact wording in the paper for the 23-cluster limitation.
+- Exact wording in the paper for the association-versus-causation caveat.

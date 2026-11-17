@@ -1,164 +1,116 @@
-# OECD Childcare Submission Notes
-
-## Canvas comments
-
-**Hypothesis.** Higher prior-year public early childhood education and care
-spending is associated with a smaller gender employment gap in the OECD
-country-trend model. The clustered estimate is −0.95 percentage points per
-0.1 percentage point of GDP (p = 0.0070). With no separate country trends,
-the clustered p-value is 0.6904. The estimate describes a conditional
-association.
-
-**Merge.** The employment panel has 477 country-years. The OECD SOCX
-country-year merge matches 427 keys. A match means the key is present in both
-inputs, and some matched records still lack a numeric spending value or a
-control. The 50 employment-only keys remain in the descriptive dataset.
-The 582 spending-only keys fall outside the employment panel and are
-removed. After requiring a numeric lagged spending value, outcome, and all
-controls, the complete-case regression sample contains 347 country-years.
-
-## Reproducible outputs
-
-Run the master do-file from the project root. The numbered logs and childcare
-tables are linked in the README. The subset comparison includes 309
-country-years in the EU-target group and 38 in the other OECD group. The
-smaller group has fewer country clusters, so report its inference with
-appropriate caution.
-
-## European-primary archive
-
-
-> This document records the European-primary team version. For this branch's
-> OECD-primary models and outputs, see the repository README and the numbered
-> Stata logs.
+# 18 Nov submission notes — OECD childcare chain
 
 Last updated 16 November 2026. This is the actionable checklist. Code work is
 finished and verified; everything left is a manual team action.
 
 ## 1. Done and verified
 
-- Five numbered do-files, four numbered logs, ten tables, five PNG figures,
-  eight `data_raw` inputs, ten `data_final` outputs.
-- Full rerun from `data_raw` on 15 Nov: no `r()` errors; all four analysis CSVs
-  and the summary-table CSV keep their md5; every headline coefficient, SE,
-  p-value and N in `3_results_261109.log` is unchanged. Logs are
-  737 / 354 / 858 / 1087 lines. With 80-character wrapping and a conservative
-  50 display lines per page that is about 14.7 / 7.3 / 17.9 / 22.6 pages, all
-  under the 25-page limit.
-- The quadratic and winsorized checks moved from `3_results_261109.do` to
-  `4_tables_261109.do` so neither log exceeds the page limit. Their numbers now
-  live in `log_files/4_tables_261109.log`; the "2396 floats" figure from an
-  earlier verification no longer applies because that log was restructured.
-- All five data sources cited in the do-file with the exact access date
-  14 November 2026 (see `docs/DATA_CITATIONS.md`).
-- 2019 single-year summary table, restricted to rows with the main regressor,
-  in three formats: `.csv`, `.xlsx` and now
-  `tables/descriptive_2019_oecd_261109.docx` (Word satisfies the rubric's
-  "Excel or Word document" while Canvas also accepts the `.csv`). The Word
-  version reports N, mean (sd), min and max per variable, so the reading
-  `leave_gdp` covers 20 of the 23 rows is visible rather than hidden behind a
-  single sample size.
-- Build-up table with all four columns on the same 348 observations:
-  `tables/results_buildup_261109.docx`.
-- Three-column subset table with its all-countries column on the full 463
-  observations, so 350 + 113 adds back to 463:
-  `tables/results_subsets_261109.docx`.
-- Full 1/99 winsorized repeat covering all five continuous variables; changes
-  4 / 0 / 4 / 5 / 5 observations and moves the main coefficient from +0.493 to
-  +0.491 with the same sign and significance.
-- Overlapping two-subset histogram: `figures/histogram_leave_byregion_261109.png`.
-- Comments in the do-files about unmatched merges, the preferred unwinsorized
-  specification, and why the non-linear term is not used.
-- Three `test lag_fatherweeks10 = 0` lines in `3_results_261109.do` print the
-  exact p-values behind the quoted numbers: Europe LSDV clustered
-  `F(1,22) = 2.73`, `p = 0.1127`; Europe AR(1) PCSE `chi2(1) = 5.29`,
-  `p = 0.0215`; OECD AR(1) PCSE `chi2(1) = 0.01`, `p = 0.9358`.
+- Five numbered do-files, four numbered logs, six tables (four Word tables
+  plus the 2019 summary as `.csv` and `.xlsx`), two PNG figures, ten
+  `data_raw` inputs, seven `data_final` outputs.
+- Full rerun from `data_raw` on 16 Nov: no `r()` errors anywhere. Logs are
+  551 / 417 / 622 / 835 lines, roughly 11.5 / 8.7 / 12.4 / 17.4 pages with
+  80-character wrapping — all under the 35-page limit the instructor
+  confirmed on 16 November 2026.
+- All five data sources cited in the do-file citation block
+  (see `docs/DATA_CITATIONS.md`).
+- 2019 single-year summary table, restricted to rows with the main regressor
+  observed (23 rows; `leave_gdp` has 20), exported as `.csv` and `.xlsx`.
+- Five-column build-up table with every column on the same 347-observation
+  estimation sample: `tables/results_childcare_buildup_261109.docx`.
+- Three-column subset table (all countries 347 / EU-target group 309 / other
+  OECD 38): `tables/results_childcare_subsets_261109.docx`.
+- Full 1/99 winsorized repeat of all six continuous model variables; the main
+  coefficient moves from −9.456 to −9.442 with the same sign and significance:
+  `tables/results_childcare_winsor_261109.docx`.
+- Overlapping two-subset histogram of the main regressor:
+  `figures/histogram_childcare_byregion_261109.png`; scatter with linear fit:
+  `figures/scatter_gap_childcare_261109.png`.
+- `testparm` tests for the year effects (p = 0.0391) and the country effects
+  (p < 0.001) in `3_results_261109.log`.
+- Comments in the do-files about unmatched merges, the preferred
+  unwinsorized specification, and why the non-linear term is not used.
+- `testparm lag_socx_ecec` lines print the exact p-values behind the quoted
+  numbers in every column, and the PCSE column prints chi2(1) = 8.10,
+  p = 0.0044.
 
 ## 2. Manual actions still required
 
 | # | Action | Owner | Why |
 |---|---|---|---|
 | 1 | Confirm the nine directories are synced in the OneDrive client | Hansen | Canvas submission comes from OneDrive, not GitHub |
-| 2 | Upload to Canvas: 5 `.do`, 4 `.log`, `.csv` copies from `data_raw/` and `data_final/`, the `.csv`/`.docx` tables, and 5 `.png` figures | Team | Canvas accepts only `log, csv, png, do, docx, jpeg`; do **not** upload `.xlsx` or `.dta` |
+| 2 | Upload to Canvas: 5 `.do`, 4 `.log`, `.csv` copies from `data_raw/` and `data_final/`, the table files, and 2 `.png` figures | Team | Canvas accepts only `log, csv, png, do, docx, jpeg`; try the `.xlsx` summary table first and fall back to its `.csv` if rejected |
 | 3 | Paste the Canvas comments in §3 below | Team | 5 pts for stating whether results support the hypothesis; part of the 8 merge points |
 | 4 | Edit the exported Word tables: add explicit "Year FE: yes" / "Country FE: yes" rows, check stars, SEs, N, headings | Sultana | The assignment says the exported table "will need to be edited after it has been exported"; `etable` cannot add those rows with permitted commands |
-| 5 | Open each numbered log in Word with the final font and margins and confirm the printed page count | Team | The page estimates above are conservative calculations, not a rendering; `4_tables` has the least margin |
+| 5 | Open each numbered log in Word with the final font and margins and confirm the printed page count | Team | The page estimates above are conservative calculations, not a rendering |
 | 6 | Check whether the Canvas assignment page has an extra upload field or naming rule, and confirm the live due date | Team | The exported PDF header says "Due No Due Date" and its body says "March 23rd"; Course Outline p.14 says 18 Nov |
-| 7 | Fill `literature/` with the ten article PDFs and `paper/` with the draft | Sultana | Both folders are still empty; 11 Dec paper needs ≥8 peer-reviewed economics articles |
-| 8 | Write the group's written freeze of the final model, including how the instructor's verbal "OECD only" suggestion is recorded | Team | Prevents another round of specification drift |
-| 9 | Decide the paper wording for the 23-cluster limitation and whether to ask the TA about the two minor command extensions | Team | See `docs/RESEARCH_DECISIONS.md` §5 |
-| 10 | Confirm 2 Dec and 7 Dec poster requirements; 11 Dec final paper deadline | Team | `ECON 490 Course Outline.pdf` p.14 |
-
-A stale second copy of the project exists in a personal OneDrive folder with
-only 4 do-files, 3 logs, 5 tables and 4 figures plus old notes in its root.
-It is **not** the submission folder. The authoritative folder is the team
-OneDrive folder `C:\Users\Hansen\UBC\ECON 490 003 2026W1 Seminar in Applied
-Economics - econ490_project` with nine clean directories; the earlier
-`- 2_Team` path no longer exists.
+| 7 | Fill `literature/` with the article PDFs and `paper/` with the draft | Sultana | Both folders are still empty; 11 Dec paper needs ≥8 peer-reviewed economics articles |
+| 8 | Confirm 2 Dec and 7 Dec poster requirements; 11 Dec final paper deadline | Team | `ECON 490 Course Outline.pdf` p.14 |
 
 ## 3. Ready-to-paste Canvas comments (English)
 
-> Our results do not support the hypothesis. The primary European panel
-> contains 23 OECD countries over 2006-2019 (295 country-year observations);
-> the two-way fixed effects regressions use the 292 observations with complete
-> data on all variables. The coefficient on lagged father-specific paid leave
-> is +0.617 with country-clustered standard errors (SE 0.374, p=0.113) in the
-> LSDV specification; the within estimator with the same 23 country clusters
-> gives p=0.099. Both are wrong-signed relative to H1 and neither is
-> significant at 5 percent. The DiD estimate is -0.626 (p=0.653), all
-> event-study leads and lags are insignificant, and the OECD extension columns
-> give p=0.857 / 0.936 / 0.876. An AR(1) PCSE sensitivity check gives +0.493
-> (p=0.021) with the same positive sign; we do not use it as the headline
-> inference because the course note "Preparing for Panel Data Analysis"
-> requires clustered standard errors, and with only 23 clusters our inference
-> is already optimistic. We therefore report no robust evidence of a policy
-> effect, only a conditional association; the sign of the association is the
-> opposite of the one the hypothesis predicts.
+> Our results support the hypothesis. The primary panel covers 23 OECD
+> countries over 2000-2024 (477 country-year observations in the employment
+> panel); the regressions use the 347 observations with complete data on every
+> model variable. The main explanatory variable is the prior-year share of GDP
+> that a country spends on publicly funded early childhood education and care.
+> Its coefficient is negative and statistically significant in every
+> specification: -9.456 with year and country fixed effects, country-specific
+> linear trends and heteroskedasticity-robust standard errors (SE 2.113,
+> p < 0.001); -7.735 under panel-corrected standard errors with a common AR(1)
+> process (p = 0.004); and -9.442 in the full 1/99 winsorized repetition
+> (p < 0.001). Countries that spend more on public childcare show a smaller
+> male-minus-female employment gap among parents of young children. We report
+> this as a conditional association across countries and years, not as proof
+> of a causal effect.
 >
 > Merge note: all merges are performed inside `1_build_data_261109.do`. Two
 > distinct kinds of observation loss occur and neither is an error. (i) Rows
-> that do not match: the Eurostat source contains country groups outside the
-> 23-country sample (568 rows dropped), and the OECD policy workbook contains
-> country-years outside the research window or without verified entitlement
-> values (631 rows from the using file in the Europe merge; 855/430 in the
-> OECD merge); these are excluded by design after harmonising country names and
-> years. (ii) Rows that do match but still leave a regression: WDI GDP controls
-> merge to all 295 European and all 477 OECD country-years, but taking lags and
-> missing values in public leave spending (`leave_gdp`, whose SOCX coverage is
-> sparse outside Europe) reduce the OECD extension columns to 348 / 348 / 463
-> observations; the third column drops that covariate to show the loss. For the
-> same reason the build-up table holds the sample fixed at 348 observations in
-> all four columns. The leave series and its one-year lag are built on the OECD
-> policy history before it is merged into the employment panel, so a country-
-> year is not lost merely because the previous year's employment observation is
-> missing; this recovers 20 country-years in each sample and changes no existing
-> value.
+> that do not match: the OECD SOCX spending series contains 582 country-years
+> outside the employment panel (spending history for countries and years the
+> ILOSTAT outcome series does not cover), and 50 employment-panel country-years
+> have no SOCX spending record; both groups are excluded after harmonising
+> country codes, and the merge output printed in the log shows the split
+> (427 matched, 50 master-only, 582 using-only). (ii) Rows that do match but
+> still leave the regression: requiring a numeric lagged spending value, the
+> outcome, and all controls (lagged father-specific leave weeks, lagged log
+> GDP per capita, lagged GDP growth, and public maternity and parental leave
+> spending) reduces the panel from 477 to the 347 complete cases marked by
+> `childcare_sample`. Every lag in the build is computed on its own full
+> annual series before any merge, so a country-year is never lost merely
+> because the previous year's employment observation is missing.
 >
-> Subset note: the three-column subset table splits the 26 OECD countries
-> into 19 European and 7 non-European members, following the difference in
-> supranational leave mandates. The non-European column has 7 country groups,
-> one of them contributing a single observation, and 113 observations, and is
-> shown for the required comparison only; its coefficient must not be read as a
-> policy effect.
+> Subset note: the three-column subset table splits the sample into the EU
+> countries covered by the EU childcare targets (the Barcelona targets and the
+> 2022 Council Recommendation on early childhood education and care) and the
+> other OECD members, because a supranational ECEC commitment exists only on
+> the EU side. The EU column has 309 observations and the other-OECD column
+> 38; the smaller column is shown for the required comparison only and its
+> coefficient must not be read as a policy effect.
 >
-> Preferred specification: the unwinsorized AR(1) PCSE model with country and
-> year fixed effects. The 1/99 winsorized repetition winsorizes all five
-> continuous variables (the outcome, lagged father-specific leave, lagged log
-> GDP per capita, lagged GDP growth and public leave spending); country and
-> year dummies are left unchanged. It changes 4 / 0 / 4 / 5 / 5 observations
-> respectively and moves the main coefficient from +0.493 to +0.491, keeping
-> the same sign and significance, so we do not prefer it. The quadratic term
-> is insignificant and does not improve fit, so it is reported only as
-> robustness, consistent with the assignment instruction to add non-linearity
-> only when it improves the model and has a theoretical justification.
+> Diagnostics: a modified Wald test rejects groupwise homoskedasticity
+> (p < 0.001) and Wooldridge's test rejects no serial correlation (p = 0.0129),
+> which is why the main column uses robust standard errors and the sensitivity
+> column uses panel-corrected standard errors with AR(1). `testparm` supports
+> both the year effects (p = 0.0391) and the country effects (p < 0.001). The
+> quadratic spending term is insignificant (p = 0.1208) and has no theoretical
+> basis here, so it is assessed in the log but not added, consistent with the
+> instruction to add non-linearity only when it improves the model and has a
+> theoretical justification.
 >
-> File note: the 2019 single-year summary table is supplied as a Word document
-> and as `.csv`; the `.xlsx` version is kept locally because Canvas does not
-> accept `.xlsx`.
+> Preferred specification: the unwinsorized model. The 1/99 winsorized
+> repetition covers all six continuous model variables and moves the main
+> coefficient from -9.456 to -9.442 with the same sign and significance, so we
+> keep the observed-data specification and use the winsorized column as the
+> required robustness repeat.
+>
+> File note: the 2019 single-year summary table is supplied in Excel form;
+> a `.csv` copy with identical content is included in case Canvas rejects the
+> Excel format.
 
 ## 4. After 18 Nov
 
 Sultana drafts the 11 Dec paper from `docs/COURSE_REQUIREMENTS.md` §3,
 `docs/LITERATURE_SOURCES.md`, and the four numbered logs. Any number in the
-paper must be traceable to a log, and any new empirical work must be added to a
-do-file and rerun so the log contains it.
+paper must be traceable to a log, and any new empirical work must be added to
+a do-file and rerun so the log contains it.
