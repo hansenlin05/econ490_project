@@ -1,7 +1,27 @@
 # Changelog
 
-All entries describe the local OneDrive project; this repository only mirrors
-them for teammate handoff. Dates are local (MST).
+This file records the team's analysis and repository changes. The 17 November
+documentation and formatting correction was prepared from GitHub main. It
+does not by itself confirm that OneDrive or Canvas has been updated.
+
+## 2026-11-17 — Interpretation and Word presentation aligned with the logs
+
+Corrected the childcare magnitude to the local elasticity beta*x/(1+x),
+about -0.20 at the sample mean. Removed claims that every specification is
+negative and significant. README, handover, and Canvas text now explicitly
+report the no-trends result of +0.131 (clustered p = 0.5181). Clarified that
+GDP growth is the WDI annual percentage growth series and that the estimation
+sample spans 2001–2023.
+
+Formatted all four current Stata-exported Word tables with distinct model
+headings, coefficients and SEs together, explicit country and year FE and
+country-trend rows, and standard-error and sample notes. Regression code,
+data, and logged estimates are unchanged. Rerunning Stata overwrites this
+post-export formatting, which must then be repeated.
+
+Moved the earlier single-file PCSE do-file, log, and Word table together into
+`legacy/prior_pcse/`, with a provenance note separating their old coefficients
+from the current numbered chain.
 
 ## 2026-11-17 — Clustered reference inference and an honest no-trends report
 

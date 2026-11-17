@@ -55,21 +55,22 @@ c.year_centered#i.country_id`, standard errors clustered by country
 PCSE with common AR(1) as the sensitivity checks. Estimates are conditional
 associations, not causal effects.
 A quadratic spending term was assessed and is not in the main model (p =
-0.1208).
+0.8891).
 
 **Conclusion to write up:** a statistically significant negative conditional
-association in every specification. Countries with higher public childcare
-spending show a smaller male-minus-female employment gap. Phrase it as an
-association, not a causal effect. The earlier father-specific paid leave
+association conditional on country-specific linear trends. Removing only
+the trends while retaining country and year fixed effects gives +0.131
+(clustered p = 0.5181). Report this dependence on the trend specification.
+The regressions do not establish a causal effect. The earlier father-specific paid leave
 analysis was retired on 16 November 2026; none of its numbers may be quoted.
 
 ---
 
-## 3. Current state and progress (as of 16 Nov 2026)
+## 3. Current state and progress (as of 17 Nov 2026)
 
 The OneDrive submission package contains exactly nine delivery directories:
 `do_files/` (5), `log_files/` (4), `tables/` (6), `figures/` (2),
-`data_raw/` (10), `data_final/` (7), plus `literature/`, `paper/`, `slides/`
+`data_raw/` (11), `data_final/` (7), plus `literature/`, `paper/`, `slides/`
 for the 11 Dec paper. Nothing else is allowed at the project root — no
 changelogs, no handover files, no notes.
 
@@ -88,7 +89,7 @@ Log sizes are 586 / 423 / 911 / 749 lines, roughly 12.2 / 8.8 / 19.0 / 15.6
 pages with 80-character wrapping — all under both the old 25-page and the new
 35-page limit.
 
-All 100-point rubric items on the code side are closed: five official data
+All 100-point rubric items on the code side are closed: four official data
 citations in the do-file; a 2019 single-year summary table restricted to rows
 with the main regressor, exported as `.csv` and `.xlsx`; a five-column
 build-up table on one fixed estimation sample; a three-column subset table
@@ -100,8 +101,7 @@ non-linearity.
 
 **What is still open is human work, not code work** — see
 `docs/SUBMISSION_STATUS.md`. In short: the actual Canvas upload, the Canvas
-comments, editing the exported Word tables (the assignment explicitly says the
-exported table needs editing afterwards), the empty `literature/` and `paper/`
+comments, checking the formatted Word tables after any rerun, the empty `literature/` and `paper/`
 folders, and the 11 Dec paper itself.
 
 ---
@@ -113,14 +113,15 @@ All regressions use the 347-observation estimation sample; the subset columns
 use 309 (EU-target group) and 38 (other OECD).
 
 - **Primary specification** (year + country effects + country trends, SEs
-  clustered by country, all continuous variables in logs): `ln_spending`
+  clustered by country, transformed continuous variables): `ln_spending`
   **−0.582** (SE 0.172, p = 0.003); `testparm ln_spending` F(1, 22) = 11.39.
-  GDP per capita is already logged; GDP growth stays in level form because it
-  is a log difference. The coefficient is an elasticity: 1 percent more ECEC
-  spending is associated with a 0.582 percent smaller employment gap. Spending
-  enters as ln(1 + x), so at the sample mean of 0.538 percent of GDP the
-  effect of a 1 percent relative increase is about 0.20 percent, which is the
-  magnitude form the paper uses.
+  GDP per capita is logged. GDP growth is the WDI annual percentage growth
+  series and stays in levels. Childcare spending enters as ln(1 + x), so its
+  local elasticity is beta × x/(1 + x). At the sample mean of 0.538 percent of
+  GDP, a 1 percent relative spending increase is associated with about a 0.20
+  percent smaller gap. The coefficient is an elasticity with respect to 1 + x.
+  The outcome and public leave spending use ln(x), and father leave uses
+  ln(1 + lagged weeks/10).
 - **Unclustered robust SEs:** **−0.582** (SE 0.116, p < 0.001); `testparm`
   F(1, 276) = 25.17.
 - **PCSE, heteroskedastic panels, common AR(1):** **−0.477** (SE 0.135,
@@ -328,8 +329,8 @@ Canvas announcements and the logs after any course-page or code change. The
 team's literature PDFs are listed by filename in `docs/LITERATURE_SOURCES.md`;
 only those file names, not their full text, are available here.
 
-Open items: Canvas upload and comments; post-export editing of the Word tables
-(adding explicit "Year FE yes / Country FE yes" rows); opening each log in Word
+Open items: Canvas upload and comments; final check of the formatted Word tables
+(repeat post-export formatting after any Stata rerun); opening each log in Word
 to confirm the rendered page count; empty `literature/` and `paper/` folders;
 whether Canvas accepts the `.xlsx` summary table (CSV fallback exists);
 whether to ask the TA about the three documented command extensions; 2 Dec and
