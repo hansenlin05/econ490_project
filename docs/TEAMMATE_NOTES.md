@@ -76,19 +76,19 @@ Full rationale in `docs/RESEARCH_DECISIONS.md`.
 ## Current headline numbers (from `log_files/3_results_261109.log`)
 
 All regressions use N = 347. The subset columns use 309 and 38 observations.
-The primary PCSE AR(1) coefficient is -0.477 (SE 0.135, p = 0.0004), and the
-all-variable winsorized repeat gives -0.481 (SE 0.133, p = 0.0003). Without
-country trends, keeping both fixed effects, childcare is +0.103 (p = 0.4925).
-The level comparison gives -7.735 (p = 0.0044). The EU-target subset gives
--0.456 (p = 0.001 as rounded in the log), and other OECD gives -0.257 (p = 0.300).
+The primary PCSE AR(1) coefficient is -0.473 (SE 0.136, p = 0.0005), and the
+all-variable winsorized repeat gives -0.480 (SE 0.133, p = 0.0003). Without
+country trends, keeping both fixed effects, childcare is +0.090 (p = 0.5488).
+The level comparison gives -7.579 (p = 0.0059). The EU-target subset gives
+-0.449 (p = 0.002 as rounded in the log), and other OECD gives -0.159 (p = 0.538).
 
 The main local spending elasticity at mean spending of 0.538 percent of GDP
 is approximately -0.17. The model does not establish causality and its negative
 association depends on the country trend specification. PCSE uses the Test7
 assumption of panel-specific heteroskedasticity and common AR(1).
 
-Diagnostics: year effects p = 0.2904, country-effects F test in `xtreg` output
-p < 0.001, `xttest3` p < 0.001, `xtserial` p = 0.0009, quadratic term p = 0.5241.
+Diagnostics: year effects p = 0.1312, country-effects F test in `xtreg` output
+p < 0.001, `xttest3` p < 0.001, `xtserial` p = 0.0006, quadratic term p = 0.5643.
 
 ## Evidence hierarchy
 

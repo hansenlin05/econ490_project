@@ -45,8 +45,7 @@ Outcome source: ILOSTAT household series (employment rate by sex and household
 composition, child under 6). Main explanatory variable: `lag_socx_ecec` —
 prior-year public ECEC spending as a share of GDP, OECD SOCX series TP521.
 Controls: `lag_fatherweeks10` (lagged father-specific paid leave, 10-week
-units), `lag_lngdp` (the course's required convergence variable),
-`lag_gdp_growth`, and `leave_gdp` (public maternity and parental leave
+units), `lag_lngdp` (economic development level), and `leave_gdp` (public maternity and parental leave
 spending).
 
 Specification: the initial `xtreg ..., fe` and diagnostic sequence follow
@@ -54,11 +53,11 @@ Test7. The reported main, comparison, subset, build-up and winsorized models
 use `xtpcse ..., het corr(ar1)`. No `vce(...)` option or separate `robust`
 comparison remains in the active do-files. Country and year effects and the
 existing country-specific trends are retained. The quadratic term has
-p = 0.5241 and is excluded.
+p = 0.5643 and is excluded.
 
 **Conclusion to write up:** a significant negative conditional association
 in the model with country-specific linear trends. Keeping both fixed effects
-but removing the trends gives +0.103 (p = 0.4925). Report this dependence on
+but removing the trends gives +0.090 (p = 0.5488). Report this dependence on
 the specification and avoid a causal interpretation. The earlier father-leave
 analysis remains retired.
 
@@ -83,16 +82,16 @@ assignment's log limit; the instructor confirmed 35 pages on 16 November 2026
 
 Latest verification (17 Nov 2026, full rerun from `data_raw`): no `r()` errors
 anywhere, and the key numbers below are exactly the ones in the current logs.
-Log sizes are 548 / 426 / 640 / 785 lines, roughly 12.0 / 13.9 / 21.6 / 27.0
+Log sizes are 540 / 415 / 631 / 663 lines, roughly 11.8 / 13.4 / 21.0 / 22.6
 estimated pages with 80-character wrapping and 48 lines per page, all under
 the current 35-page limit. Final pagination still needs checking in Word.
 
 All 100-point rubric items on the code side are closed: four official data
 citations in the do-file; a 2019 single-year summary table restricted to rows
-with the main regressor, exported as `.csv` and `.xlsx`; a five-column
+with the main regressor, exported as `.csv` and `.xlsx`; a four-column
 build-up table on one fixed estimation sample; a three-column subset table
 (all countries / EU-target group / other OECD); two overlapping subset
-histograms; a full 1/99 winsorized repeat of all six continuous model
+histograms; a full 1/99 winsorized repeat of all five continuous model
 variables; `testparm` tests for the year effects and the country effects; and
 the required comments on unmatched merges, winsorization preference and
 non-linearity.
@@ -110,26 +109,27 @@ folders, and the 11 Dec paper itself.
 All regressions use the 347-observation estimation sample; the subset columns
 use 309 (EU-target group) and 38 (other OECD).
 
-- **Primary PCSE AR(1) specification**: childcare −0.477 (SE 0.135,
-  p = 0.0004). Country FE, year FE, country trends and all existing controls
+- **Primary PCSE AR(1) specification**: childcare −0.473 (SE 0.136,
+  p = 0.0005). Country FE, year FE, country trends and all existing controls
   are included.
-- **All six continuous variables winsorized at 1/99**: −0.481 (SE 0.133,
+- **All five continuous variables winsorized at 1/99**: −0.480 (SE 0.133,
   p = 0.0003). The observed-data model remains preferred.
-- **Without country trends, keeping both fixed effects**: +0.103 (SE 0.150,
-  p = 0.4925). The negative association depends on the trend specification.
-- **Level comparison**: −7.735 (SE 2.718, p = 0.0044).
-- **Subsets**: EU-target group −0.456 (SE 0.143, p = 0.001 as rounded in the
-  log), other OECD −0.257 (SE 0.247, p = 0.300). The small group has only 38
+- **Without country trends, keeping both fixed effects**: +0.090 (SE 0.150,
+  p = 0.5488). The negative association depends on the trend specification.
+- **Level comparison**: −7.579 (SE 2.754, p = 0.0059).
+- **Subsets**: EU-target group −0.449 (SE 0.143, p = 0.002 as rounded in the
+  log), other OECD −0.159 (SE 0.258, p = 0.538). The small group has only 38
   observations and four countries, so its estimates remain descriptive.
-- **Diagnostics**: year FE `testparm` p = 0.2904; the country-effects F test
-  printed by `xtreg, fe` is F(22,276) = 68.49, p < 0.001; `xttest3`
-  chi2(23) = 5332.23, p < 0.001; `xtserial` p = 0.0009. The PCSE quadratic
-  term has p = 0.5241.
+- **Diagnostics**: year FE `testparm` p = 0.1312; the country-effects F test
+  printed by `xtreg, fe` is F(22,277) = 73.16, p < 0.001; `xttest3`
+  chi2(23) = 4132.10, p < 0.001; `xtserial` p = 0.0006. The PCSE quadratic
+  term has p = 0.5643.
 
 Spending uses ln(1+x). Its local elasticity is beta*x/(1+x), approximately
 −0.17 at the sample mean of 0.538 percent of GDP. Father leave uses
 ln(1+lagged weeks/10). The outcome and public leave spending use ln(x).
-Lagged real GDP per capita is logged and GDP growth stays in annual percent.
+Lagged real GDP per capita is the only GDP control. It controls development
+level, without imposing a Solow growth model on the employment gap.
 
 The main inference is the Test7 PCSE form with panel-specific heteroskedasticity
 and common AR(1). This is not country-clustered inference. Its assumptions and
@@ -269,11 +269,11 @@ Full list with evidence: `docs/PITFALLS_AND_CORRECTIONS.md`.
 | Subsets: EU childcare-targets group vs other OECD members | The EU's Barcelona targets and the 2022 Council Recommendation link ECEC provision to parental employment (https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32022H1220(01)); no comparable supranational target exists for the other members |
 | Keep the weak "other OECD" column | Rubric demands three columns and overlapping subset histograms; deleting it loses points. Disclosed as low-power |
 | PCSE AR(1) is the reported estimator | The user requested the Test7 workflow and excluded VCE options and the extra robust comparison |
-| Country-specific linear trends remain in the main model | Removing only the trends gives +0.103, p = 0.4925, so the result is explicitly conditional on that choice |
-| No quadratic term | The PCSE quadratic test gives p = 0.5241 |
-| Unwinsorized specification preferred | The winsorized PCSE coefficient is −0.481, p = 0.0003, close to the main −0.477, p = 0.0004 |
+| Country-specific linear trends remain in the main model | Removing only the trends gives +0.090, p = 0.5488, so the result is explicitly conditional on that choice |
+| No quadratic term | The PCSE quadratic test gives p = 0.5643 |
+| Unwinsorized specification preferred | The winsorized PCSE coefficient is −0.480, p = 0.0003, close to the main −0.473, p = 0.0005 |
 | Fourth numbered do-file for the tables | Keeps every log well under the 35-page limit; Workflow Guide 18 §18.2.2 allows it |
-| Build-up table on one fixed sample | All five columns use the same 347-observation sample so coefficient moves read as the effect of added controls |
+| Build-up table on one fixed sample | All four columns use the same 347-observation sample so coefficient moves read as the effect of added controls |
 | 2019 summary table as `.csv` + `.xlsx` | Rubric says "Excel or Word document"; Canvas file types do not list `.xlsx`, so the CSV is the upload-safe fallback |
 | Every lag built on its own full annual series before any merge | One principle covers GDP, leave weeks, leave spending and ECEC spending |
 | Access dates: SOCX 15 November 2026, the other four sources 14 November 2026 | Kept as written in the do-file citation block |

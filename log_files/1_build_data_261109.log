@@ -2,7 +2,7 @@
       name:  <unnamed>
        log:  /private/tmp/econ490-publish-fix/log_files/1_build_data_261109.log
   log type:  text
- opened on:  17 Nov 2026, 13:03:04
+ opened on:  17 Nov 2026, 13:15:07
 . }
 
 . 
@@ -19,8 +19,8 @@
 . *   https://webfs.oecd.org/els-com/Family_Database/PF2_5_Trends_in_leave_entitlements_around_childb
 > irth.xlsx
 . *   (accessed 14 November 2026).
-. * World Bank. 2026. World Development Indicators (dataset), NY.GDP.PCAP.KD and
-. *   NY.GDP.MKTP.KD.ZG, last updated 11 November 2026. Washington, DC: World Bank.
+. * World Bank. 2026. World Development Indicators (dataset), NY.GDP.PCAP.KD,
+. *   last updated 11 November 2026. Washington, DC: World Bank.
 . *   https://databank.worldbank.org/source/world-development-indicators
 . *   (accessed 14 November 2026).
 . 
@@ -170,12 +170,12 @@ Panel variable: leave_id (strongly balanced)
 file ./data_final/tmp_father_leave.dta saved
 
 . 
-. * control variables, GDP per capita and GDP growth, lagged on the full series
+. * control variable, GDP per capita, lagged on the full series
 . use "${datadir_raw}/wdi_raw.dta", clear
 
 . rename countrycode iso
 
-. keep iso year ny_gdp_pcap_kd ny_gdp_mktp_kd_zg
+. keep iso year ny_gdp_pcap_kd
 
 . duplicates report iso year
 
@@ -190,9 +190,6 @@ Duplicates in terms of iso year
 . generate lngdp = ln(ny_gdp_pcap_kd) if ny_gdp_pcap_kd>0
 (2,995 missing values generated)
 
-. generate gdp_growth = ny_gdp_mktp_kd_zg
-(3,168 missing values generated)
-
 . encode iso, generate(gdp_id)
 
 . xtset gdp_id year, yearly
@@ -204,14 +201,9 @@ Panel variable: gdp_id (strongly balanced)
 . generate lag_lngdp = L1.lngdp
 (3,229 missing values generated)
 
-. generate lag_gdp_growth = L1.gdp_growth
-(3,402 missing values generated)
-
 . label variable lag_lngdp "Lagged log real GDP per capita"
 
-. label variable lag_gdp_growth "Lagged real GDP growth, percent"
-
-. keep iso year lngdp gdp_growth lag_lngdp lag_gdp_growth
+. keep iso year lngdp lag_lngdp
 
 . save "${datadir_final}/tmp_gdp_controls.dta", replace
 file ./data_final/tmp_gdp_controls.dta saved
@@ -490,7 +482,7 @@ Duplicates in terms of country_id year
 . replace childcare_sample = 0 if missing(employment_gap, lag_socx_ecec, lag_fatherweeks10)
 (80 real changes made)
 
-. replace childcare_sample = 0 if missing(lag_lngdp, lag_gdp_growth, leave_gdp)
+. replace childcare_sample = 0 if missing(lag_lngdp, leave_gdp)
 (50 real changes made)
 
 . label variable childcare_sample "Complete-case sample for the childcare regressions"

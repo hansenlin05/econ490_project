@@ -22,8 +22,8 @@ if ${store_log_build}==1 {
 *   OECD Family Database, updated November 2026. Paris: OECD.
 *   https://webfs.oecd.org/els-com/Family_Database/PF2_5_Trends_in_leave_entitlements_around_childbirth.xlsx
 *   (accessed 14 November 2026).
-* World Bank. 2026. World Development Indicators (dataset), NY.GDP.PCAP.KD and
-*   NY.GDP.MKTP.KD.ZG, last updated 11 November 2026. Washington, DC: World Bank.
+* World Bank. 2026. World Development Indicators (dataset), NY.GDP.PCAP.KD,
+*   last updated 11 November 2026. Washington, DC: World Bank.
 *   https://databank.worldbank.org/source/world-development-indicators
 *   (accessed 14 November 2026).
 
@@ -84,20 +84,17 @@ label variable lag_fatherweeks10 "Lagged father-specific paid leave, per 10 week
 keep iso country year fatherweeks fatherweeks10 lag_fatherweeks10 leave_known
 save "${datadir_final}/tmp_father_leave.dta", replace
 
-* control variables, GDP per capita and GDP growth, lagged on the full series
+* control variable, GDP per capita, lagged on the full series
 use "${datadir_raw}/wdi_raw.dta", clear
 rename countrycode iso
-keep iso year ny_gdp_pcap_kd ny_gdp_mktp_kd_zg
+keep iso year ny_gdp_pcap_kd
 duplicates report iso year
 generate lngdp = ln(ny_gdp_pcap_kd) if ny_gdp_pcap_kd>0
-generate gdp_growth = ny_gdp_mktp_kd_zg
 encode iso, generate(gdp_id)
 xtset gdp_id year, yearly
 generate lag_lngdp = L1.lngdp
-generate lag_gdp_growth = L1.gdp_growth
 label variable lag_lngdp "Lagged log real GDP per capita"
-label variable lag_gdp_growth "Lagged real GDP growth, percent"
-keep iso year lngdp gdp_growth lag_lngdp lag_gdp_growth
+keep iso year lngdp lag_lngdp
 save "${datadir_final}/tmp_gdp_controls.dta", replace
 
 * control variable, public spending on maternity and parental leave
@@ -190,7 +187,7 @@ label variable eu_childcare "European group covered by EU childcare targets duri
 * flag country-years where every model variable is there
 generate byte childcare_sample = 1
 replace childcare_sample = 0 if missing(employment_gap, lag_socx_ecec, lag_fatherweeks10)
-replace childcare_sample = 0 if missing(lag_lngdp, lag_gdp_growth, leave_gdp)
+replace childcare_sample = 0 if missing(lag_lngdp, leave_gdp)
 label variable childcare_sample "Complete-case sample for the childcare regressions"
 tabulate childcare_sample
 

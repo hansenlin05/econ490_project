@@ -23,9 +23,6 @@ preserve
         (mean) mean_lngdp=lag_lngdp (sd) sd_lngdp=lag_lngdp ///
         (min) min_lngdp=lag_lngdp (max) max_lngdp=lag_lngdp ///
         (count) n_lngdp=lag_lngdp ///
-        (mean) mean_growth=lag_gdp_growth (sd) sd_growth=lag_gdp_growth ///
-        (min) min_growth=lag_gdp_growth (max) max_growth=lag_gdp_growth ///
-        (count) n_growth=lag_gdp_growth ///
         (mean) mean_mleave=ln_leavespending (sd) sd_mleave=ln_leavespending ///
         (min) min_mleave=ln_leavespending (max) max_mleave=ln_leavespending ///
         (count) n_mleave=ln_leavespending
@@ -60,19 +57,19 @@ graph export "${figdir}/histogram_childcare_byregion_261109.png", as(png) replac
 * same specification in each group and in the full sample
 * the EU Barcelona targets tied childcare access to parental work
 * https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32022H1220(01)
-xtpcse ln_gap ln_spending ln_leaveweeks lag_lngdp lag_gdp_growth ln_leavespending ///
+xtpcse ln_gap ln_spending ln_leaveweeks lag_lngdp ln_leavespending ///
     i.year i.country_id c.year_centered#i.country_id, het corr(ar1)
 estimates store childcare_all
-xtpcse ln_gap ln_spending ln_leaveweeks lag_lngdp lag_gdp_growth ln_leavespending ///
+xtpcse ln_gap ln_spending ln_leaveweeks lag_lngdp ln_leavespending ///
     i.year i.country_id c.year_centered#i.country_id if eu_childcare==1, het corr(ar1)
 estimates store childcare_eu
-xtpcse ln_gap ln_spending ln_leaveweeks lag_lngdp lag_gdp_growth ln_leavespending ///
+xtpcse ln_gap ln_spending ln_leaveweeks lag_lngdp ln_leavespending ///
     i.year i.country_id c.year_centered#i.country_id if eu_childcare==0, het corr(ar1)
 estimates store childcare_other
 
 * columns, all countries, EU group, other OECD, with country, year and trend effects in each
 etable, estimates(childcare_all childcare_eu childcare_other) ///
-    keep(ln_spending ln_leaveweeks lag_lngdp lag_gdp_growth ln_leavespending) ///
+    keep(ln_spending ln_leaveweeks lag_lngdp ln_leavespending) ///
     mstat(N) showstars showstarsnote varlabel column(dvlabel) ///
     export("${tabledir}/results_childcare_subsets_261109.docx", replace)
 

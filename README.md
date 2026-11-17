@@ -74,7 +74,7 @@ The employment panel contains 477 country-years within the 2000–2024 source
 window. The estimation sample contains 347 observations from 23 OECD countries
 over 2001–2023. Main explanatory variable: prior-year public ECEC spending as a
 share of GDP (OECD SOCX TP521). Controls: lagged father-specific paid leave,
-lagged log real GDP per capita, lagged real GDP growth, and contemporaneous
+lagged log real GDP per capita, and contemporaneous
 public maternity and parental leave spending.
 
 The primary model follows the Test7 panel workflow. `xtreg ..., fe` supplies
@@ -83,14 +83,14 @@ and `xtserial`. The reported regressions use `xtpcse ..., het corr(ar1)` with
 country and year fixed effects and country-specific linear trends. No
 `vce(...)` or separate `regress ..., robust` comparison is used.
 
-The main childcare coefficient is −0.477 (SE 0.135, p = 0.0004). The full
-1/99 winsorized repeat gives −0.481 (SE 0.133, p = 0.0003). The level model
-gives −7.735 (p = 0.0044). All of these reported models use panel-specific
+The main childcare coefficient is −0.473 (SE 0.136, p = 0.0005). The full
+1/99 winsorized repeat gives −0.480 (SE 0.133, p = 0.0003). The level model
+gives −7.579 (p = 0.0059). All of these reported models use panel-specific
 heteroskedasticity and a common AR(1) process.
 
 **The result depends on the trend specification.** Keeping country and year
-fixed effects and removing only country-specific trends gives +0.103
-(p = 0.4925). The supported conclusion is a negative conditional association
+fixed effects and removing only country-specific trends gives +0.090
+(p = 0.5488). The supported conclusion is a negative conditional association
 after accounting for the specified country trajectories. This panel model
 does not establish a causal policy effect. Its inference relies on the
 assumed error structure and the available unbalanced panel.
@@ -99,8 +99,11 @@ The outcome is ln(employment gap), and childcare spending enters as ln(1 + x),
 where x is measured in percentage points of GDP. The local spending elasticity
 is beta × x/(1 + x). At the sample mean x = 0.538, a 1 percent relative increase
 in spending is associated with approximately a 0.17 percent smaller gap
-(−0.477 × 0.538/1.538). The coefficient is an elasticity with respect to 1 + x.
-GDP growth is the WDI annual percentage growth series and stays in levels.
+(−0.473 × 0.538/1.538). The coefficient is an elasticity with respect to 1 + x.
+Lagged log real GDP per capita is the only GDP control. GDP growth is excluded
+from data preparation, sample selection, regressions and winsorization.
+This GDP control captures economic development. The employment-gap regression
+is not a Solow growth equation or a test of convergence.
 
 The earlier father-specific paid leave analysis is retired. The earlier
 single-file childcare PCSE variant is archived in `legacy/prior_pcse/` with its
@@ -121,8 +124,8 @@ Full reasoning and evidence in `docs/RESEARCH_DECISIONS.md`.
    This restriction follows the user's latest instruction. It does not claim
    that such syntax is absent from every course document.
 4. **Country-specific linear trends remain in the main model.** Removing them
-   gives +0.103 (p = 0.4925). The quadratic term is insignificant
-   (p = 0.5241) and is excluded from the main model.
+   gives +0.090 (p = 0.5488). The quadratic term is insignificant
+   (p = 0.5643) and is excluded from the main model.
 5. **Five do-files and four logs.** Each numbered do-file writes its own log.
 6. **No live downloads at run time.** `data_raw/` snapshots are the inputs.
 7. **The 2019 summary table is restricted to observations with the main

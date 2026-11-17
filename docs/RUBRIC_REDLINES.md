@@ -72,7 +72,7 @@ loses 15–35 points before the regressions are read.
   **and** is explained by economic theory.
 - **Must not**: add a term just because it is significant; keep a term that
   fails both tests. Our quadratic spending term is assessed in the log
-  (p = 0.5241) and excluded.
+  (p = 0.5643) and excluded.
 
 ### Item 6 — One properly specified regression (10 pts)
 
@@ -88,7 +88,7 @@ loses 15–35 points before the regressions are read.
 - **Must**: rerun that same regression with **all** variables winsorized, and
   comment on whether this is the preferred specification.
 - **Must not**: winsorize only two variables and call it "all"; skip the
-  preferred-specification comment. Our repeat covers all six continuous model
+  preferred-specification comment. Our repeat covers all five continuous model
   variables and the comment states the unwinsorized model is preferred.
 
 ### Item 8 — Build-up table (15 pts)
@@ -99,7 +99,7 @@ loses 15–35 points before the regressions are read.
   country FE were included ("yes"/"no")**; edit the exported Word file
   afterwards (the assignment says so explicitly); do not print FE estimates.
 - **Must not**: let the estimation sample change across columns (ours holds
-  all five at 347); leave the FE yes/no rows out; hand-write the table outside
+  all four at 347); leave the FE yes/no rows out; hand-write the table outside
   Stata.
 
 ### Item 9 — Subset table (10 pts)

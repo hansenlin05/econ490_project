@@ -31,7 +31,9 @@ above and with the paper's AER-style bibliography requirement.
 
 ## 2. The four citation strings now in `1_build_data_261109.do`
 
-Only these four external sources are actually read by the do-file. Both SOCX
+Only these four external sources are actually read by the do-file. The frozen
+WDI file retains its original fields, but the active build reads only
+NY.GDP.PCAP.KD for the economic control. GDP growth is no longer used. Both SOCX
 programmes (TP521 childcare and TP512 maternity and parental leave spending)
 come from the same SOCX release and were frozen in `data_raw/` on the same
 day, so the two policy spending controls share one versioned source. Variables
@@ -54,7 +56,7 @@ is no longer read by any do-file and is therefore no longer cited.
    https://webfs.oecd.org/els-com/Family_Database/PF2_5_Trends_in_leave_entitlements_around_childbirth.xlsx
    (accessed 14 November 2026).`
 4. **World Bank WDI** — `World Bank. 2026. World Development Indicators
-   (dataset), NY.GDP.PCAP.KD and NY.GDP.MKTP.KD.ZG, last updated 11 November
+   (dataset), NY.GDP.PCAP.KD, last updated 11 November
    2026. Washington, DC: World Bank.
    https://databank.worldbank.org/source/world-development-indicators
    (accessed 14 November 2026).`

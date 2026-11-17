@@ -9,30 +9,30 @@ finished and verified; everything left is a manual team action.
   plus the 2019 summary as `.csv` and `.xlsx`), two PNG figures, eleven
   `data_raw` inputs, seven `data_final` outputs.
 - Full rerun from `data_raw` on 17 Nov: no `r()` errors anywhere. Logs are
-  548 / 426 / 640 / 785 lines, roughly 12.0 / 13.9 / 21.6 / 27.0 pages with
+  540 / 415 / 631 / 663 lines, roughly 11.8 / 13.4 / 21.0 / 22.6 pages with
   80-character wrapping — all under the 35-page limit the instructor
   confirmed on 16 November 2026.
 - All four data sources cited in the do-file citation block
   (see `docs/DATA_CITATIONS.md`).
 - 2019 single-year summary table, restricted to rows with the main regressor
   observed (23 rows; `leave_gdp` has 20), exported as `.csv` and `.xlsx`.
-- Five-column build-up table with every column on the same 347-observation
+- Four-column build-up table with every column on the same 347-observation
   estimation sample: `tables/results_childcare_buildup_261109.docx`.
 - Three-column subset table (all countries 347 / EU-target group 309 / other
   OECD 38): `tables/results_childcare_subsets_261109.docx`.
-- Full 1/99 winsorized repeat of all six continuous model variables; the main
-  coefficient is −0.481 with the same sign and significance:
+- Full 1/99 winsorized repeat of all five continuous model variables; the main
+  coefficient is −0.480 with the same sign and significance:
   `tables/results_childcare_winsor_261109.docx`.
 - Overlapping two-subset histogram of the main regressor:
   `figures/histogram_childcare_byregion_261109.png`; scatter with linear fit:
   `figures/scatter_gap_childcare_261109.png`.
-- Year effects are tested by `testparm i.year` (p = 0.2904). The
-  `xtreg, fe` country-effects F test is F(22,276) = 68.49, p < 0.001.
+- Year effects are tested by `testparm i.year` (p = 0.1312). The
+  `xtreg, fe` country-effects F test is F(22,277) = 73.16, p < 0.001.
 - Comments in the do-files about unmatched merges, the preferred
   unwinsorized specification, and why the non-linear term is not used.
 - `testparm ln_spending` prints childcare p-values for the log models, and
   `testparm lag_socx_ecec` does so for the level model, and the PCSE column prints chi2(1) = 12.52,
-  p = 0.0004.
+  p = 0.0005.
 
 ## 2. Manual actions still required
 
@@ -54,19 +54,19 @@ finished and verified; everything left is a manual team action.
 > year fixed effects, country-specific linear trends, and the existing controls.
 > The input employment panel contains 477 observations within 2000–2024. The
 > regressions use 347 complete observations from 23 OECD countries over 2001–2023.
-> The childcare coefficient is -0.477 (SE 0.135, p = 0.0004), and the full 1/99
-> winsorized repeat gives -0.481 (SE 0.133, p = 0.0003). Both use
+> The childcare coefficient is -0.473 (SE 0.136, p = 0.0005), and the full 1/99
+> winsorized repeat gives -0.480 (SE 0.133, p = 0.0003). Both use
 > `xtpcse ..., het corr(ar1)`, following Test7. VCE options and the separate
 > robust comparison have been removed from the active analysis.
 >
 > The result depends on country-specific trends. Removing only the trends
-> while retaining both fixed effects gives +0.103 (p = 0.4925). We report a
+> while retaining both fixed effects gives +0.090 (p = 0.5488). We report a
 > conditional association under the stated specification, with no causal claim.
 >
 > Childcare is ln(1+x), with x measured in percent of GDP. The local spending
 > elasticity is beta*x/(1+x), approximately -0.17 at the sample mean of 0.538.
 > Thus a 1 percent relative spending increase is associated with about a 0.17
-> percent smaller gap at that value. GDP growth remains an annual percentage rate.
+> percent smaller gap at that value. Lagged log real GDP per capita is the only GDP control. GDP growth is excluded.
 >
 > Merge note: all merges are performed inside `1_build_data_261109.do`. Two
 > distinct kinds of observation loss occur and neither is an error. (i) Rows
@@ -78,7 +78,7 @@ finished and verified; everything left is a manual team action.
 > (427 matched, 50 master-only, 582 using-only). (ii) Rows that do match but
 > still leave the regression: requiring a numeric lagged spending value, the
 > outcome, and all controls (lagged father-specific leave weeks, lagged log
-> GDP per capita, lagged GDP growth, and public maternity and parental leave
+> GDP per capita, and public maternity and parental leave
 > spending) reduces the panel from 477 to the 347 complete cases marked by
 > `childcare_sample`. Every lag in the build is computed on its own full
 > annual series before any merge, so a country-year is never lost merely
@@ -93,17 +93,17 @@ finished and verified; everything left is a manual team action.
 > coefficient must not be read as a policy effect.
 >
 > Diagnostics: `xttest3` rejects groupwise homoskedasticity (p < 0.001), and
-> `xtserial` reports serial correlation (p = 0.0009). We use panel-specific
+> `xtserial` reports serial correlation (p = 0.0006). We use panel-specific
 > heteroskedasticity and common AR(1) in PCSE. These are assumed error structures,
 > and the diagnostic auxiliary regression does not establish that every feature
 > of the final model is correctly specified. The year-effects test has
-> p = 0.2904 and the country-effects F test printed by `xtreg, fe` has p < 0.001.
-> Year effects are retained. The quadratic spending term has p = 0.5241 and
+> p = 0.1312 and the country-effects F test printed by `xtreg, fe` has p < 0.001.
+> Year effects are retained. The quadratic spending term has p = 0.5643 and
 > is excluded from the main regression.
 >
 > Preferred specification: the observed-data PCSE model. Winsorizing all six
 > continuous model variables at the first and 99th percentiles gives a similar
-> childcare coefficient (-0.481, p = 0.0003). The winsorized version is a repeat
+> childcare coefficient (-0.480, p = 0.0003). The winsorized version is a repeat
 > of the same PCSE specification.
 >
 > File note: the 2019 single-year summary table is supplied in Excel form;

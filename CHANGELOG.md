@@ -4,6 +4,22 @@ This file records the team's analysis and repository changes. The 17 November
 documentation and formatting correction was prepared from GitHub main. It
 does not by itself confirm that OneDrive or Canvas has been updated.
 
+## 2026-11-17 — Keep lagged log GDP per capita as the sole GDP control
+
+Removed GDP growth at the user's request, including its generation, sample
+restriction, descriptive statistics, regressions and winsorization. The WDI
+raw snapshot is preserved. The four-column build-up adds father leave, GDP
+per capita and leave spending in sequence. All five continuous model variables
+are winsorized in the repeat. The Test7 PCSE AR(1) estimator, country and year
+effects, country trends, and the remaining controls are unchanged.
+
+A full rerun from the raw inputs retains 23 OECD countries and 347 observations
+(309 EU-target and 38 other OECD). Childcare is -0.473, p = 0.0005, and the
+winsorized coefficient is -0.480, p = 0.0003. Without trends it is +0.090,
+p = 0.5488. Current documentation and all exported tables were updated.
+Lagged log GDP per capita is described as an economic development control,
+rather than a Solow growth model or an employment-gap convergence variable.
+
 ## 2026-11-17 — Use the Test7 PCSE AR1 workflow
 
 Following the user's instruction, removed VCE options and the extra robust
