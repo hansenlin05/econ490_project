@@ -4,6 +4,15 @@ This file records the team's analysis and repository changes. The 17 November
 documentation and formatting correction was prepared from GitHub main. It
 does not by itself confirm that OneDrive or Canvas has been updated.
 
+## 2026-11-17 — OneDrive synced to the Test7 PCSE AR1 chain
+
+Copied the four revised do-files to the OneDrive package and reran the master
+there from the frozen raw inputs. Every estimate matches this repository, the
+panel CSV is byte-identical, and there are no `r()` errors. The four formatted
+Word tables were kept from this repository because a rerun overwrites them with
+raw exports. Local logs are 567 / 436 / 645 / 679 lines, all under the page
+limit, and were copied back here so both copies are reproducible.
+
 ## 2026-11-17 — Keep lagged log GDP per capita as the sole GDP control
 
 Removed GDP growth at the user's request, including its generation, sample
