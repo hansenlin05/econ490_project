@@ -89,6 +89,24 @@ testparm i.year
 xttest3
 capture noisily xtserial ln_gap ln_childcare ln_fatherweeks10 lag_lngdp ln_leave_gdp
 
+quietly xtpcse ln_gap ln_childcare i.year i.country_id c.year_centered#i.country_id, het corr(ar1)
+estimates store build1
+quietly xtpcse ln_gap ln_childcare ln_fatherweeks10 i.year i.country_id ///
+    c.year_centered#i.country_id, het corr(ar1)
+estimates store build2
+quietly xtpcse ln_gap ln_childcare ln_fatherweeks10 lag_lngdp i.year i.country_id ///
+    c.year_centered#i.country_id, het corr(ar1)
+estimates store build3
+
+xtpcse ln_gap ln_childcare ln_fatherweeks10 lag_lngdp ln_leave_gdp ///
+    i.year i.country_id c.year_centered#i.country_id, het corr(ar1)
+estimates store main_pcse
+testparm ln_childcare
+
+etable, estimates(build1 build2 build3 main_pcse) ///
+    keep(ln_childcare ln_fatherweeks10 lag_lngdp ln_leave_gdp) ///
+    mstat(N) showstars showstarsnote column(index) export(oecd_childcare_buildup.docx, replace)
+
 quietly su ln_gap, detail
 generate ln_gap_winsor = ln_gap
 replace ln_gap_winsor = r(p1) if ln_gap_winsor < r(p1) & ln_gap_winsor != .
@@ -117,5 +135,12 @@ replace ln_leave_gdp_winsor = r(p99) if ln_leave_gdp_winsor > r(p99) & ln_leave_
 xtpcse ln_gap_winsor ln_childcare_winsor ln_fatherweeks10_winsor ///
     lag_lngdp_winsor ln_leave_gdp_winsor i.year i.country_id ///
     c.year_centered#i.country_id, het corr(ar1)
+estimates store winsor_pcse
+testparm ln_childcare_winsor
+
+etable, estimates(main_pcse winsor_pcse) ///
+    keep(ln_childcare ln_fatherweeks10 lag_lngdp ln_leave_gdp ///
+         ln_childcare_winsor ln_fatherweeks10_winsor lag_lngdp_winsor ln_leave_gdp_winsor) ///
+    mstat(N) showstars showstarsnote column(index) export(oecd_childcare_comparison.docx, replace)
 
 capture log close
