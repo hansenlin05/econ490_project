@@ -4,6 +4,16 @@ This file records the team's analysis and repository changes. The 17 November
 documentation and formatting correction was prepared from GitHub main. It
 does not by itself confirm that OneDrive or Canvas has been updated.
 
+## 2026-11-17 — OneDrive rerun for the direct-log chain
+
+Copied the five revised do-files to the OneDrive package and reran the master
+from the frozen raw inputs. Every estimate matches this repository and there
+are no `r()` errors. The four formatted Word tables were kept from this
+repository because a rerun overwrites them with raw exports. Local logs are
+565 / 434 / 643 / 677 lines, all under the page limit, and were copied back
+here so both copies are reproducible. The log figures in HANDOVER and
+SUBMISSION_STATUS were updated to these local counts.
+
 ## 2026-11-17 — Save logs directly without optional switches
 
 Removed the four `store_log_*` globals and the conditional log wrappers.
