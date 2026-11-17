@@ -4,6 +4,20 @@ This file records the team's analysis and repository changes. The 17 November
 documentation and formatting correction was prepared from GitHub main. It
 does not by itself confirm that OneDrive or Canvas has been updated.
 
+## 2026-11-17 — Code and comment audit corrections
+
+Three do-file findings from a code and comment audit were fixed in both the
+OneDrive package and this repository. In `0_master`, an unreferenced
+`global controls` and its inaccurate comment were removed; the controls are
+written explicitly in every regression. In `1_build_data`, the header now names
+the file actually read (`oecd_leave_timeseries.csv`, not the source workbook),
+and the two `weeks_all` slash-option `replace` lines were removed because they
+never changed a value. `CODE_CONVENTIONS` now records the module 18 banner
+exception, the removal of the dead global and no-op replaces, and why the
+winsorize-loop "(0 real changes made)" lines are expected. The full chain was
+rerun with no `r()` errors and every estimate unchanged; the build log is now
+582 lines.
+
 ## 2026-11-17 — Interpretation and Word presentation aligned with the logs
 
 Corrected the childcare magnitude to the local elasticity beta*x/(1+x),

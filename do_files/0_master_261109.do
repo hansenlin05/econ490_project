@@ -35,9 +35,6 @@ global store_log_mainresults = 1    // 0 = don't save log file; 1 = save log fil
 global run_tables = 1              // 0 = skip; 1 = run
 global store_log_tables = 1        // 0 = don't save log file; 1 = save log file
 
-* Lagged log GDP per capita is in every regression
-global controls "lag_lngdp lag_gdp_growth leave_gdp"
-
 /* Run the do-files: runs all of the do-files for the project */
 if ${run_build}==1 {
     capture noisily do "${do_dir}/1_build_data_261109.do"

@@ -166,7 +166,7 @@ One short sentence, on its own line, is almost always enough.
 | Instructions to the paper's author | "the paper must explain why theory predicts non-linearity" |
 | Defences of a command choice | "plain `generate` stores a float, so the replace refills at double precision" |
 | Process labels | "Step 0", "locked panels", "apply the existing sample rule" |
-| Decoration | `==========` rules, banner lines, emoji |
+| Decoration | `==========` rules, emoji. Exception: the `********* * Directory Settings *********` and `* Project Settings *` banners in `0_master` are copied verbatim from COMET module 18 (§18.3.2, §18.5.1); course text outranks this rule. |
 
 The test: a grader who has never seen this project should be able to read the
 comment and learn what the code does — not what the team did last week.
@@ -186,16 +186,21 @@ line.
 - Lagged and leading variables use `L1.` / `F1.` after `encode` + `xtset` +
   `sort`, not subscript arithmetic.
 - Panel setup is explicit: `encode`, `xtset`, then `sort`.
-- No macro metaprogramming beyond `global` for paths and controls and `local`
-  for percentile cut-offs.
+- No macro metaprogramming beyond `global` for paths and `local` for
+  percentile cut-offs. A `global` that is never referenced is dead code and is
+  removed (a former `global controls` was deleted on 17 November 2026).
 - One build of each raw source, written to fixed intermediate files
   (`tmp_*.dta` in `data_final/`) and reused by the later `use` and `merge`
   steps.
 - No no-op commands. A command that prints "already numeric; no replace" or
   "(0 real changes made)" must be removed or restructured. The two `weeks_all`
-  slash-option replaces print "(0 real changes made)" because the slash text
-  occurs only in the paid column; they stay as the symmetric counterpart of the
-  `fatherweeks` replaces and are documented here.
+  slash-option replaces were deleted on 17 November 2026 because the slash text
+  occurs only in the paid column, so they never changed a value. The matching
+  `fatherweeks` replaces are kept; they do make real changes. The "(0 real
+  changes made)" lines that remain in `4_tables_261109.log` come from the
+  winsorize loop where a variable has no observation beyond a percentile. They
+  are the expected result of the fixed `generate` + `replace` pattern, not
+  redundant commands, and are kept.
 - Fixed-effects tests belong where the coefficients exist: `testparm
   i.country_id` runs after the LSDV `regress` that includes `i.country_id`.
   After `xtreg, fe` the country effects are absorbed and the test aborts with

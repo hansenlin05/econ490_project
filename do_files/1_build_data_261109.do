@@ -2,7 +2,7 @@
    1_build_data_261109.do | build the OECD childcare panel from the raw source files.
    Output: oecd_childcare_261109.dta, OECD countries observed from 2000 to 2024.
    Inputs: country_codes.csv, ilo_household_raw.csv, oecd_socx_ecec_gdp.csv,
-   oecd_socx_tp512_leave.csv, oecd_leave_history.xlsx, wdi_raw.dta. */
+   oecd_socx_tp512_leave.csv, oecd_leave_timeseries.csv, wdi_raw.dta. */
 
 //If log setting is activated, we record a log file in the log folder
 if ${store_log_build}==1 {
@@ -47,10 +47,9 @@ encode iso, generate(leave_id)
 xtset leave_id year, yearly
 sort leave_id year
 
-* Two entries list two options separated by a slash; use the lower one.
+* Parse total and father-specific leave weeks from their text columns.
+* Two father-specific entries list two options separated by a slash; use the lower one.
 generate weeks_all = real(total_all_raw)
-replace weeks_all = 28.6  if total_all_raw == "28.6 / 54.6"
-replace weeks_all = 30.17 if total_all_raw == "30.17 / 56.17"
 generate fatherweeks = real(total_paid_raw)
 replace fatherweeks = 28.6  if total_paid_raw == "28.6 / 54.6"
 replace fatherweeks = 30.17 if total_paid_raw == "30.17 / 56.17"
