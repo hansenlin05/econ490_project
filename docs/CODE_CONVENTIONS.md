@@ -9,7 +9,9 @@ Sources, by filename: the COMET Notebook modules 02–18 (including
 question sets, and the lecture note `Preparing for Panel Data Analysis.pdf`
 (added on 17 November 2026: it demonstrates `vce(cluster id)` verbatim and
 requires clustered standard errors, which the 16 November source set had
-wrongly excluded). A command is permitted when one of those sources shows or
+wrongly excluded). The lecture note was re-checked on 17 November against the
+original PDF in the local `Admin/` folder, not only the extracted text: every
+command form in §7 was found verbatim and the note contains no `tsset`. A command is permitted when one of those sources shows or
 explains it. `StataCheatSheet_analysis_19.pdf` is **not** a source: as of
 16 November 2026 it has been removed from the whitelist, and nothing is
 permitted on the strength of that handout alone.
