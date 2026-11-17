@@ -50,9 +50,10 @@ units), `lag_lngdp` (the course's required convergence variable),
 spending).
 
 Specification: `regress` with `i.year i.country_id
-c.year_centered#i.country_id`, heteroskedasticity-robust standard errors
-(reference inference); the same model under PCSE with common AR(1) as the
-sensitivity check. Estimates are conditional associations, not causal effects.
+c.year_centered#i.country_id`, standard errors clustered by country
+(reference inference); the same model under unclustered robust SEs and under
+PCSE with common AR(1) as the sensitivity checks. Estimates are conditional
+associations, not causal effects.
 A quadratic spending term was assessed and is not in the main model (p =
 0.1208).
 
@@ -83,7 +84,7 @@ assignment's log limit; the instructor confirmed 35 pages on 16 November 2026
 
 Latest verification (16 Nov 2026, full rerun from `data_raw`): no `r()` errors
 anywhere, and the key numbers below are exactly the ones in the current logs.
-Log sizes are 551 / 417 / 622 / 835 lines, roughly 11.5 / 8.7 / 12.4 / 17.4
+Log sizes are 586 / 423 / 911 / 749 lines, roughly 12.2 / 8.8 / 19.0 / 15.6
 pages with 80-character wrapping — all under both the old 25-page and the new
 35-page limit.
 
@@ -111,37 +112,45 @@ folders, and the 11 Dec paper itself.
 All regressions use the 347-observation estimation sample; the subset columns
 use 309 (EU-target group) and 38 (other OECD).
 
-- **Primary specification** (year + country effects + country trends, robust,
-  all continuous variables in logs): `ln_spending` **−0.582** (SE 0.116,
-  p < 0.001); `testparm ln_spending` F(1, 276) = 25.17. GDP per capita is
-  already logged; GDP growth stays in level form because it is a log
-  difference. The coefficient is an elasticity: 1 percent more ECEC spending
-  is associated with a 0.582 percent smaller employment gap. Spending enters
-  as ln(1 + x), so at the sample mean of 0.538 percent of GDP the effect of a
-  1 percent relative increase is about 0.20 percent.
+- **Primary specification** (year + country effects + country trends, SEs
+  clustered by country, all continuous variables in logs): `ln_spending`
+  **−0.582** (SE 0.172, p = 0.003); `testparm ln_spending` F(1, 22) = 11.39.
+  GDP per capita is already logged; GDP growth stays in level form because it
+  is a log difference. The coefficient is an elasticity: 1 percent more ECEC
+  spending is associated with a 0.582 percent smaller employment gap. Spending
+  enters as ln(1 + x), so at the sample mean of 0.538 percent of GDP the
+  effect of a 1 percent relative increase is about 0.20 percent, which is the
+  magnitude form the paper uses.
+- **Unclustered robust SEs:** **−0.582** (SE 0.116, p < 0.001); `testparm`
+  F(1, 276) = 25.17.
 - **PCSE, heteroskedastic panels, common AR(1):** **−0.477** (SE 0.135,
   p < 0.001); `testparm` chi2(1) = 12.52, p = 0.0004.
-- Subset columns: EU-target group −0.566 (p < 0.001); other OECD −0.327
-  (p = 0.349, 38 observations — not readable as a policy effect; the table
-  note carries the warning).
-- Full 1/99 winsorized repeat: **−0.581** (SE 0.116, p < 0.001), same sign and
-  significance, so the unwinsorized model stays preferred.
-- Log model without country trends: **−0.622** (SE 0.116, p < 0.001), so the
-  trend terms do not drive the result.
+- Subset columns (clustered): EU-target group −0.566 (p = 0.005); other OECD
+  −0.327 (p = 0.149, 38 observations — not readable as a policy effect; the
+  table note carries the warning).
+- Full 1/99 winsorized repeat: **−0.581** (clustered SE 0.166, p = 0.002),
+  same sign and significance, so the unwinsorized model stays preferred.
+- Log model without country trends (both fixed effects kept): **+0.131**
+  (clustered SE 0.199, p = 0.518). The negative association is identified
+  relative to each country's own trajectory; without the trend terms it is
+  not present, and the paper reports this openly. The trend terms stand
+  because countries started from different childcare systems (the same
+  institutional-divergence logic as the Barcelona-targets subset).
 - Level specification retained as a comparison column: `lag_socx_ecec`
-  **−9.456** (SE 2.113, p < 0.001), a percentage-point effect.
+  **−9.456** (clustered SE 3.305, p = 0.009), a percentage-point effect.
 - Diagnostics: `testparm i.year` F(22, 276) = 1.15, p = 0.2904 (year effects retained by
-design, although not jointly significant in the log model); `testparm i.country_id` F(22, 276) = 173.02, p < 0.001 (country
+design, although not jointly significant in the log model); `testparm i.country_id` in the LSDV form F(19, 22) = 6.7e+06, p < 0.001 (country
   effects kept); `xttest3` chi2(23) = 5332.23, p < 0.001 (groupwise
-  heteroskedasticity present, robust/PCSE inference responds to it);
+  heteroskedasticity present, clustered/PCSE inference responds to it);
   `xtserial` p = 0.0009 (serial correlation present, AR(1) PCSE responds to
-  it); quadratic term F(1, 275) = 0.05, p = 0.8318 (not included).
+  it); quadratic term F(1, 22) = 0.02, p = 0.8891 (not included).
 
-Heteroskedasticity-robust standard errors are the reference inference because
-`regress ..., robust` is the form the course material demonstrates; the course
-material does not demonstrate cluster-robust options, so none is used. PCSE is
-a sensitivity check. Any document whose numbers disagree with these logs is
-wrong.
+Country-clustered standard errors are the reference inference because the
+lecture note "Preparing for Panel Data Analysis" states "Always cluster your
+SEs" and demonstrates `vce(cluster id)` verbatim. Unclustered robust SEs and
+PCSE are sensitivity checks. With 23 country clusters the note's rough floor
+of 30-50 is not met, and the paper discloses this limitation. Any document
+whose numbers disagree with these logs is wrong.
 
 ---
 
@@ -232,7 +241,7 @@ lecture notes. They are easy to miss and have caused real rework.
   variables", because the fixed-effects estimator absorbs the country effects.
   Run it after the LSDV `regress` that includes `i.country_id`.
 - **The "other OECD" subset column has 38 observations** and its coefficient
-  (−0.327, p = 0.349) is not readable as a policy effect. It is kept because
+  (−0.327, p = 0.149) is not readable as a policy effect. It is kept because
   the rubric requires three columns and the split is theory-driven; the table
   note says so.
 - **The SOCX lag is built on the full SOCX series before the merge**, in the
@@ -276,10 +285,10 @@ Full list with evidence: `docs/PITFALLS_AND_CORRECTIONS.md`.
 | 2019 is the representative year | Latest year with broad coverage for the single-year summary table (23 rows on the main regressor) |
 | Subsets: EU childcare-targets group vs other OECD members | The EU's Barcelona targets and the 2022 Council Recommendation link ECEC provision to parental employment (https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32022H1220(01)); no comparable supranational target exists for the other members |
 | Keep the weak "other OECD" column | Rubric demands three columns and overlapping subset histograms; deleting it loses points. Disclosed as low-power |
-| Robust LSDV standard errors are the reference inference; PCSE AR(1) is the sensitivity check | `regress ..., robust` is the course-demonstrated form; cluster-robust options are not in the course material |
-| Country-specific linear trends are in the main specification | They absorb divergent post-2000 employment trends across countries; the factor-variable syntax is course material; removing them is reported as a comparison column |
-| No quadratic term | F(1, 275) = 0.05, p = 0.8318; the assignment permits non-linearity only when it improves fit and theory predicts it |
-| Unwinsorized specification preferred | The 1/99 repeat keeps the main coefficient at −0.582 with the same sign and significance (F(1, 276) = 26.62); the do-file comment states the preference |
+| Country-clustered SEs are the reference inference; robust SEs and PCSE AR(1) are the sensitivity checks | The lecture note demonstrates `vce(cluster id)` and says "Always cluster your SEs"; 23 clusters is below its 30-50 floor and this is disclosed |
+| Country-specific linear trends are in the main specification | They absorb divergent institutional trajectories (the Barcelona-targets logic); dropping them removes the association (+0.131, p = 0.518) and this is reported openly |
+| No quadratic term | F(1, 22) = 0.02, p = 0.8891; the assignment permits non-linearity only when it improves fit and theory predicts it |
+| Unwinsorized specification preferred | The 1/99 repeat keeps the main coefficient at −0.581 with clustered SEs (F(1, 22) = 12.20, p = 0.002); the do-file comment states the preference |
 | Fourth numbered do-file for the tables | Keeps every log well under the 35-page limit; Workflow Guide 18 §18.2.2 allows it |
 | Build-up table on one fixed sample | All five columns use the same 347-observation sample so coefficient moves read as the effect of added controls |
 | 2019 summary table as `.csv` + `.xlsx` | Rubric says "Excel or Word document"; Canvas file types do not list `.xlsx`, so the CSV is the upload-safe fallback |

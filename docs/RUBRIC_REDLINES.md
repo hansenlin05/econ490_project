@@ -73,7 +73,7 @@ loses 15–35 points before the regressions are read.
   **and** is explained by economic theory.
 - **Must not**: add a term just because it is significant; keep a term that
   fails both tests. Our quadratic spending term is assessed in the log
-  (p = 0.8318) and excluded.
+  (p = 0.8891) and excluded.
 
 ### Item 6 — One properly specified regression (10 pts)
 
@@ -128,7 +128,7 @@ loses 15–35 points before the regressions are read.
 | Criterion | Pts | Our evidence |
 |---|---:|---|
 | Hypothesis comments (whether results support H) | 5 | `SUBMISSION_STATUS.md` §3 |
-| Log organized, annotated, ≤35 pages | 15 | four numbered logs, ~11.5 / 8.7 / 12.4 / 17.4 pages |
+| Log organized, annotated, ≤35 pages | 15 | four numbered logs, ~12.2 / 8.8 / 19.0 / 15.6 pages |
 | Data sets cited in annotations | 4 | `1_build_data_261109.do`, `* Data sources` |
 | Merge in do-file + unmatched explained in comments | 8 | build log + Canvas draft |
 | Meaningful variable names | 5 | do-files |

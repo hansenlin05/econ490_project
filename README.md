@@ -77,18 +77,23 @@ lagged father-specific paid leave weeks, lagged log real GDP per capita,
 lagged real GDP growth, and public maternity/parental leave spending. Every
 model includes year effects, country effects, and country-specific linear
 trends. The outcome and every nonnegative continuous variable are in logs, so
-the coefficients are elasticities: a 1 percent increase in prior-year spending
-is associated with a 0.582 percent smaller employment gap under
-heteroskedasticity-robust standard errors (p < 0.001), 0.477 under
-panel-corrected standard errors with common AR(1) (p < 0.001), and 0.581 in the
-full 1/99 winsorized repeat (p < 0.001). The level specification is kept as a
-comparison column (coefficient −9.456, p < 0.001).
+the coefficients are elasticities. Standard errors are clustered by country,
+as the lecture note "Preparing for Panel Data Analysis" requires: a 1 percent
+increase in prior-year spending is associated with a 0.582 percent smaller
+employment gap (clustered p = 0.003), 0.582 with unclustered robust SEs
+(p < 0.001), 0.477 under panel-corrected standard errors with common AR(1)
+(p < 0.001), and 0.581 in the full 1/99 winsorized repeat (p = 0.002). The
+level specification is kept as a comparison column (coefficient −9.456,
+clustered p = 0.009). Dropping the country trends while keeping both fixed
+effects removes the association (+0.131, p = 0.518), and the paper reports
+this openly: the negative association is identified relative to each
+country's own trajectory.
 
 Because spending enters as ln(1 + x), the coefficient is the response of the
 gap to ln(1 + x), not to x itself. At the sample mean of 0.538 percent of GDP,
 the effect of a 1 percent relative increase in spending is about 0.20 percent
-(−0.582 × 0.538/1.538); the pure elasticity of −0.582 is the limiting case for
-small x.
+(−0.582 × 0.538/1.538); this is the form the paper uses for magnitudes, with
+the elasticity framing reserved for the small-x limit.
 
 **Conclusion: a statistically significant negative conditional association in
 every specification.** Countries that spend more on public childcare show a
@@ -106,11 +111,15 @@ Full reasoning and evidence in `docs/RESEARCH_DECISIONS.md`.
    resurrect its samples, coefficients or p-values.
 2. **`lag_socx_ecec` is the main explanatory variable**, built on the full
    SOCX annual series before any merge, in the same way as every other lag.
-3. **Heteroskedasticity-robust LSDV standard errors are the reference
-   inference; PCSE with common AR(1) is the sensitivity check.** The course
-   material demonstrates `regress ..., robust`, not cluster-robust options.
-4. **Country-specific linear trends are part of the main specification.** The
-   quadratic spending term was assessed and excluded (p = 0.8318).
+3. **Country-clustered SEs are the reference inference; unclustered robust
+   SEs and PCSE with common AR(1) are the sensitivity checks.** The lecture
+   note demonstrates `vce(cluster id)` verbatim; with 23 clusters the note's
+   30-50 floor is disclosed as a limitation.
+4. **Country-specific linear trends are part of the main specification** to
+   absorb divergent institutional trajectories (the same logic that defines
+   the Barcelona-targets subset); dropping them removes the association
+   (+0.131, p = 0.518) and this is reported wherever the headline is quoted.
+   The quadratic spending term was assessed and excluded (p = 0.8891).
 5. **Five do-files and four logs.** Each numbered do-file writes its own log.
 6. **No live downloads at run time.** `data_raw/` snapshots are the inputs.
 7. **The 2019 summary table is restricted to observations with the main

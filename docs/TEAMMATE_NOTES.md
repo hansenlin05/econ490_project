@@ -58,8 +58,9 @@ treating a GitHub commit as a Canvas submission.
   Father-specific leave weeks stay in the model as a control. Every regression
   includes lagged log real GDP per capita.
 - Year effects, country effects and country-specific linear trends are in the
-  main specification; heteroskedasticity-robust LSDV standard errors are the
-  reference inference and PCSE with common AR(1) is the sensitivity check.
+  main specification; standard errors clustered by country are the reference
+  inference and unclustered robust SEs and PCSE with common AR(1) are the
+  sensitivity checks.
 - The quadratic spending term is not in the main model; the unwinsorized
   specification is preferred.
 - The 18 Nov tables use 2019 as the representative year and the EU
@@ -75,16 +76,21 @@ Full rationale in `docs/RESEARCH_DECISIONS.md`.
 ## Current headline numbers (from `log_files/3_results_261109.log`)
 
 All regressions use N = 347; the subset columns use 309 (EU-target group) and
-38 (other OECD). The headline is the log specification: `ln_spending`
-**−0.582** with year and country effects plus country trends (robust SE 0.116,
-p < 0.001), **−0.477** under PCSE with common AR(1) (p < 0.001), and −0.581 in
-the full 1/99 winsorized repeat (p < 0.001). The log model without country
-trends gives −0.622; the level comparison column gives −9.456. Diagnostics:
-`xttest3` p < 0.001, `xtserial` p = 0.0009, `testparm i.year` p = 0.2904
-(year effects not jointly significant in the log model but retained because
-the rubric requires them), `testparm i.country_id` p < 0.001, quadratic term
-p = 0.8318. The robust-LSDV form is the reference
-inference because it is the one the course material demonstrates.
+38 (other OECD). The headline is the log specification with country-clustered
+SEs (the lecture note's "Always cluster your SEs"): `ln_spending` **-0.582**
+with year and country effects plus country trends (clustered SE 0.172,
+p = 0.003), -0.582 with unclustered robust SEs (p < 0.001), **-0.477** under
+PCSE with common AR(1) (p < 0.001), and -0.581 in the full 1/99 winsorized
+repeat (p = 0.002). Keeping both fixed effects and dropping only the trends
+gives **+0.131** (p = 0.518), so the negative association rides on the
+country-specific trends; the trend terms stand because countries started from
+different childcare systems, and this is reported wherever the headline is
+quoted. The level comparison column gives -9.456 (clustered p = 0.009).
+Diagnostics: `xttest3` p < 0.001, `xtserial` p = 0.0009, `testparm i.year`
+p = 0.2904 (year effects not jointly significant in the log model but
+retained because the rubric requires them), `testparm i.country_id`
+p < 0.001, quadratic term p = 0.8891. 23 clusters is below the lecture
+note's 30-50 floor and the paper discloses this.
 
 ## Evidence hierarchy
 

@@ -12,19 +12,19 @@ xtset country_id year, yearly
 
 * Hold the sample, country and year effects, and trends fixed across all columns.
 regress ln_gap ln_spending ///
-    i.year i.country_id c.year_centered#i.country_id, robust
+    i.year i.country_id c.year_centered#i.country_id, vce(cluster country_id)
 estimates store build1
 regress ln_gap ln_spending ln_leaveweeks ///
-    i.year i.country_id c.year_centered#i.country_id, robust
+    i.year i.country_id c.year_centered#i.country_id, vce(cluster country_id)
 estimates store build2
 regress ln_gap ln_spending ln_leaveweeks lag_lngdp ///
-    i.year i.country_id c.year_centered#i.country_id, robust
+    i.year i.country_id c.year_centered#i.country_id, vce(cluster country_id)
 estimates store build3
 regress ln_gap ln_spending ln_leaveweeks lag_lngdp lag_gdp_growth ///
-    i.year i.country_id c.year_centered#i.country_id, robust
+    i.year i.country_id c.year_centered#i.country_id, vce(cluster country_id)
 estimates store build4
 regress ln_gap ln_spending ln_leaveweeks lag_lngdp lag_gdp_growth ln_leavespending ///
-    i.year i.country_id c.year_centered#i.country_id, robust
+    i.year i.country_id c.year_centered#i.country_id, vce(cluster country_id)
 estimates store build5
 
 * Country and year effects and country trends apply to every column; the sample is fixed.
@@ -44,7 +44,7 @@ foreach var in ln_gap ln_spending ln_leaveweeks lag_lngdp lag_gdp_growth ln_leav
 }
 
 regress w_ln_gap w_ln_spending w_ln_leaveweeks w_lag_lngdp ///
-    w_lag_gdp_growth w_ln_leavespending i.year i.country_id c.year_centered#i.country_id, robust
+    w_lag_gdp_growth w_ln_leavespending i.year i.country_id c.year_centered#i.country_id, vce(cluster country_id)
 estimates store childcare_winsor
 testparm w_ln_spending
 * Keep observed spending as primary because winsorization barely changes the estimate.

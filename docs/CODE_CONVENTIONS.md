@@ -5,11 +5,14 @@ course materials themselves demonstrate, so that a reader who has only this
 repository can check a patch without owning the handouts.
 
 Sources, by filename: the COMET Notebook modules 02–18 (including
-`18 - Stata Workflow Guide – COMET.pdf`) and the `StataTest` /
-`ECON490Quizzes` question sets. A command is permitted when one of those two
-sources shows or explains it. `StataCheatSheet_analysis_19.pdf` is **not** a
-source: as of 16 November 2026 it has been removed from the whitelist, and
-nothing is permitted on the strength of that handout alone.
+`18 - Stata Workflow Guide – COMET.pdf`), the `StataTest` / `ECON490Quizzes`
+question sets, and the lecture note `Preparing for Panel Data Analysis.pdf`
+(added on 17 November 2026: it demonstrates `vce(cluster id)` verbatim and
+requires clustered standard errors, which the 16 November source set had
+wrongly excluded). A command is permitted when one of those sources shows or
+explains it. `StataCheatSheet_analysis_19.pdf` is **not** a source: as of
+16 November 2026 it has been removed from the whitelist, and nothing is
+permitted on the strength of that handout alone.
 
 Commands that appeared only in the CheatSheet, and are therefore no longer
 permitted, are listed in §7. All of them were removed from the do-files by
@@ -69,8 +72,12 @@ left every downstream number unchanged.
 - post-estimation: `estimates store`, `testparm`, `hausman`, `predict`
 - diagnostics: `xttest3`, `xtserial`
 
-`vce(cluster id)`, `vce(robust)`, `lincom` and `margins` are not on this list;
-they appear only in the CheatSheet and are now out (see §7). The single-coefficient
+`lincom` and `margins` are not on this list; they appear only in the
+CheatSheet and are now out (see §7). `vce(cluster id)` **is** permitted as of
+17 November 2026: the lecture note `Preparing for Panel Data Analysis`
+demonstrates `xtreg y x, fe vce(cluster id)` verbatim and states "Always
+cluster your SEs". The main regressions use `vce(cluster country_id)`; the
+unclustered `robust` form stays as a comparison column. The single-coefficient
 `test varname = 0` form is not demonstrated in any course material; use
 `testparm`, which the panel module shows.
 
@@ -230,11 +237,11 @@ Run these before any push. All six are cheap and each has caught a real defect.
 
 ## 7. Where each permitted command is demonstrated
 
-This table records the two remaining sources only: the COMET Notebook modules
-and the StataTest / ECON490Quizzes question sets. It replaces the two
-Chinese-language command indexes that used to sit in `docs/`. If a command is
-not demonstrated in one of those two sources and is not one of the two
-exceptions in §2, it is not permitted. The CheatSheet is not a source.
+This table records the remaining sources: the COMET Notebook modules, the
+StataTest / ECON490Quizzes question sets, and (since 17 November 2026) the
+lecture note `Preparing for Panel Data Analysis`. If a command is not
+demonstrated in one of those sources and is not one of the exceptions in §2,
+it is not permitted. The CheatSheet is not a source.
 
 **COMET Notebook modules 02–18** (`02 - Working with Do-Files` through
 `18 - Stata Workflow Guide`) and the **Test / Quiz** question sets, combined:
@@ -268,7 +275,7 @@ what replaced it in the current do-files.
 | `recast double` | not needed; the corrections are literal numeric replaces |
 | `count` | `tabulate`, `duplicates report`, or the per-variable `(count)` statistics in `collapse` |
 | `dtable` / `collect export` | `collapse` with `(mean) (sd) (min) (max) (count)` plus `export excel` / `export delimited` |
-| `vce(cluster id)` / `vce(robust)` | the course-demonstrated `regress ..., robust` spelling; PCSE with `het corr(ar1)` as the serial-correlation correction |
+| `vce(cluster id)` (on `xtreg` and `regress`) | lecture note `Preparing for Panel Data Analysis`: `xtreg y x, fe vce(cluster id)` and `reg y x1 x2, vce(cluster id)`; the do-files use `vce(cluster country_id)` on the same form. PCSE with `het corr(ar1)` is the serial-correlation correction |
 | `test coef = 0` | `testparm` on the same term |
 | `column(index)` | `column(dvlabel)` |
 | `note()` on `etable` | the fixed-effects statement goes into the exported Word table by post-export editing |

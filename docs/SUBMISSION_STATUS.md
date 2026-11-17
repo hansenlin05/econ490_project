@@ -9,7 +9,7 @@ finished and verified; everything left is a manual team action.
   plus the 2019 summary as `.csv` and `.xlsx`), two PNG figures, eleven
   `data_raw` inputs, seven `data_final` outputs.
 - Full rerun from `data_raw` on 16 Nov: no `r()` errors anywhere. Logs are
-  551 / 417 / 622 / 835 lines, roughly 11.5 / 8.7 / 12.4 / 17.4 pages with
+  586 / 423 / 911 / 749 lines, roughly 12.2 / 8.8 / 19.0 / 15.6 pages with
   80-character wrapping — all under the 35-page limit the instructor
   confirmed on 16 November 2026.
 - All five data sources cited in the do-file citation block
@@ -58,10 +58,11 @@ finished and verified; everything left is a manual team action.
 > and every nonnegative continuous variable are in logs, so the coefficients
 > are elasticities. The spending coefficient is negative and statistically
 > significant in every specification: -0.582 with year and country fixed
-> effects, country-specific linear trends and heteroskedasticity-robust
-> standard errors (SE 0.116, p < 0.001); -0.477 under panel-corrected standard
-> errors with a common AR(1) process (p < 0.001); and -0.581 in the full 1/99
-> winsorized repetition (p < 0.001). A 1 percent increase in prior-year ECEC
+> effects, country-specific linear trends and standard errors clustered by
+> country, as the course lecture note requires (SE 0.172, p = 0.003); -0.582
+> with unclustered robust standard errors (p < 0.001); -0.477 under
+> panel-corrected standard errors with a common AR(1) process (p < 0.001); and
+> -0.581 in the full 1/99 winsorized repetition (p = 0.002). A 1 percent increase in prior-year ECEC
 > spending is therefore associated with a 0.582 percent smaller
 > male-minus-female employment gap among parents of young children, read as an
 > elasticity from the log specification. Spending enters as ln(1 + x), so at
@@ -96,18 +97,21 @@ finished and verified; everything left is a manual team action.
 >
 > Diagnostics: a modified Wald test rejects groupwise homoskedasticity
 > (p < 0.001) and Wooldridge's test rejects no serial correlation (p = 0.0009),
-> which is why the main column uses robust standard errors and the sensitivity
-> column uses panel-corrected standard errors with AR(1). `testparm` does not reject the
+> which is why the main column clusters standard errors by country, as the
+> lecture note "Preparing for Panel Data Analysis" requires, with unclustered
+> robust SEs and panel-corrected AR(1) SEs as sensitivity checks. With 23
+> country clusters the note's rough floor of 30-50 is not met, so clustered
+> inference may be optimistic and we disclose this. `testparm` does not reject the
 > year effects (p = 0.2904) and rejects no country effects (p < 0.001). Year
 > effects are retained by design because the assignment requires them. The
-> quadratic spending term is insignificant (p = 0.8318) and has no theoretical
+> quadratic spending term is insignificant (p = 0.8891) and has no theoretical
 > basis here, so it is assessed in the log but not added, consistent with the
 > instruction to add non-linearity only when it improves the model and has a
 > theoretical justification.
 >
 > Preferred specification: the unwinsorized model. The 1/99 winsorized
 > repetition covers all six continuous model variables and keeps the main
-> coefficient at -0.582 with the same sign and significance, so we
+> coefficient at -0.581 with clustered SEs (p = 0.002), so we
 > keep the observed-data specification and use the winsorized column as the
 > required robustness repeat.
 >

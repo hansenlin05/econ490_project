@@ -3,6 +3,29 @@
 All entries describe the local OneDrive project; this repository only mirrors
 them for teammate handoff. Dates are local (MST).
 
+## 2026-11-17 — Clustered reference inference and an honest no-trends report
+
+Two corrections from an independent review of the repository. (1) The
+"no-trends comparison" in `3_results_261109.do` omitted `i.country_id`; the
+comment said the comparison keeps country and year effects but the code
+estimated year effects only. Fixed: the true two-way-FE, no-trends estimate is
++0.131 (clustered SE 0.199, p = 0.518), which shows the negative association
+is identified relative to each country's own trajectory, and the documents
+now report this openly wherever the headline appears. The trend terms stand on
+the Barcelona-targets logic: countries started from different childcare
+systems and expanded along different institutional paths. (2) The 16 November
+source set wrongly stated that the course does not demonstrate cluster-robust
+options; the lecture note "Preparing for Panel Data Analysis" demonstrates
+`vce(cluster id)` verbatim and says "Always cluster your SEs". The main
+inference is now `vce(cluster country_id)` (headline −0.582, clustered
+SE 0.172, p = 0.003), with unclustered robust SEs and PCSE AR(1) as
+sensitivity checks; the handout joins the whitelist sources, and the
+23-cluster shortfall against the note's 30-50 floor is disclosed. Revised
+printed values: no-trends +0.131 (p = 0.518), quadratic p = 0.8891, level
+comparison −9.456 (clustered p = 0.009), winsorized −0.581 (p = 0.002), EU
+subset −0.566 (p = 0.005), other-OECD −0.327 (p = 0.149). Log sizes are now
+586 / 423 / 911 / 749 lines.
+
 ## 2026-11-16 (evening) — OECD childcare chain becomes the current chain
 
 The team adopted the OECD public-childcare panel as the primary and only
