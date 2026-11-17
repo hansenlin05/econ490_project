@@ -3,7 +3,7 @@
        log:  C:\Users\Hansen\UBC\ECON 490 003 2026W1 Seminar in Applied Economi
 > cs - econ490_project\log_files/4_tables_261109.log
   log type:  text
- opened on:  17 Nov 2026, 11:42:36
+ opened on:  17 Nov 2026, 12:37:07
 . }
 
 . 
@@ -21,8 +21,7 @@ Panel variable: country_id (unbalanced)
          Delta: 1 year
 
 . 
-. * Hold the sample, country and year effects, and trends fixed across all colu
-> mns.
+. * hold the sample and all effects fixed across the columns
 . regress ln_gap ln_spending ///
 >     i.year i.country_id c.year_centered#i.country_id, vce(cluster country_id)
 note: 3.country_id#c.year_centered omitted because of collinearity.
@@ -525,8 +524,7 @@ year_cente~d |
 . estimates store build5
 
 . 
-. * Country and year effects and country trends apply to every column; the samp
-> le is fixed.
+. * country, year and trend effects in every column, same sample throughout
 . etable, estimates(build1 build2 build3 build4 build5) ///
 >     keep(ln_spending ln_leaveweeks lag_lngdp lag_gdp_growth ln_leavespending)
 >  ///
@@ -568,7 +566,7 @@ Number of observations                                                   347    
  ./tables/results_childcare_buildup_261109.docx)
 
 . 
-. * Winsorize the six continuous model variables on the main estimation sample.
+. * winsorize the six continuous variables on the main sample
 . foreach var in ln_gap ln_spending ln_leaveweeks lag_lngdp lag_gdp_growth ln_l
 > eavespending {
   2.     quietly summarize `var', detail
@@ -702,11 +700,11 @@ year_cente~d |
        F(  1,    22) =   12.20
             Prob > F =    0.0021
 
-. * Keep observed spending as primary because winsorization barely changes the 
-> estimate.
+. * keep the observed spending as the preferred spec, winsorizing changes littl
+> e
 . 
-. * Column 1 uses the observed data; column 2 winsorizes every continuous varia
-> ble at the first and 99th percentiles.
+. * column 1 uses the raw numbers, column 2 winsorizes each continuous variable
+>  at 1 and 99
 . etable, estimates(build5 childcare_winsor) ///
 >     keep(ln_spending ln_leaveweeks lag_lngdp lag_gdp_growth ln_leavespending 
 > ///

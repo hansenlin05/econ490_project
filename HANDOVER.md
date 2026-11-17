@@ -85,7 +85,7 @@ assignment's log limit; the instructor confirmed 35 pages on 16 November 2026
 
 Latest verification (17 Nov 2026, full rerun from `data_raw`): no `r()` errors
 anywhere, and the key numbers below are exactly the ones in the current logs.
-Log sizes are 582 / 423 / 911 / 749 lines, roughly 12.1 / 8.8 / 19.0 / 15.6
+Log sizes are 577 / 421 / 910 / 747 lines, roughly 12.0 / 8.8 / 19.0 / 15.6
 pages with 80-character wrapping — all under both the old 25-page and the new
 35-page limit.
 

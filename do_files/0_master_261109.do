@@ -1,12 +1,12 @@
 /* Project info
    ECON 490 team project | 0_master_261109.do
-   Public childcare spending and the gender employment gap.
-   Primary: OECD ILO panel, 2000-2024, public childcare spending.
-   Run this file first: edit the single cd line below to your own project folder. */
+   public childcare spending and the gender employment gap
+   OECD ILO panel 2000-2024, main variable is public childcare spending
+   run this one first and edit the cd line below to point at your folder */
 
 clear
 
-/* Directory settings: paths to folders, defined as globals */
+/* Directory settings, where each global points */
 ********************* * Directory Settings ***********************
 
 capture noisily cd "C:\Users\Hansen\UBC\ECON 490 003 2026W1 Seminar in Applied Economics - econ490_project"
@@ -23,19 +23,19 @@ global figdir        "${proj_main}/figures"        // figures path
 global literature    "${proj_main}/literature"     // literature path
 global paperdir      "${proj_main}/paper"          // paper path
 
-/* Project settings: such as global variables and other macros */
+/* Project settings, the run and log switches */
 ********************* * Project Settings ***********************
 
-global run_build = 1                // 0 = skip the build step; 1 = run it
-global store_log_build = 1          // 0 = don't save log file; 1 = save log file
-global run_descriptive = 1          // 0 = skip; 1 = run
-global store_log_descriptive = 1    // 0 = don't save log file; 1 = save log file
-global run_mainresults = 1          // 0 = skip; 1 = run
-global store_log_mainresults = 1    // 0 = don't save log file; 1 = save log file
-global run_tables = 1              // 0 = skip; 1 = run
-global store_log_tables = 1        // 0 = don't save log file; 1 = save log file
+global run_build = 1                // 0 skip the build, 1 run it
+global store_log_build = 1          // 0 no log, 1 save it
+global run_descriptive = 1          // 0 skip, 1 run
+global store_log_descriptive = 1    // 0 no log, 1 save it
+global run_mainresults = 1          // 0 skip, 1 run
+global store_log_mainresults = 1    // 0 no log, 1 save it
+global run_tables = 1              // 0 skip, 1 run
+global store_log_tables = 1        // 0 no log, 1 save it
 
-/* Run the do-files: runs all of the do-files for the project */
+/* run the numbered files in order */
 if ${run_build}==1 {
     capture noisily do "${do_dir}/1_build_data_261109.do"
 }

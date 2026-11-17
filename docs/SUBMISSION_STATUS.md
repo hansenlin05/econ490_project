@@ -9,7 +9,7 @@ finished and verified; everything left is a manual team action.
   plus the 2019 summary as `.csv` and `.xlsx`), two PNG figures, eleven
   `data_raw` inputs, seven `data_final` outputs.
 - Full rerun from `data_raw` on 17 Nov: no `r()` errors anywhere. Logs are
-  582 / 423 / 911 / 749 lines, roughly 12.1 / 8.8 / 19.0 / 15.6 pages with
+  577 / 421 / 910 / 747 lines, roughly 12.0 / 8.8 / 19.0 / 15.6 pages with
   80-character wrapping — all under the 35-page limit the instructor
   confirmed on 16 November 2026.
 - All four data sources cited in the do-file citation block

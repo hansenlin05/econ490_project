@@ -1,5 +1,5 @@
 /* Project info
-   2_descriptive_261109.do | OECD childcare descriptives, figures, and subset regressions. */
+   2_descriptive_261109.do | descriptives, figures and the subset runs */
 if ${store_log_descriptive}==1 {
     capture log close
     capture noisily log using "${log_dir}/2_descriptive_261109.log", text replace
@@ -7,7 +7,7 @@ if ${store_log_descriptive}==1 {
 
 use "${datadir_final}/oecd_childcare_261109.dta", clear
 
-* Mean, sd, min, max and N for every model variable in 2019.
+* mean, sd, min, max and N for every model variable, 2019 only
 preserve
     keep if year==2019 & !missing(ln_spending)
     collapse ///
@@ -39,7 +39,7 @@ generate year_centered = year - 2010
 xtset country_id year, yearly
 tabulate eu_childcare
 
-* Illustrate the elasticity relationship between spending and the employment gap.
+* scatter of spending against the gap
 twoway (scatter ln_gap ln_spending) (lfit ln_gap ln_spending), ///
     title("Public childcare spending and the employment gap") ///
     xtitle("Log of one plus prior-year ECEC spending (% of GDP)") ///
@@ -48,7 +48,7 @@ twoway (scatter ln_gap ln_spending) (lfit ln_gap ln_spending), ///
     graphregion(color(white))
 graph export "${figdir}/scatter_gap_childcare_261109.png", as(png) replace
 
-* Compare logged spending across the regional groups used in the subset regressions.
+* logged spending by the two groups used in the subsets
 twoway (histogram ln_spending if eu_childcare==1, color(navy) lcolor(black)) ///
     (histogram ln_spending if eu_childcare==0, color(maroon) lcolor(black)), ///
     title("Public childcare spending by subgroup") ///
@@ -57,8 +57,8 @@ twoway (histogram ln_spending if eu_childcare==1, color(navy) lcolor(black)) ///
     legend(label(1 "EU-target group") label(2 "Other OECD")) graphregion(color(white))
 graph export "${figdir}/histogram_childcare_byregion_261109.png", as(png) replace
 
-* Compare the same specification across both groups and the full sample.
-* The EU's Barcelona targets linked ECEC access to parental employment.
+* same specification in each group and in the full sample
+* the EU Barcelona targets tied childcare access to parental work
 * https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32022H1220(01)
 regress ln_gap ln_spending ln_leaveweeks lag_lngdp lag_gdp_growth ln_leavespending ///
     i.year i.country_id c.year_centered#i.country_id, vce(cluster country_id)
@@ -70,7 +70,7 @@ regress ln_gap ln_spending ln_leaveweeks lag_lngdp lag_gdp_growth ln_leavespendi
     i.year i.country_id c.year_centered#i.country_id if eu_childcare==0, vce(cluster country_id)
 estimates store childcare_other
 
-* Columns: all countries, EU-target group, other OECD. Country, year and trend effects apply to every column.
+* columns, all countries, EU group, other OECD, with country, year and trend effects in each
 etable, estimates(childcare_all childcare_eu childcare_other) ///
     keep(ln_spending ln_leaveweeks lag_lngdp lag_gdp_growth ln_leavespending) ///
     mstat(N) showstars showstarsnote varlabel column(dvlabel) ///

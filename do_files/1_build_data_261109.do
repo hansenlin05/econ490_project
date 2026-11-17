@@ -1,8 +1,8 @@
 /* Project info
-   1_build_data_261109.do | build the OECD childcare panel from the raw source files.
-   Output: oecd_childcare_261109.dta, OECD countries observed from 2000 to 2024.
-   Inputs: country_codes.csv, ilo_household_raw.csv, oecd_socx_ecec_gdp.csv,
-   oecd_socx_tp512_leave.csv, oecd_leave_timeseries.csv, wdi_raw.dta. */
+   1_build_data_261109.do | build the OECD childcare panel from the raw sources
+   output oecd_childcare_261109.dta, OECD countries seen from 2000 to 2024
+   inputs were country_codes.csv, ilo_household_raw.csv, oecd_socx_ecec_gdp.csv,
+   oecd_socx_tp512_leave.csv, oecd_leave_timeseries.csv and wdi_raw.dta */
 
 //If log setting is activated, we record a log file in the log folder
 if ${store_log_build}==1 {
@@ -10,7 +10,7 @@ if ${store_log_build}==1 {
     capture noisily log using "${log_dir}/1_build_data_261109.log", text replace
 }
 
-* Data sources; the copies used here are in data_raw
+* Data sources, the copies we actually read sit in data_raw
 * International Labour Organization. 2026. "Employment rate by sex and household
 *   composition" [GED_PEPR_SEX_HHT_CHL_RT_A] (database), ILOSTAT. Geneva: ILO.
 *   https://ilostat.ilo.org/data/ (accessed 14 November 2026).
@@ -27,16 +27,16 @@ if ${store_log_build}==1 {
 *   https://databank.worldbank.org/source/world-development-indicators
 *   (accessed 14 November 2026).
 
-* Country names and ISO codes used to match the sources.
+* country names and ISO codes, used to match the sources
 import delimited "${datadir_raw}/country_codes.csv", clear varnames(1)
 
 save "${datadir_final}/tmp_country_codes.dta", replace
 
-* Control variable: weeks of paid leave reserved for fathers, from the OECD workbook.
+* control variable, weeks of paid leave kept for fathers, from the OECD workbook
 import delimited "${datadir_raw}/oecd_leave_timeseries.csv", clear varnames(1)
 keep country year total_all_raw total_paid_raw
 keep if inrange(year,1970,2024)
-* Unmatched rows are workbook notes and countries outside the OECD list.
+* unmatched rows are workbook notes and countries not on the OECD list
 merge m:1 country using "${datadir_final}/tmp_country_codes.dta"
 keep if _merge==3
 drop _merge
@@ -47,19 +47,19 @@ encode iso, generate(leave_id)
 xtset leave_id year, yearly
 sort leave_id year
 
-* Parse total and father-specific leave weeks from their text columns.
-* Two father-specific entries list two options separated by a slash; use the lower one.
+* parse the total and paid leave weeks out of their text columns
+* two paid entries give two options with a slash, we took the lower one
 generate weeks_all = real(total_all_raw)
 generate fatherweeks = real(total_paid_raw)
 replace fatherweeks = 28.6  if total_paid_raw == "28.6 / 54.6"
 replace fatherweeks = 30.17 if total_paid_raw == "30.17 / 56.17"
 
-* Correct three entries to the year the entitlement took legal effect.
+* three entries moved to the year the leave became law
 replace fatherweeks = 2.6 if iso=="FRA" & year==2014
 replace fatherweeks = 4 if iso=="IRL" & year==2019
 replace fatherweeks = 15 if iso=="ITA" & year==2022
 
-* Four annual snapshots record a reform one year late; use the next year's value.
+* four snapshots logged a reform one year late, so we used next year's value
 replace weeks_all = 12.996666 if iso=="AUT" & year==2019
 replace fatherweeks = 12.996666 if iso=="AUT" & year==2019
 replace weeks_all = 4.285714286 if iso=="EST" & year==2020
@@ -72,7 +72,7 @@ generate leave_known = !missing(weeks_all) & !missing(fatherweeks) & weeks_all>=
 label variable fatherweeks "Weeks of paid father-specific leave (lower bound)"
 label variable leave_known "Father-specific leave entitlement is reported"
 
-* Build the lag on the full 2000-2024 policy series, before merging.
+* build the lag on the full 2000-2024 series, before the merge
 keep if inrange(year,2000,2024)
 drop leave_id
 encode iso, generate(leave_id)
@@ -84,7 +84,7 @@ label variable lag_fatherweeks10 "Lagged father-specific paid leave, per 10 week
 keep iso country year fatherweeks fatherweeks10 lag_fatherweeks10 leave_known
 save "${datadir_final}/tmp_father_leave.dta", replace
 
-* Control variables: GDP per capita and GDP growth, lagged on the full annual series.
+* control variables, GDP per capita and GDP growth, lagged on the full series
 use "${datadir_raw}/wdi_raw.dta", clear
 rename countrycode iso
 keep iso year ny_gdp_pcap_kd ny_gdp_mktp_kd_zg
@@ -100,7 +100,7 @@ label variable lag_gdp_growth "Lagged real GDP growth, percent"
 keep iso year lngdp gdp_growth lag_lngdp lag_gdp_growth
 save "${datadir_final}/tmp_gdp_controls.dta", replace
 
-* Control variable: public spending on maternity and parental leave.
+* control variable, public spending on maternity and parental leave
 import delimited using "${datadir_raw}/oecd_socx_tp512_leave.csv", clear varnames(1)
 keep if unit_measure=="PT_B1GQ" & expend_source=="ES10" & programme_type=="TP512"
 rename ref_area iso
@@ -111,7 +111,7 @@ duplicates report iso year
 label variable leave_gdp "Public maternity and parental leave spending, percent of GDP"
 save "${datadir_final}/tmp_leave_spending.dta", replace
 
-* Main explanatory variable: public childcare spending, lagged on the full annual series.
+* main explanatory variable, childcare spending lagged on the full series
 import delimited using "${datadir_raw}/oecd_socx_ecec_gdp.csv", clear varnames(1)
 keep if unit_measure=="PT_B1GQ" & expend_source=="ES10" & programme_type=="TP521"
 rename ref_area iso
@@ -128,13 +128,13 @@ duplicates report iso year
 sort iso year
 save "${datadir_final}/tmp_childcare_spending.dta", replace
 
-* Dependent variable: employment rates of mothers and fathers of children under six.
+* dependent variable, employment rates of mothers and fathers of children under six
 import delimited "${datadir_raw}/ilo_household_raw.csv", clear varnames(1)
 rename ref_area iso
 rename time year
 keep if classif1=="HHT_AGGREGATE_K" & classif2=="CHL_AGET6_YES"
 keep if inlist(sex,"SEX_M","SEX_F") & inrange(year,2000,2024)
-* Drop country-years that ILOSTAT flags as unreliable.
+* drop country-years that ILOSTAT marks as unreliable
 bysort iso year: egen flagged = max(obs_status!="")
 keep if flagged==0
 generate sexcode = "F"
@@ -149,8 +149,8 @@ rename obs_valueF female_rate
 label variable male_rate "Fathers' employment rate, percent"
 label variable female_rate "Mothers' employment rate, percent"
 
-* Merge the father-leave control. Unmatched rows are leave years without an
-* employment observation and countries that ILOSTAT does not cover.
+* merge the father-leave control
+* unmatched ones are leave years with no job record and countries ILOSTAT leaves out
 merge 1:1 iso year using "${datadir_final}/tmp_father_leave.dta"
 keep if _merge==3 & leave_known==1
 drop _merge
@@ -162,39 +162,39 @@ duplicates report country_id year
 
 sort country_id year
 
-* Merge the GDP controls. Unmatched rows are countries and years outside the panel.
+* merge the GDP controls, unmatched rows sit outside the panel
 merge 1:1 iso year using "${datadir_final}/tmp_gdp_controls.dta"
 keep if _merge==3
 drop _merge
 
-* Merge leave spending. Unmatched rows are country-years with no SOCX leave
-* series row (2024 and a few others); they stay with a missing value.
+* merge leave spending
+* unmatched country-years have no SOCX row, 2024 and a few others, they stay missing
 merge 1:1 iso year using "${datadir_final}/tmp_leave_spending.dta"
 drop if _merge==2
 drop _merge
 
-* Merge childcare spending. Spending-only rows are countries and years outside the
-* employment panel; employment rows without spending stay and are marked below.
+* merge childcare spending
+* spending-only rows are outside the job panel, job rows with no spending stay and get marked
 merge 1:1 iso year using "${datadir_final}/tmp_childcare_spending.dta"
 tabulate _merge
 drop if _merge==2
 drop _merge
 
-* Subsets: European countries covered by the EU childcare targets, and other OECD members.
+* two subsets, European countries under the EU childcare targets and the rest of the OECD
 generate byte eu_childcare = 0
 replace eu_childcare = 1 if inlist(iso,"AUT","BEL","CZE","DEU","ESP","EST","FRA","GBR")
 replace eu_childcare = 1 if inlist(iso,"GRC","HUN","IRL","ITA","LTU","LUX","LVA","NLD")
 replace eu_childcare = 1 if inlist(iso,"POL","PRT","SVN")
 label variable eu_childcare "European group covered by EU childcare targets during the study period"
 
-* Mark the country-years with every model variable observed.
+* flag country-years where every model variable is there
 generate byte childcare_sample = 1
 replace childcare_sample = 0 if missing(employment_gap, lag_socx_ecec, lag_fatherweeks10)
 replace childcare_sample = 0 if missing(lag_lngdp, lag_gdp_growth, leave_gdp)
 label variable childcare_sample "Complete-case sample for the childcare regressions"
 tabulate childcare_sample
 
-* Log versions of the continuous model variables for the elasticity specification.
+* log versions of the continuous variables, for the elasticity model
 generate ln_gap = ln(employment_gap)
 generate ln_spending = ln(1 + lag_socx_ecec)
 generate ln_leaveweeks = ln(1 + lag_fatherweeks10)

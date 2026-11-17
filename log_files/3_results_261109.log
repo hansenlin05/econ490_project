@@ -3,7 +3,7 @@
        log:  C:\Users\Hansen\UBC\ECON 490 003 2026W1 Seminar in Applied Economi
 > cs - econ490_project\log_files/3_results_261109.log
   log type:  text
- opened on:  17 Nov 2026, 11:42:31
+ opened on:  17 Nov 2026, 12:37:02
 . }
 
 . 
@@ -21,7 +21,7 @@ Panel variable: country_id (unbalanced)
          Delta: 1 year
 
 . 
-. * Check the year effects, heteroskedasticity, and serial correlation.
+. * check year effects, heteroskedasticity and serial correlation
 . xtreg ln_gap ln_spending ln_leaveweeks lag_lngdp lag_gdp_growth ln_leavespend
 > ing ///
 >     i.year c.year_centered#i.country_id, fe
@@ -155,7 +155,7 @@ H0: no first order autocorrelation
            Prob > F =      0.0009
 
 . 
-. * Estimate the primary elasticities with SEs clustered by country.
+. * main elasticities, standard errors clustered by country
 . regress ln_gap ln_spending ln_leaveweeks lag_lngdp lag_gdp_growth ln_leavespe
 > nding ///
 >     i.year i.country_id c.year_centered#i.country_id, vce(cluster country_id)
@@ -266,7 +266,7 @@ year_cente~d |
        F(  1,    22) =   11.39
             Prob > F =    0.0027
 
-. * Test the country effects with the model in LSDV form.
+. * country effects tested off the LSDV version
 . testparm i.country_id
 
  ( 1)  2.country_id = 0
@@ -299,7 +299,7 @@ year_cente~d |
             Prob > F =    0.0000
 
 . 
-. * Compare with unclustered heteroskedasticity-robust standard errors.
+. * same thing with plain robust standard errors
 . regress ln_gap ln_spending ln_leaveweeks lag_lngdp lag_gdp_growth ln_leavespe
 > nding ///
 >     i.year i.country_id c.year_centered#i.country_id, robust
@@ -410,7 +410,7 @@ year_cente~d |
             Prob > F =    0.0000
 
 . 
-. * Compare inference using PCSE with first-order serial correlation.
+. * PCSE inference with first-order serial correlation
 . xtpcse ln_gap ln_spending ln_leaveweeks lag_lngdp lag_gdp_growth ln_leavespen
 > ding ///
 >     i.year i.country_id c.year_centered#i.country_id, het corr(ar1)
@@ -532,8 +532,7 @@ year_cente~d |
          Prob > chi2 =    0.0004
 
 . 
-. * Compare with a model that keeps country and year effects without separate t
-> rends.
+. * a version without the country trends, but with both fixed effects
 . regress ln_gap ln_spending ln_leaveweeks lag_lngdp lag_gdp_growth ln_leavespe
 > nding ///
 >     i.year i.country_id, vce(cluster country_id)
@@ -616,7 +615,7 @@ ln_leavesp~g |  -.0552562   .0561167    -0.98   0.335     -.171635    .0611227
             Prob > F =    0.5181
 
 . 
-. * Keep the level specification as a comparison column on the same sample.
+. * level version kept as a comparison column on the same sample
 . regress employment_gap lag_socx_ecec lag_fatherweeks10 lag_lngdp lag_gdp_grow
 > th leave_gdp ///
 >     i.year i.country_id c.year_centered#i.country_id, vce(cluster country_id)
@@ -791,7 +790,7 @@ Number of observations                                                          
  ./tables/results_oecd_childcare_261109.docx)
 
 . 
-. * Check curvature in the spending association on the same sample.
+. * check for curvature on the same sample
 . regress ln_gap c.ln_spending##c.ln_spending ///
 >     ln_leaveweeks lag_lngdp lag_gdp_growth ln_leavespending ///
 >     i.year i.country_id c.year_centered#i.country_id, vce(cluster country_id)

@@ -3,14 +3,14 @@
        log:  C:\Users\Hansen\UBC\ECON 490 003 2026W1 Seminar in Applied Economi
 > cs - econ490_project\log_files/2_descriptive_261109.log
   log type:  text
- opened on:  17 Nov 2026, 11:42:02
+ opened on:  17 Nov 2026, 12:36:40
 . }
 
 . 
 . use "${datadir_final}/oecd_childcare_261109.dta", clear
 
 . 
-. * Mean, sd, min, max and N for every model variable in 2019.
+. * mean, sd, min, max and N for every model variable, 2019 only
 . preserve
 
 .     keep if year==2019 & !missing(ln_spending)
@@ -97,8 +97,7 @@ Panel variable: country_id (unbalanced)
       Total |        347      100.00
 
 . 
-. * Illustrate the elasticity relationship between spending and the employment 
-> gap.
+. * scatter of spending against the gap
 . twoway (scatter ln_gap ln_spending) (lfit ln_gap ln_spending), ///
 >     title("Public childcare spending and the employment gap") ///
 >     xtitle("Log of one plus prior-year ECEC spending (% of GDP)") ///
@@ -110,8 +109,7 @@ Panel variable: country_id (unbalanced)
 file ./figures/scatter_gap_childcare_261109.png saved as PNG format
 
 . 
-. * Compare logged spending across the regional groups used in the subset regre
-> ssions.
+. * logged spending by the two groups used in the subsets
 . twoway (histogram ln_spending if eu_childcare==1, color(navy) lcolor(black)) 
 > ///
 >     (histogram ln_spending if eu_childcare==0, color(maroon) lcolor(black)), 
@@ -127,8 +125,8 @@ file ./figures/scatter_gap_childcare_261109.png saved as PNG format
 file ./figures/histogram_childcare_byregion_261109.png saved as PNG format
 
 . 
-. * Compare the same specification across both groups and the full sample.
-. * The EU's Barcelona targets linked ECEC access to parental employment.
+. * same specification in each group and in the full sample
+. * the EU Barcelona targets tied childcare access to parental work
 . * https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32022H1220(01)
 . regress ln_gap ln_spending ln_leaveweeks lag_lngdp lag_gdp_growth ln_leavespe
 > nding ///
@@ -391,8 +389,8 @@ year_cente~d |
 . estimates store childcare_other
 
 . 
-. * Columns: all countries, EU-target group, other OECD. Country, year and tren
-> d effects apply to every column.
+. * columns, all countries, EU group, other OECD, with country, year and trend 
+> effects in each
 . etable, estimates(childcare_all childcare_eu childcare_other) ///
 >     keep(ln_spending ln_leaveweeks lag_lngdp lag_gdp_growth ln_leavespending)
 >  ///

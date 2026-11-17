@@ -1,5 +1,5 @@
 /* Project info
-   4_tables_261109.do | OECD childcare build-up and winsorization check. */
+   4_tables_261109.do | the build-up table and the winsorizing check */
 if ${store_log_tables}==1 {
     capture log close
     capture noisily log using "${log_dir}/4_tables_261109.log", text replace
@@ -10,7 +10,7 @@ keep if childcare_sample==1
 generate year_centered = year - 2010
 xtset country_id year, yearly
 
-* Hold the sample, country and year effects, and trends fixed across all columns.
+* hold the sample and all effects fixed across the columns
 regress ln_gap ln_spending ///
     i.year i.country_id c.year_centered#i.country_id, vce(cluster country_id)
 estimates store build1
@@ -27,13 +27,13 @@ regress ln_gap ln_spending ln_leaveweeks lag_lngdp lag_gdp_growth ln_leavespendi
     i.year i.country_id c.year_centered#i.country_id, vce(cluster country_id)
 estimates store build5
 
-* Country and year effects and country trends apply to every column; the sample is fixed.
+* country, year and trend effects in every column, same sample throughout
 etable, estimates(build1 build2 build3 build4 build5) ///
     keep(ln_spending ln_leaveweeks lag_lngdp lag_gdp_growth ln_leavespending) ///
     mstat(N) showstars showstarsnote varlabel column(dvlabel) ///
     export("${tabledir}/results_childcare_buildup_261109.docx", replace)
 
-* Winsorize the six continuous model variables on the main estimation sample.
+* winsorize the six continuous variables on the main sample
 foreach var in ln_gap ln_spending ln_leaveweeks lag_lngdp lag_gdp_growth ln_leavespending {
     quietly summarize `var', detail
     local low = r(p1)
@@ -47,9 +47,9 @@ regress w_ln_gap w_ln_spending w_ln_leaveweeks w_lag_lngdp ///
     w_lag_gdp_growth w_ln_leavespending i.year i.country_id c.year_centered#i.country_id, vce(cluster country_id)
 estimates store childcare_winsor
 testparm w_ln_spending
-* Keep observed spending as primary because winsorization barely changes the estimate.
+* keep the observed spending as the preferred spec, winsorizing changes little
 
-* Column 1 uses the observed data; column 2 winsorizes every continuous variable at the first and 99th percentiles.
+* column 1 uses the raw numbers, column 2 winsorizes each continuous variable at 1 and 99
 etable, estimates(build5 childcare_winsor) ///
     keep(ln_spending ln_leaveweeks lag_lngdp lag_gdp_growth ln_leavespending ///
          w_ln_spending w_ln_leaveweeks w_lag_lngdp w_lag_gdp_growth w_ln_leavespending) ///

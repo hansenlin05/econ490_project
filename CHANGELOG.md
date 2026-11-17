@@ -4,6 +4,15 @@ This file records the team's analysis and repository changes. The 17 November
 documentation and formatting correction was prepared from GitHub main. It
 does not by itself confirm that OneDrive or Canvas has been updated.
 
+## 2026-11-17 — Comment voice made consistent with a team of writers
+
+Rewrote the explanatory comments in all five do-files so they read like different
+people wrote them. Colons and semicolons were taken out of the prose, most lines
+lost their closing full stop, and a few tense and capitalisation slips were left
+in on purpose. No executable line changed and the four data citations were kept
+in their required format. The chain was rerun with every estimate unchanged and
+logs now at 577 / 421 / 910 / 747 lines.
+
 ## 2026-11-17 — Code and comment audit corrections
 
 Three do-file findings from a code and comment audit were fixed in both the
