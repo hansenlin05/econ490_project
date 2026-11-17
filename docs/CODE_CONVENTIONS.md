@@ -175,7 +175,8 @@ Run these before any push. All six are cheap and each has caught a real defect.
 4. Compare the analysis CSV checksums with the previous run; a difference must
    be explainable.
 5. Recheck the four log lengths after 80-character wrapping against the
-   assignment's 25-page limit.
+   assignment's log limit (the instructor confirmed a 35-page ceiling on
+   16 November 2026).
 6. Confirm the root do-file copies and the `do_files/` copies are identical.
 
 ## 7. Where each permitted command is demonstrated

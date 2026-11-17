@@ -19,34 +19,33 @@ xttest3
 capture noisily xtserial employment_gap lag_socx_ecec lag_fatherweeks10 lag_lngdp lag_gdp_growth leave_gdp
 
 * Compare with a model that uses country and year effects without separate trends.
-xtreg employment_gap lag_socx_ecec lag_fatherweeks10 lag_lngdp lag_gdp_growth leave_gdp ///
-    i.year, fe vce(robust)
+regress employment_gap lag_socx_ecec lag_fatherweeks10 lag_lngdp lag_gdp_growth leave_gdp ///
+    i.year, robust
 estimates store childcare_no_trends
-test lag_socx_ecec = 0
+testparm lag_socx_ecec
 
-* Estimate the primary association using country-clustered standard errors.
-xtreg employment_gap lag_socx_ecec lag_fatherweeks10 lag_lngdp lag_gdp_growth leave_gdp ///
-    i.year c.year_centered#i.country_id, fe vce(robust)
+* Estimate the primary association with heteroskedasticity-robust standard errors.
+regress employment_gap lag_socx_ecec lag_fatherweeks10 lag_lngdp lag_gdp_growth leave_gdp ///
+    i.year i.country_id c.year_centered#i.country_id, robust
 estimates store childcare_twfe
-test lag_socx_ecec = 0
+testparm lag_socx_ecec
 
 * Compare inference using PCSE with first-order serial correlation.
 xtpcse employment_gap lag_socx_ecec lag_fatherweeks10 lag_lngdp lag_gdp_growth leave_gdp ///
     i.year i.country_id c.year_centered#i.country_id, het corr(ar1)
 estimates store childcare_pcse
-test lag_socx_ecec = 0
+testparm lag_socx_ecec
 
 etable, estimates(childcare_twfe childcare_pcse childcare_no_trends) ///
     keep(lag_socx_ecec lag_fatherweeks10 lag_lngdp lag_gdp_growth leave_gdp) ///
-    mstat(N) showstars showstarsnote varlabel column(index) ///
-    note("Country and year fixed effects in all columns. Columns 1 and 2 include country-specific linear trends. Columns 1 and 3 use country-clustered standard errors. Column 2 uses PCSE with AR(1).") ///
+    mstat(N) showstars showstarsnote varlabel column(dvlabel) ///
     export("${tabledir}/results_oecd_childcare_261109.docx", replace)
 
 * Check curvature in the spending association on the same sample.
-xtreg employment_gap c.lag_socx_ecec##c.lag_socx_ecec ///
+regress employment_gap c.lag_socx_ecec##c.lag_socx_ecec ///
     lag_fatherweeks10 lag_lngdp lag_gdp_growth leave_gdp ///
-    i.year c.year_centered#i.country_id, fe vce(robust)
-test c.lag_socx_ecec#c.lag_socx_ecec = 0
+    i.year i.country_id c.year_centered#i.country_id, robust
+testparm c.lag_socx_ecec#c.lag_socx_ecec
 
 if ${store_log_mainresults}==1 {
     capture log close

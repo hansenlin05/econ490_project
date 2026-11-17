@@ -1,7 +1,7 @@
 /* Project info
    ECON 490 team project | 0_master_261109.do
    Public childcare spending and the gender employment gap.
-   Primary: OECD ILO panel, 2000-2024. Supplement: European Eurostat panel, 2006-2019.
+   Primary: OECD ILO panel, 2000-2024, public childcare spending.
    Run this file first: edit the single cd line below to your own project folder. */
 
 clear
@@ -9,7 +9,7 @@ clear
 /* Directory settings: paths to folders, defined as globals */
 ********************* * Directory Settings ***********************
 
-capture noisily cd "C:\Users\Hansen\UBC\ECON 490 003 2026W1 Seminar in Applied Economics - econ490_project"
+capture noisily cd "C:\Users\Hansen\AppData\Local\Temp\econ490_neal_run"
 capture noisily dir
 
 global proj_name "econ490_project"                 // project name
