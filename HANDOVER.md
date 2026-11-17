@@ -113,29 +113,29 @@ use 309 (EU-target group) and 38 (other OECD).
 
 - **Primary specification** (year + country effects + country trends, robust,
   all continuous variables in logs): `ln_spending` **−0.582** (SE 0.116,
-  p < 0.001); `testparm ln_spending` F(1, 276) = 25.08. GDP per capita is
+  p < 0.001); `testparm ln_spending` F(1, 276) = 25.17. GDP per capita is
   already logged; GDP growth stays in level form because it is a log
   difference. The coefficient is an elasticity: 1 percent more ECEC spending
   is associated with a 0.582 percent smaller employment gap. Spending enters
   as ln(1 + x), so at the sample mean of 0.538 percent of GDP the effect of a
   1 percent relative increase is about 0.20 percent.
 - **PCSE, heteroskedastic panels, common AR(1):** **−0.477** (SE 0.135,
-  p < 0.001); `testparm` chi2(1) = 12.54, p = 0.0004.
-- Subset columns: EU-target group −0.566 (p < 0.001); other OECD −0.340
-  (p = 0.340, 38 observations — not readable as a policy effect; the table
+  p < 0.001); `testparm` chi2(1) = 12.52, p = 0.0004.
+- Subset columns: EU-target group −0.566 (p < 0.001); other OECD −0.327
+  (p = 0.349, 38 observations — not readable as a policy effect; the table
   note carries the warning).
-- Full 1/99 winsorized repeat: **−0.582** (SE 0.116, p < 0.001), same sign and
+- Full 1/99 winsorized repeat: **−0.581** (SE 0.116, p < 0.001), same sign and
   significance, so the unwinsorized model stays preferred.
-- Log model without country trends: **−0.582** (SE 0.116, p < 0.001), so the
+- Log model without country trends: **−0.622** (SE 0.116, p < 0.001), so the
   trend terms do not drive the result.
 - Level specification retained as a comparison column: `lag_socx_ecec`
   **−9.456** (SE 2.113, p < 0.001), a percentage-point effect.
-- Diagnostics: `testparm i.year` F(22, 276) = 1.15, p = 0.2897 (year effects retained by
-design, although not jointly significant in the log model); `testparm i.country_id` F(22, 276) = 173.18, p < 0.001 (country
-  effects kept); `xttest3` chi2(23) = 5374.49, p < 0.001 (groupwise
+- Diagnostics: `testparm i.year` F(22, 276) = 1.15, p = 0.2904 (year effects retained by
+design, although not jointly significant in the log model); `testparm i.country_id` F(22, 276) = 173.02, p < 0.001 (country
+  effects kept); `xttest3` chi2(23) = 5332.23, p < 0.001 (groupwise
   heteroskedasticity present, robust/PCSE inference responds to it);
   `xtserial` p = 0.0009 (serial correlation present, AR(1) PCSE responds to
-  it); quadratic term F(1, 275) = 0.04, p = 0.8334 (not included).
+  it); quadratic term F(1, 275) = 0.05, p = 0.8318 (not included).
 
 Heteroskedasticity-robust standard errors are the reference inference because
 `regress ..., robust` is the form the course material demonstrates; the course
@@ -232,7 +232,7 @@ lecture notes. They are easy to miss and have caused real rework.
   variables", because the fixed-effects estimator absorbs the country effects.
   Run it after the LSDV `regress` that includes `i.country_id`.
 - **The "other OECD" subset column has 38 observations** and its coefficient
-  (−0.340, p = 0.340) is not readable as a policy effect. It is kept because
+  (−0.327, p = 0.349) is not readable as a policy effect. It is kept because
   the rubric requires three columns and the split is theory-driven; the table
   note says so.
 - **The SOCX lag is built on the full SOCX series before the merge**, in the
@@ -278,8 +278,8 @@ Full list with evidence: `docs/PITFALLS_AND_CORRECTIONS.md`.
 | Keep the weak "other OECD" column | Rubric demands three columns and overlapping subset histograms; deleting it loses points. Disclosed as low-power |
 | Robust LSDV standard errors are the reference inference; PCSE AR(1) is the sensitivity check | `regress ..., robust` is the course-demonstrated form; cluster-robust options are not in the course material |
 | Country-specific linear trends are in the main specification | They absorb divergent post-2000 employment trends across countries; the factor-variable syntax is course material; removing them is reported as a comparison column |
-| No quadratic term | F(1, 275) = 0.04, p = 0.8334; the assignment permits non-linearity only when it improves fit and theory predicts it |
-| Unwinsorized specification preferred | The 1/99 repeat keeps the main coefficient at −0.582 with the same sign and significance (F(1, 276) = 26.53); the do-file comment states the preference |
+| No quadratic term | F(1, 275) = 0.05, p = 0.8318; the assignment permits non-linearity only when it improves fit and theory predicts it |
+| Unwinsorized specification preferred | The 1/99 repeat keeps the main coefficient at −0.582 with the same sign and significance (F(1, 276) = 26.62); the do-file comment states the preference |
 | Fourth numbered do-file for the tables | Keeps every log well under the 35-page limit; Workflow Guide 18 §18.2.2 allows it |
 | Build-up table on one fixed sample | All five columns use the same 347-observation sample so coefficient moves read as the effect of added controls |
 | 2019 summary table as `.csv` + `.xlsx` | Rubric says "Excel or Word document"; Canvas file types do not list `.xlsx`, so the CSV is the upload-safe fallback |

@@ -6,7 +6,7 @@ finished and verified; everything left is a manual team action.
 ## 1. Done and verified
 
 - Five numbered do-files, four numbered logs, six tables (four Word tables
-  plus the 2019 summary as `.csv` and `.xlsx`), two PNG figures, ten
+  plus the 2019 summary as `.csv` and `.xlsx`), two PNG figures, eleven
   `data_raw` inputs, seven `data_final` outputs.
 - Full rerun from `data_raw` on 16 Nov: no `r()` errors anywhere. Logs are
   551 / 417 / 622 / 835 lines, roughly 11.5 / 8.7 / 12.4 / 17.4 pages with
@@ -21,17 +21,17 @@ finished and verified; everything left is a manual team action.
 - Three-column subset table (all countries 347 / EU-target group 309 / other
   OECD 38): `tables/results_childcare_subsets_261109.docx`.
 - Full 1/99 winsorized repeat of all six continuous model variables; the main
-  coefficient stays at −0.582 with the same sign and significance:
+  coefficient stays at −0.581 with the same sign and significance:
   `tables/results_childcare_winsor_261109.docx`.
 - Overlapping two-subset histogram of the main regressor:
   `figures/histogram_childcare_byregion_261109.png`; scatter with linear fit:
   `figures/scatter_gap_childcare_261109.png`.
-- `testparm` tests for the year effects (p = 0.2897) and the country effects
+- `testparm` tests for the year effects (p = 0.2904) and the country effects
   (p < 0.001) in `3_results_261109.log`.
 - Comments in the do-files about unmatched merges, the preferred
   unwinsorized specification, and why the non-linear term is not used.
 - `testparm lag_socx_ecec` lines print the exact p-values behind the quoted
-  numbers in every column, and the PCSE column prints chi2(1) = 12.54,
+  numbers in every column, and the PCSE column prints chi2(1) = 12.52,
   p = 0.0004.
 
 ## 2. Manual actions still required
@@ -60,7 +60,7 @@ finished and verified; everything left is a manual team action.
 > significant in every specification: -0.582 with year and country fixed
 > effects, country-specific linear trends and heteroskedasticity-robust
 > standard errors (SE 0.116, p < 0.001); -0.477 under panel-corrected standard
-> errors with a common AR(1) process (p < 0.001); and -0.582 in the full 1/99
+> errors with a common AR(1) process (p < 0.001); and -0.581 in the full 1/99
 > winsorized repetition (p < 0.001). A 1 percent increase in prior-year ECEC
 > spending is therefore associated with a 0.582 percent smaller
 > male-minus-female employment gap among parents of young children, read as an
@@ -98,9 +98,9 @@ finished and verified; everything left is a manual team action.
 > (p < 0.001) and Wooldridge's test rejects no serial correlation (p = 0.0009),
 > which is why the main column uses robust standard errors and the sensitivity
 > column uses panel-corrected standard errors with AR(1). `testparm` does not reject the
-> year effects (p = 0.2897) and rejects no country effects (p < 0.001). Year
+> year effects (p = 0.2904) and rejects no country effects (p < 0.001). Year
 > effects are retained by design because the assignment requires them. The
-> quadratic spending term is insignificant (p = 0.8334) and has no theoretical
+> quadratic spending term is insignificant (p = 0.8318) and has no theoretical
 > basis here, so it is assessed in the log but not added, consistent with the
 > instruction to add non-linearity only when it improves the model and has a
 > theoretical justification.

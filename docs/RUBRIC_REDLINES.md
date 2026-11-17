@@ -73,7 +73,7 @@ loses 15–35 points before the regressions are read.
   **and** is explained by economic theory.
 - **Must not**: add a term just because it is significant; keep a term that
   fails both tests. Our quadratic spending term is assessed in the log
-  (p = 0.8334) and excluded.
+  (p = 0.8318) and excluded.
 
 ### Item 6 — One properly specified regression (10 pts)
 

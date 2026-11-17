@@ -7,9 +7,10 @@ citation format came from and the exact strings now used in
 `1_build_data_261109.do` (`* Data sources` block).
 
 **Access dates (local date, MST): 14 November 2026 for ILOSTAT, the OECD
-Family Database PF2.5 workbook and the World Bank WDI extract; 15 November
-2026 for OECD SOCX** (the SOCX access date was set when the childcare chain's
-citation block was written and is kept exactly as printed in the do-file).
+Family Database PF2.5 workbook and the World Bank WDI extract; 16 November
+2026 for OECD SOCX** (both SOCX programme extracts were downloaded and frozen
+in `data_raw/` on 16 November 2026 and the citation block matches the
+do-file).
 Version / last-update information below was read from the publisher pages and
 from the PDFs the team saved as evidence (their filenames are listed at the
 end).
@@ -30,11 +31,14 @@ above and with the paper's AER-style bibliography requirement.
 
 ## 2. The four citation strings now in `1_build_data_261109.do`
 
-Only these four external sources are actually read by the do-file. Variables
-that exist in a donor file but are never read (wage replacement rates, nominal
-GDP, unemployment, total fertility) are **not** cited as used sources. The
-Eurostat series the earlier father-leave chain used is no longer read by any
-do-file and is therefore no longer cited.
+Only these four external sources are actually read by the do-file. Both SOCX
+programmes (TP521 childcare and TP512 maternity and parental leave spending)
+come from the same SOCX release and were frozen in `data_raw/` on the same
+day, so the two policy spending controls share one versioned source. Variables
+that exist in the retired policy donor file but are never read (wage
+replacement rates, nominal GDP, unemployment, total fertility) are **not**
+cited as used sources. The Eurostat series the earlier father-leave chain used
+is no longer read by any do-file and is therefore no longer cited.
 
 1. **ILOSTAT** — `International Labour Organization. 2026. "Employment rate by
    sex and household composition" [GED_PEPR_SEX_HHT_CHL_RT_A] (database),
@@ -42,8 +46,8 @@ do-file and is therefore no longer cited.
    2026).`
 2. **OECD SOCX** — `OECD. 2026. Social Expenditure Database (SOCX) (dataset),
    public spending on early childhood education and care (TP521) and on
-   maternity and parental leave, percent of GDP. Paris: OECD.
-   https://doi.org/10.1787/data-00167-en (accessed 15 November 2026).`
+   maternity and parental leave (TP512), percent of GDP. Paris: OECD.
+   https://doi.org/10.1787/data-00167-en (accessed 16 November 2026).`
 3. **OECD Family Database PF2.5** — `OECD. 2026. "PF2.5 Trends in leave
    entitlements around childbirth" (dataset), OECD Family Database, updated
    November 2026. Paris: OECD.

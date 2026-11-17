@@ -3,7 +3,7 @@
        log:  C:\Users\Hansen\UBC\ECON 490 003 2026W1 Seminar in Applied Economi
 > cs - econ490_project\log_files/1_build_data_261109.log
   log type:  text
- opened on:  16 Nov 2026, 22:09:43
+ opened on:  16 Nov 2026, 23:58:04
 . }
 
 . 
@@ -16,8 +16,9 @@
 . * OECD. 2026. Social Expenditure Database (SOCX) (dataset), public spending o
 > n
 . *   early childhood education and care (TP521) and on maternity and parental
-. *   leave, percent of GDP. Paris: OECD. https://doi.org/10.1787/data-00167-en
-. *   (accessed 15 November 2026).
+. *   leave (TP512), percent of GDP. Paris: OECD. https://doi.org/10.1787/data-
+> 00167-en
+. *   (accessed 16 November 2026).
 . * OECD. 2026. "PF2.5 Trends in leave entitlements around childbirth" (dataset
 > ),
 . *   OECD Family Database, updated November 2026. Paris: OECD.
@@ -237,11 +238,22 @@ file ./data_final/tmp_gdp_controls.dta saved
 
 . 
 . * Control variable: public spending on maternity and parental leave.
-. use "${datadir_raw}/oecd_policy_donor.dta", clear
+. import delimited using "${datadir_raw}/oecd_socx_tp512_leave.csv", clear varn
+> ames(1)
+(encoding automatically selected: ISO-8859-1)
+(16 vars, 1,009 obs)
 
-. keep countrycode year leave_gdp
+. keep if unit_measure=="PT_B1GQ" & expend_source=="ES10" & programme_type=="TP
+> 512"
+(0 observations deleted)
 
-. rename countrycode iso
+. rename ref_area iso
+
+. rename time_period year
+
+. keep iso year obs_value
+
+. rename obs_value leave_gdp
 
 . duplicates report iso year
 
@@ -250,7 +262,7 @@ Duplicates in terms of iso year
 --------------------------------------
    Copies | Observations       Surplus
 ----------+---------------------------
-        1 |          988             0
+        1 |         1009             0
 --------------------------------------
 
 . label variable leave_gdp "Public maternity and parental leave spending, perce
@@ -434,22 +446,22 @@ Duplicates in terms of country_id year
 . drop _merge
 
 . 
-. * Merge leave spending. Unmatched rows are countries and years outside the pa
-> nel.
+. * Merge leave spending. Unmatched rows are country-years with no SOCX leave
+. * series row (2024 and a few others); they stay with a missing value.
 . merge 1:1 iso year using "${datadir_final}/tmp_leave_spending.dta"
-(variable year was int, now float to accommodate using data's values)
+(variable iso was str3, now str4 to accommodate using data's values)
 
     Result                      Number of obs
     -----------------------------------------
-    Not matched                           511
-        from master                         0  (_merge==1)
-        from using                        511  (_merge==2)
+    Not matched                           632
+        from master                        50  (_merge==1)
+        from using                        582  (_merge==2)
 
-    Matched                               477  (_merge==3)
+    Matched                               427  (_merge==3)
     -----------------------------------------
 
-. keep if _merge==3
-(511 observations deleted)
+. drop if _merge==2
+(582 observations deleted)
 
 . drop _merge
 
@@ -459,7 +471,6 @@ Duplicates in terms of country_id year
 . * employment panel; employment rows without spending stay and are marked belo
 > w.
 . merge 1:1 iso year using "${datadir_final}/tmp_childcare_spending.dta"
-(variable iso was str3, now str4 to accommodate using data's values)
 
     Result                      Number of obs
     -----------------------------------------

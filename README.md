@@ -80,7 +80,7 @@ trends. The outcome and every nonnegative continuous variable are in logs, so
 the coefficients are elasticities: a 1 percent increase in prior-year spending
 is associated with a 0.582 percent smaller employment gap under
 heteroskedasticity-robust standard errors (p < 0.001), 0.477 under
-panel-corrected standard errors with common AR(1) (p < 0.001), and 0.582 in the
+panel-corrected standard errors with common AR(1) (p < 0.001), and 0.581 in the
 full 1/99 winsorized repeat (p < 0.001). The level specification is kept as a
 comparison column (coefficient −9.456, p < 0.001).
 
@@ -110,7 +110,7 @@ Full reasoning and evidence in `docs/RESEARCH_DECISIONS.md`.
    inference; PCSE with common AR(1) is the sensitivity check.** The course
    material demonstrates `regress ..., robust`, not cluster-robust options.
 4. **Country-specific linear trends are part of the main specification.** The
-   quadratic spending term was assessed and excluded (p = 0.8334).
+   quadratic spending term was assessed and excluded (p = 0.8318).
 5. **Five do-files and four logs.** Each numbered do-file writes its own log.
 6. **No live downloads at run time.** `data_raw/` snapshots are the inputs.
 7. **The 2019 summary table is restricted to observations with the main

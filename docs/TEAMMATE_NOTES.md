@@ -77,13 +77,13 @@ Full rationale in `docs/RESEARCH_DECISIONS.md`.
 All regressions use N = 347; the subset columns use 309 (EU-target group) and
 38 (other OECD). The headline is the log specification: `ln_spending`
 **−0.582** with year and country effects plus country trends (robust SE 0.116,
-p < 0.001), **−0.477** under PCSE with common AR(1) (p < 0.001), and −0.582 in
+p < 0.001), **−0.477** under PCSE with common AR(1) (p < 0.001), and −0.581 in
 the full 1/99 winsorized repeat (p < 0.001). The log model without country
-trends gives −0.582; the level comparison column gives −9.456. Diagnostics:
-`xttest3` p < 0.001, `xtserial` p = 0.0009, `testparm i.year` p = 0.2897
+trends gives −0.622; the level comparison column gives −9.456. Diagnostics:
+`xttest3` p < 0.001, `xtserial` p = 0.0009, `testparm i.year` p = 0.2904
 (year effects not jointly significant in the log model but retained because
 the rubric requires them), `testparm i.country_id` p < 0.001, quadratic term
-p = 0.8334. The robust-LSDV form is the reference
+p = 0.8318. The robust-LSDV form is the reference
 inference because it is the one the course material demonstrates.
 
 ## Evidence hierarchy

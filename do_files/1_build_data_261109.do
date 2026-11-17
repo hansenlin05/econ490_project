@@ -2,7 +2,7 @@
    1_build_data_261109.do | build the OECD childcare panel from the raw source files.
    Output: oecd_childcare_261109.dta, OECD countries observed from 2000 to 2024.
    Inputs: country_codes.csv, ilo_household_raw.csv, oecd_socx_ecec_gdp.csv,
-   oecd_leave_history.xlsx, oecd_policy_donor.dta, wdi_raw.dta. */
+   oecd_socx_tp512_leave.csv, oecd_leave_history.xlsx, wdi_raw.dta. */
 
 //If log setting is activated, we record a log file in the log folder
 if ${store_log_build}==1 {
@@ -16,8 +16,8 @@ if ${store_log_build}==1 {
 *   https://ilostat.ilo.org/data/ (accessed 14 November 2026).
 * OECD. 2026. Social Expenditure Database (SOCX) (dataset), public spending on
 *   early childhood education and care (TP521) and on maternity and parental
-*   leave, percent of GDP. Paris: OECD. https://doi.org/10.1787/data-00167-en
-*   (accessed 15 November 2026).
+*   leave (TP512), percent of GDP. Paris: OECD. https://doi.org/10.1787/data-00167-en
+*   (accessed 16 November 2026).
 * OECD. 2026. "PF2.5 Trends in leave entitlements around childbirth" (dataset),
 *   OECD Family Database, updated November 2026. Paris: OECD.
 *   https://webfs.oecd.org/els-com/Family_Database/PF2_5_Trends_in_leave_entitlements_around_childbirth.xlsx
@@ -102,9 +102,12 @@ keep iso year lngdp gdp_growth lag_lngdp lag_gdp_growth
 save "${datadir_final}/tmp_gdp_controls.dta", replace
 
 * Control variable: public spending on maternity and parental leave.
-use "${datadir_raw}/oecd_policy_donor.dta", clear
-keep countrycode year leave_gdp
-rename countrycode iso
+import delimited using "${datadir_raw}/oecd_socx_tp512_leave.csv", clear varnames(1)
+keep if unit_measure=="PT_B1GQ" & expend_source=="ES10" & programme_type=="TP512"
+rename ref_area iso
+rename time_period year
+keep iso year obs_value
+rename obs_value leave_gdp
 duplicates report iso year
 label variable leave_gdp "Public maternity and parental leave spending, percent of GDP"
 save "${datadir_final}/tmp_leave_spending.dta", replace
@@ -165,9 +168,10 @@ merge 1:1 iso year using "${datadir_final}/tmp_gdp_controls.dta"
 keep if _merge==3
 drop _merge
 
-* Merge leave spending. Unmatched rows are countries and years outside the panel.
+* Merge leave spending. Unmatched rows are country-years with no SOCX leave
+* series row (2024 and a few others); they stay with a missing value.
 merge 1:1 iso year using "${datadir_final}/tmp_leave_spending.dta"
-keep if _merge==3
+drop if _merge==2
 drop _merge
 
 * Merge childcare spending. Spending-only rows are countries and years outside the

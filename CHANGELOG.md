@@ -11,7 +11,7 @@ father-specific-leave design and all of its numbers are retired. Changes: the
 `string()` / `F1.snapshot` leave corrections were replaced by literal numeric
 replaces (no first-hand course source; the built panel is bit-identical);
 `testparm i.country_id` was added after the LSDV model so the rubric's panel
-fixed-effects test is in the log (F(22, 276) = 173.18, p < 0.001); the whole
+fixed-effects test is in the log (F(22, 276) = 173.02, p < 0.001); the whole
 chain was rerun (logs 551 / 417 / 622 / 835 lines, no `r()` errors, N = 347,
 PCSE p = 0.0004); the OneDrive submission folder now holds only the childcare
 deliverables and the retired father-leave files were archived outside it. The
@@ -21,6 +21,23 @@ rubric red lines, course requirements, submission status, code conventions,
 pitfalls, data citations, literature sources) was rewritten for the childcare
 direction. The command whitelist lost the `string()` function and gained a
 second documented exception (`real()` for the slash-text leave column).
+
+## 2026-11-16 — Leave spending aligned with the SOCX TP512 release
+
+`leave_gdp` is now built from a frozen SOCX TP512 extract (`oecd_socx_tp512_leave.csv`)
+in `data_raw/`, the same release and access date as the TP521 childcare
+extract; the `oecd_policy_donor.dta` intermediate is no longer read. A
+line-by-line comparison against the donor snapshot confirmed the donor values
+were an earlier TP512 vintage (99 percent within 0.005; the largest gaps were
+published revisions of roughly 0.02 for Norway). The estimation sample is
+unchanged at N = 347 and the merge structure is unchanged (427 matched, 50
+SOCX-only absences, 582 spending-only rows). Revised printed values:
+`ln_spending` −0.582 (testparm F(1, 276) = 25.17), PCSE −0.477 (chi2(1) =
+12.52, p = 0.0004), winsorized −0.581 (F(1, 276) = 26.62), no-trends −0.622,
+quadratic p = 0.8318, year FE p = 0.2904, country FE F = 173.02, `xttest3`
+chi2(23) = 5332.23, "other OECD" subset −0.327 (p = 0.349). The leave
+spending merge now keeps SOCX-absent rows with a missing value so the sample
+flag stays the single exclusion point.
 
 ## 2026-11-16 — Stata CheatSheet removed from the command whitelist
 
