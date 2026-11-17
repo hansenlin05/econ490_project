@@ -4,6 +4,17 @@ This file records the team's analysis and repository changes. The 17 November
 documentation and formatting correction was prepared from GitHub main. It
 does not by itself confirm that OneDrive or Canvas has been updated.
 
+## 2026-11-17 — Restore the full workflow project settings
+
+The project keeps the complete Workflow 18 master structure. The master sets
+the run switches and the four store_log switches. Each numbered do-file opens
+and closes its own log inside the store_log condition. The direct logging form
+from the previous entry left the master with run switches but the child files
+without matching log switches, which mixed the two patterns in section 18.5.
+Restoring the switches returns every file to the same template. Regression
+commands, data, estimates and comments are unchanged. The earlier entry stays
+in the record because it describes what was done at that time.
+
 ## 2026-11-17 — OneDrive rerun for the direct-log chain
 
 Copied the five revised do-files to the OneDrive package and reran the master

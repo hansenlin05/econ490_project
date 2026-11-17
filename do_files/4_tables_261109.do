@@ -1,7 +1,9 @@
 /* Project info
    4_tables_261109.do | the build-up table and the winsorizing check */
-capture log close
-log using "${log_dir}/4_tables_261109.log", text replace
+if ${store_log_tables}==1 {
+    capture log close
+    capture noisily log using "${log_dir}/4_tables_261109.log", text replace
+}
 
 use "${datadir_final}/oecd_childcare_261109.dta", clear
 keep if childcare_sample==1
@@ -51,4 +53,6 @@ etable, estimates(build4 childcare_winsor) ///
     mstat(N) showstars showstarsnote column(dvlabel) ///
     export("${tabledir}/results_childcare_winsor_261109.docx", replace)
 
-capture log close
+if ${store_log_tables}==1 {
+    capture log close
+}

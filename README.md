@@ -163,8 +163,7 @@ The ones that have already caused damage; the full list with evidence is in
 Set Stata's working directory to the project root and run
 `do do_files/0_master_261109.do`. The master calls the four numbered do-files
 in order; `1_build_data` rebuilds the panel from `data_raw/`. No network
-access is used at run time. Each numbered do-file directly opens and closes
-its own log. The optional `store_log_*` switches have been removed.
+access is used at run time.
 
 Requirements: Stata 17 or newer (developed on StataNow/BE 19) with `xttest3`,
 `xtserial` and `coefplot` installed. Use `clear`, not `clear all`: the master

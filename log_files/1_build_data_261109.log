@@ -3,7 +3,8 @@
        log:  C:\Users\Hansen\UBC\ECON 490 003 2026W1 Seminar in Applied Economi
 > cs - econ490_project\log_files/1_build_data_261109.log
   log type:  text
- opened on:  17 Nov 2026, 13:49:57
+ opened on:  17 Nov 2026, 14:06:38
+. }
 
 . 
 . * Data sources, the copies we actually read sit in data_raw
@@ -561,5 +562,6 @@ file ./data_final/oecd_childcare_261109.dta saved
 file ./data_final/oecd_childcare_261109.csv saved
 
 . 
-. //Close log
-. capture log close
+. //Close log if needed
+. if ${store_log_build}==1 {
+.     capture log close

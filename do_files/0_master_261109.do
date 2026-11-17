@@ -23,13 +23,17 @@ global figdir        "${proj_main}/figures"        // figures path
 global literature    "${proj_main}/literature"     // literature path
 global paperdir      "${proj_main}/paper"          // paper path
 
-/* Project settings, the run switches */
+/* Project settings, the run and log switches */
 ********************* * Project Settings ***********************
 
 global run_build = 1                // 0 skip the build, 1 run it
+global store_log_build = 1          // 0 no log, 1 save it
 global run_descriptive = 1          // 0 skip, 1 run
+global store_log_descriptive = 1    // 0 no log, 1 save it
 global run_mainresults = 1          // 0 skip, 1 run
+global store_log_mainresults = 1    // 0 no log, 1 save it
 global run_tables = 1              // 0 skip, 1 run
+global store_log_tables = 1        // 0 no log, 1 save it
 
 /* run the numbered files in order */
 if ${run_build}==1 {

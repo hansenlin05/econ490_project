@@ -3,7 +3,8 @@
        log:  C:\Users\Hansen\UBC\ECON 490 003 2026W1 Seminar in Applied Economi
 > cs - econ490_project\log_files/4_tables_261109.log
   log type:  text
- opened on:  17 Nov 2026, 13:50:28
+ opened on:  17 Nov 2026, 14:07:07
+. }
 
 . 
 . use "${datadir_final}/oecd_childcare_261109.dta", clear
@@ -674,4 +675,5 @@ Number of observations                                                   347    
  ./tables/results_childcare_winsor_261109.docx)
 
 . 
-. capture log close
+. if ${store_log_tables}==1 {
+.     capture log close

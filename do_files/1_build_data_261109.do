@@ -4,9 +4,11 @@
    inputs were country_codes.csv, ilo_household_raw.csv, oecd_socx_ecec_gdp.csv,
    oecd_socx_tp512_leave.csv, oecd_leave_timeseries.csv and wdi_raw.dta */
 
-//record a log file in the log folder
-capture log close
-log using "${log_dir}/1_build_data_261109.log", text replace
+//If log setting is activated, we record a log file in the log folder
+if ${store_log_build}==1 {
+    capture log close
+    capture noisily log using "${log_dir}/1_build_data_261109.log", text replace
+}
 
 * Data sources, the copies we actually read sit in data_raw
 * International Labour Organization. 2026. "Employment rate by sex and household
@@ -203,5 +205,7 @@ xtset country_id year, yearly
 save "${datadir_final}/oecd_childcare_261109.dta", replace
 export delimited using "${datadir_final}/oecd_childcare_261109.csv", replace
 
-//Close log
-capture log close
+//Close log if needed
+if ${store_log_build}==1 {
+    capture log close
+}

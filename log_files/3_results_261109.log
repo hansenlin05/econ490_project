@@ -3,7 +3,8 @@
        log:  C:\Users\Hansen\UBC\ECON 490 003 2026W1 Seminar in Applied Economi
 > cs - econ490_project\log_files/3_results_261109.log
   log type:  text
- opened on:  17 Nov 2026, 13:50:24
+ opened on:  17 Nov 2026, 14:07:03
+. }
 
 . 
 . use "${datadir_final}/oecd_childcare_261109.dta", clear
@@ -640,4 +641,5 @@ year_cente~d |
          Prob > chi2 =    0.5643
 
 . 
-. capture log close
+. if ${store_log_mainresults}==1 {
+.     capture log close
