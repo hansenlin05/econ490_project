@@ -1,4 +1,36 @@
-# Submission status — 18 Nov 2026 Econometric Files
+# OECD Childcare Submission Notes
+
+## Canvas comments
+
+**Hypothesis.** Higher prior-year public early childhood education and care
+spending is associated with a smaller gender employment gap in the OECD
+country-trend model. The clustered estimate is −0.95 percentage points per
+0.1 percentage point of GDP (p = 0.0070). With no separate country trends,
+the clustered p-value is 0.6904. The estimate describes a conditional
+association.
+
+**Merge.** The employment panel has 477 country-years. The OECD SOCX
+country-year merge matches 427 keys. A match means the key is present in both
+inputs, and some matched records still lack a numeric spending value or a
+control. The 50 employment-only keys remain in the descriptive dataset.
+The 582 spending-only keys fall outside the employment panel and are
+removed. After requiring a numeric lagged spending value, outcome, and all
+controls, the complete-case regression sample contains 347 country-years.
+
+## Reproducible outputs
+
+Run the master do-file from the project root. The numbered logs and childcare
+tables are linked in the README. The subset comparison includes 309
+country-years in the EU-target group and 38 in the other OECD group. The
+smaller group has fewer country clusters, so report its inference with
+appropriate caution.
+
+## European-primary archive
+
+
+> This document records the European-primary team version. For this branch's
+> OECD-primary models and outputs, see the repository README and the numbered
+> Stata logs.
 
 Last updated 16 November 2026. This is the actionable checklist. Code work is
 finished and verified; everything left is a manual team action.

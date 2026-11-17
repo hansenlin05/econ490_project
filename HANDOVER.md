@@ -1,5 +1,9 @@
 # ECON 490 — Project Handover (authoritative English version)
 
+> This document records the European-primary team version. For this branch's
+> OECD-primary models and outputs, see the repository README and the numbered
+> Stata logs.
+
 Last updated: 14 November 2026 (local time, MST).
 This is the single current handover. It replaces the Chinese-language handover
 that was previously uploaded to this repository. `README.md` carries the reading
@@ -75,7 +79,8 @@ Chain: `do_files/0_master_261109.do` sets paths and calls, in order,
 directly from the frozen files in `data_raw/`, so a single master run reproduces
 everything from raw inputs. Each numbered do-file opens and closes its own
 numbered log. The fifth do-file exists only to keep every log under the
-assignment's 25-page limit (see `docs/COURSE_REQUIREMENTS.md`).
+assignment's log limit; the instructor confirmed 35 pages on 16 November 2026
+(see `docs/COURSE_REQUIREMENTS.md`).
 
 Latest verification (15 Nov 2026, full rerun from `data_raw`):
 no `r()` errors anywhere; all four analysis CSVs and the 2019 summary-table
