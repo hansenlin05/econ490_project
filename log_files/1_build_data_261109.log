@@ -3,7 +3,7 @@
        log:  C:\Users\Hansen\UBC\ECON 490 003 2026W1 Seminar in Applied Economi
 > cs - econ490_project\log_files/1_build_data_261109.log
   log type:  text
- opened on:  16 Nov 2026, 18:13:36
+ opened on:  16 Nov 2026, 22:09:43
 . }
 
 . 
@@ -531,6 +531,30 @@ regressions |      Freq.     Percent        Cum.
           1 |        347       72.75      100.00
 ------------+-----------------------------------
       Total |        477      100.00
+
+. 
+. * Log versions of the continuous model variables for the elasticity specifica
+> tion.
+. generate ln_gap = ln(employment_gap)
+
+. generate ln_spending = ln(1 + lag_socx_ecec)
+(66 missing values generated)
+
+. generate ln_leaveweeks = ln(1 + lag_fatherweeks10)
+(14 missing values generated)
+
+. generate ln_leavespending = ln(leave_gdp)
+(115 missing values generated)
+
+. label variable ln_gap "Log of the male minus female employment gap"
+
+. label variable ln_spending "Log of one plus prior-year ECEC spending (% of GD
+> P)"
+
+. label variable ln_leaveweeks "Log of one plus lagged father leave (per 10 wee
+> ks)"
+
+. label variable ln_leavespending "Log of public leave spending (% of GDP)"
 
 . 
 . xtset country_id year, yearly

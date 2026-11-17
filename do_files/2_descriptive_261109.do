@@ -9,26 +9,26 @@ use "${datadir_final}/oecd_childcare_261109.dta", clear
 
 * Mean, sd, min, max and N for every model variable in 2019.
 preserve
-    keep if year==2019 & !missing(lag_socx_ecec)
+    keep if year==2019 & !missing(ln_spending)
     collapse ///
-        (mean) mean_gap=employment_gap (sd) sd_gap=employment_gap ///
-        (min) min_gap=employment_gap (max) max_gap=employment_gap ///
-        (count) n_gap=employment_gap ///
-        (mean) mean_spend=lag_socx_ecec (sd) sd_spend=lag_socx_ecec ///
-        (min) min_spend=lag_socx_ecec (max) max_spend=lag_socx_ecec ///
-        (count) n_spend=lag_socx_ecec ///
-        (mean) mean_leave=lag_fatherweeks10 (sd) sd_leave=lag_fatherweeks10 ///
-        (min) min_leave=lag_fatherweeks10 (max) max_leave=lag_fatherweeks10 ///
-        (count) n_leave=lag_fatherweeks10 ///
+        (mean) mean_gap=ln_gap (sd) sd_gap=ln_gap ///
+        (min) min_gap=ln_gap (max) max_gap=ln_gap ///
+        (count) n_gap=ln_gap ///
+        (mean) mean_spend=ln_spending (sd) sd_spend=ln_spending ///
+        (min) min_spend=ln_spending (max) max_spend=ln_spending ///
+        (count) n_spend=ln_spending ///
+        (mean) mean_leave=ln_leaveweeks (sd) sd_leave=ln_leaveweeks ///
+        (min) min_leave=ln_leaveweeks (max) max_leave=ln_leaveweeks ///
+        (count) n_leave=ln_leaveweeks ///
         (mean) mean_lngdp=lag_lngdp (sd) sd_lngdp=lag_lngdp ///
         (min) min_lngdp=lag_lngdp (max) max_lngdp=lag_lngdp ///
         (count) n_lngdp=lag_lngdp ///
         (mean) mean_growth=lag_gdp_growth (sd) sd_growth=lag_gdp_growth ///
         (min) min_growth=lag_gdp_growth (max) max_growth=lag_gdp_growth ///
         (count) n_growth=lag_gdp_growth ///
-        (mean) mean_mleave=leave_gdp (sd) sd_mleave=leave_gdp ///
-        (min) min_mleave=leave_gdp (max) max_mleave=leave_gdp ///
-        (count) n_mleave=leave_gdp
+        (mean) mean_mleave=ln_leavespending (sd) sd_mleave=ln_leavespending ///
+        (min) min_mleave=ln_leavespending (max) max_mleave=ln_leavespending ///
+        (count) n_mleave=ln_leavespending
     list
     export excel using "${tabledir}/descriptive_2019_oecd_childcare_261109.xlsx", replace
     export delimited using "${tabledir}/descriptive_2019_oecd_childcare_261109.csv", replace
@@ -39,20 +39,20 @@ generate year_centered = year - 2010
 xtset country_id year, yearly
 tabulate eu_childcare
 
-* Illustrate the relationship between spending and employment in the estimation sample.
-twoway (scatter employment_gap lag_socx_ecec) (lfit employment_gap lag_socx_ecec), ///
+* Illustrate the elasticity relationship between spending and the employment gap.
+twoway (scatter ln_gap ln_spending) (lfit ln_gap ln_spending), ///
     title("Public childcare spending and the employment gap") ///
-    xtitle("Prior-year public ECEC spending (% of GDP)") ///
-    ytitle("Male minus female employment rate (pp)") ///
+    xtitle("Log of one plus prior-year ECEC spending (% of GDP)") ///
+    ytitle("Log of the male minus female employment rate") ///
     legend(label(1 "Country-year observation") label(2 "Linear fit")) ///
     graphregion(color(white))
 graph export "${figdir}/scatter_gap_childcare_261109.png", as(png) replace
 
-* Compare spending across the regional groups used in the subset regressions.
-twoway (histogram lag_socx_ecec if eu_childcare==1, color(navy) lcolor(black)) ///
-    (histogram lag_socx_ecec if eu_childcare==0, color(maroon) lcolor(black)), ///
+* Compare logged spending across the regional groups used in the subset regressions.
+twoway (histogram ln_spending if eu_childcare==1, color(navy) lcolor(black)) ///
+    (histogram ln_spending if eu_childcare==0, color(maroon) lcolor(black)), ///
     title("Public childcare spending by subgroup") ///
-    xtitle("Prior-year public ECEC spending (% of GDP)") ///
+    xtitle("Log of one plus prior-year ECEC spending (% of GDP)") ///
     ytitle("Density") ///
     legend(label(1 "EU-target group") label(2 "Other OECD")) graphregion(color(white))
 graph export "${figdir}/histogram_childcare_byregion_261109.png", as(png) replace
@@ -60,19 +60,19 @@ graph export "${figdir}/histogram_childcare_byregion_261109.png", as(png) replac
 * Compare the same specification across both groups and the full sample.
 * The EU's Barcelona targets linked ECEC access to parental employment.
 * https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32022H1220(01)
-regress employment_gap lag_socx_ecec lag_fatherweeks10 ${controls} ///
+regress ln_gap ln_spending ln_leaveweeks lag_lngdp lag_gdp_growth ln_leavespending ///
     i.year i.country_id c.year_centered#i.country_id, robust
 estimates store childcare_all
-regress employment_gap lag_socx_ecec lag_fatherweeks10 ${controls} ///
+regress ln_gap ln_spending ln_leaveweeks lag_lngdp lag_gdp_growth ln_leavespending ///
     i.year i.country_id c.year_centered#i.country_id if eu_childcare==1, robust
 estimates store childcare_eu
-regress employment_gap lag_socx_ecec lag_fatherweeks10 ${controls} ///
+regress ln_gap ln_spending ln_leaveweeks lag_lngdp lag_gdp_growth ln_leavespending ///
     i.year i.country_id c.year_centered#i.country_id if eu_childcare==0, robust
 estimates store childcare_other
 
 * Columns: all countries, EU-target group, other OECD. Country, year and trend effects apply to every column.
 etable, estimates(childcare_all childcare_eu childcare_other) ///
-    keep(lag_socx_ecec lag_fatherweeks10 lag_lngdp lag_gdp_growth leave_gdp) ///
+    keep(ln_spending ln_leaveweeks lag_lngdp lag_gdp_growth ln_leavespending) ///
     mstat(N) showstars showstarsnote varlabel column(dvlabel) ///
     export("${tabledir}/results_childcare_subsets_261109.docx", replace)
 

@@ -191,6 +191,16 @@ replace childcare_sample = 0 if missing(lag_lngdp, lag_gdp_growth, leave_gdp)
 label variable childcare_sample "Complete-case sample for the childcare regressions"
 tabulate childcare_sample
 
+* Log versions of the continuous model variables for the elasticity specification.
+generate ln_gap = ln(employment_gap)
+generate ln_spending = ln(1 + lag_socx_ecec)
+generate ln_leaveweeks = ln(1 + lag_fatherweeks10)
+generate ln_leavespending = ln(leave_gdp)
+label variable ln_gap "Log of the male minus female employment gap"
+label variable ln_spending "Log of one plus prior-year ECEC spending (% of GDP)"
+label variable ln_leaveweeks "Log of one plus lagged father leave (per 10 weeks)"
+label variable ln_leavespending "Log of public leave spending (% of GDP)"
+
 xtset country_id year, yearly
 save "${datadir_final}/oecd_childcare_261109.dta", replace
 export delimited using "${datadir_final}/oecd_childcare_261109.csv", replace
