@@ -2,7 +2,7 @@ clear
 capture log close
 log using "oecd_childcare_live_results.log", text replace
 
-wbopendata, indicator(NY.GDP.PCAP.KD) long clear
+use "wdi_gdp_raw.dta", clear
 rename (countrycode countryname) (iso country)
 keep if inrange(year,1999,2024)
 
@@ -21,7 +21,6 @@ generate lag_lngdp = L1.lngdp
 keep iso year lag_lngdp
 save "oecd_gdp.dta", replace
 
-copy "https://webfs.oecd.org/els-com/Family_Database/PF2_5_Trends_in_leave_entitlements_around_childbirth.xlsx" "oecd_leave_history.xlsx", replace
 import excel using "oecd_leave_history.xlsx", sheet("Time-Series") cellrange(A9) clear
 rename (A B T) (country year total_paid_raw)
 keep country year total_paid_raw
@@ -41,7 +40,6 @@ generate lag_fatherweeks10 = L1.fatherweeks10
 keep iso year lag_fatherweeks10
 save "oecd_father_leave.dta", replace
 
-copy "https://sdmx.oecd.org/public/rest/data/OECD.ELS.SPD,DSD_SOCX_AGG@DF_SOCX_AGG,1.0/.A..PT_B1GQ.ES10..TP512+TP521.?format=csvfile&startPeriod=1999&endPeriod=2024" "oecd_socx_spending.csv", replace
 import delimited using "oecd_socx_spending.csv", clear
 rename (ref_area time_period) (iso year)
 keep iso year programme_type obs_value
@@ -54,7 +52,6 @@ generate childcare = L1.ecec_gdp
 keep iso year childcare leave_gdp
 save "oecd_spending.dta", replace
 
-copy "https://rplumber.ilo.org/data/indicator/?id=GED_PEPR_SEX_HHT_CHL_RT_A" "ilostat_employment.csv", replace
 import delimited using "ilostat_employment.csv", clear
 rename (ref_area time) (iso year)
 keep if classif1=="HHT_AGGREGATE_K" & classif2=="CHL_AGET6_YES"
