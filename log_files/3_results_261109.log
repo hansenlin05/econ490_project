@@ -3,7 +3,7 @@
        log:  C:\Users\Hansen\UBC\ECON 490 003 2026W1 Seminar in Applied Economi
 > cs - econ490_project\log_files/3_results_261109.log
   log type:  text
- opened on:  16 Nov 2026, 17:25:59
+ opened on:  16 Nov 2026, 18:14:11
 . }
 
 . 
@@ -323,6 +323,35 @@ year_cente~d |
  ( 1)  lag_socx_ecec = 0
 
        F(  1,   276) =   20.03
+            Prob > F =    0.0000
+
+. * Test the country effects with the model in LSDV form.
+. testparm i.country_id
+
+ ( 1)  2.country_id = 0
+ ( 2)  3.country_id = 0
+ ( 3)  4.country_id = 0
+ ( 4)  5.country_id = 0
+ ( 5)  7.country_id = 0
+ ( 6)  8.country_id = 0
+ ( 7)  9.country_id = 0
+ ( 8)  10.country_id = 0
+ ( 9)  11.country_id = 0
+ (10)  12.country_id = 0
+ (11)  13.country_id = 0
+ (12)  14.country_id = 0
+ (13)  15.country_id = 0
+ (14)  16.country_id = 0
+ (15)  17.country_id = 0
+ (16)  18.country_id = 0
+ (17)  19.country_id = 0
+ (18)  21.country_id = 0
+ (19)  22.country_id = 0
+ (20)  23.country_id = 0
+ (21)  24.country_id = 0
+ (22)  25.country_id = 0
+
+       F( 22,   276) =  330.06
             Prob > F =    0.0000
 
 . 

@@ -47,21 +47,6 @@ encode iso, generate(leave_id)
 xtset leave_id year, yearly
 sort leave_id year
 
-* Correct three entries to the year the entitlement took legal effect.
-replace total_paid_raw = "2.6" if iso=="FRA" & year==2014
-replace total_paid_raw = "4" if iso=="IRL" & year==2019
-replace total_paid_raw = string(real(total_paid_raw)+13) if iso=="ITA" & year==2022
-
-* Four annual snapshots record a reform one year late; use the next year's value.
-foreach measure in all paid {
-    generate snapshot = real(total_`measure'_raw)
-    replace total_`measure'_raw = string(F1.snapshot,"%18.10g") if iso=="AUT" & year==2019
-    replace total_`measure'_raw = string(F1.snapshot,"%18.10g") if iso=="EST" & year==2020
-    replace total_`measure'_raw = string(F1.snapshot,"%18.10g") if iso=="FIN" & year==2010
-    replace total_`measure'_raw = string(F1.snapshot,"%18.10g") if iso=="GRC" & year==2021
-    drop snapshot
-}
-
 * Two entries list two options separated by a slash; use the lower one.
 generate weeks_all = real(total_all_raw)
 replace weeks_all = 28.6  if total_all_raw == "28.6 / 54.6"
@@ -69,6 +54,21 @@ replace weeks_all = 30.17 if total_all_raw == "30.17 / 56.17"
 generate fatherweeks = real(total_paid_raw)
 replace fatherweeks = 28.6  if total_paid_raw == "28.6 / 54.6"
 replace fatherweeks = 30.17 if total_paid_raw == "30.17 / 56.17"
+
+* Correct three entries to the year the entitlement took legal effect.
+replace fatherweeks = 2.6 if iso=="FRA" & year==2014
+replace fatherweeks = 4 if iso=="IRL" & year==2019
+replace fatherweeks = 15 if iso=="ITA" & year==2022
+
+* Four annual snapshots record a reform one year late; use the next year's value.
+replace weeks_all = 12.996666 if iso=="AUT" & year==2019
+replace fatherweeks = 12.996666 if iso=="AUT" & year==2019
+replace weeks_all = 4.285714286 if iso=="EST" & year==2020
+replace fatherweeks = 4.285714286 if iso=="EST" & year==2020
+replace weeks_all = 9 if iso=="FIN" & year==2010
+replace fatherweeks = 9 if iso=="FIN" & year==2010
+replace weeks_all = 48.53 if iso=="GRC" & year==2021
+replace fatherweeks = 11.46666 if iso=="GRC" & year==2021
 generate leave_known = !missing(weeks_all) & !missing(fatherweeks) & weeks_all>=0 & fatherweeks>=0
 label variable fatherweeks "Weeks of paid father-specific leave (lower bound)"
 label variable leave_known "Father-specific leave entitlement is reported"
@@ -158,7 +158,6 @@ label variable employment_gap "Male minus female employment rate (pp)"
 encode iso, generate(country_id)
 duplicates report country_id year
 
-sort country_id year
 sort country_id year
 
 * Merge the GDP controls. Unmatched rows are countries and years outside the panel.

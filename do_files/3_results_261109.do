@@ -29,6 +29,8 @@ regress employment_gap lag_socx_ecec lag_fatherweeks10 lag_lngdp lag_gdp_growth 
     i.year i.country_id c.year_centered#i.country_id, robust
 estimates store childcare_twfe
 testparm lag_socx_ecec
+* Test the country effects with the model in LSDV form.
+testparm i.country_id
 
 * Compare inference using PCSE with first-order serial correlation.
 xtpcse employment_gap lag_socx_ecec lag_fatherweeks10 lag_lngdp lag_gdp_growth leave_gdp ///

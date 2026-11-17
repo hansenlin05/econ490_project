@@ -3,7 +3,7 @@
        log:  C:\Users\Hansen\UBC\ECON 490 003 2026W1 Seminar in Applied Economi
 > cs - econ490_project\log_files/1_build_data_261109.log
   log type:  text
- opened on:  16 Nov 2026, 17:25:21
+ opened on:  16 Nov 2026, 18:13:36
 . }
 
 . 
@@ -91,44 +91,6 @@ Panel variable: leave_id (unbalanced)
 . sort leave_id year
 
 . 
-. * Correct three entries to the year the entitlement took legal effect.
-. replace total_paid_raw = "2.6" if iso=="FRA" & year==2014
-(1 real change made)
-
-. replace total_paid_raw = "4" if iso=="IRL" & year==2019
-(1 real change made)
-
-. replace total_paid_raw = string(real(total_paid_raw)+13) if iso=="ITA" & year
-> ==2022
-(1 real change made)
-
-. 
-. * Four annual snapshots record a reform one year late; use the next year's va
-> lue.
-. foreach measure in all paid {
-  2.     generate snapshot = real(total_`measure'_raw)
-  3.     replace total_`measure'_raw = string(F1.snapshot,"%18.10g") if iso=="A
-> UT" & year==2019
-  4.     replace total_`measure'_raw = string(F1.snapshot,"%18.10g") if iso=="E
-> ST" & year==2020
-  5.     replace total_`measure'_raw = string(F1.snapshot,"%18.10g") if iso=="F
-> IN" & year==2010
-  6.     replace total_`measure'_raw = string(F1.snapshot,"%18.10g") if iso=="G
-> RC" & year==2021
-  7.     drop snapshot
-  8. }
-(277 missing values generated)
-(1 real change made)
-(1 real change made)
-(1 real change made)
-(1 real change made)
-(287 missing values generated)
-(1 real change made)
-(1 real change made)
-(1 real change made)
-(1 real change made)
-
-. 
 . * Two entries list two options separated by a slash; use the lower one.
 . generate weeks_all = real(total_all_raw)
 (277 missing values generated)
@@ -147,6 +109,44 @@ Panel variable: leave_id (unbalanced)
 
 . replace fatherweeks = 30.17 if total_paid_raw == "30.17 / 56.17"
 (3 real changes made)
+
+. 
+. * Correct three entries to the year the entitlement took legal effect.
+. replace fatherweeks = 2.6 if iso=="FRA" & year==2014
+(1 real change made)
+
+. replace fatherweeks = 4 if iso=="IRL" & year==2019
+(1 real change made)
+
+. replace fatherweeks = 15 if iso=="ITA" & year==2022
+(1 real change made)
+
+. 
+. * Four annual snapshots record a reform one year late; use the next year's va
+> lue.
+. replace weeks_all = 12.996666 if iso=="AUT" & year==2019
+(1 real change made)
+
+. replace fatherweeks = 12.996666 if iso=="AUT" & year==2019
+(1 real change made)
+
+. replace weeks_all = 4.285714286 if iso=="EST" & year==2020
+(1 real change made)
+
+. replace fatherweeks = 4.285714286 if iso=="EST" & year==2020
+(1 real change made)
+
+. replace weeks_all = 9 if iso=="FIN" & year==2010
+(1 real change made)
+
+. replace fatherweeks = 9 if iso=="FIN" & year==2010
+(1 real change made)
+
+. replace weeks_all = 48.53 if iso=="GRC" & year==2021
+(1 real change made)
+
+. replace fatherweeks = 11.46666 if iso=="GRC" & year==2021
+(1 real change made)
 
 . generate leave_known = !missing(weeks_all) & !missing(fatherweeks) & weeks_al
 > l>=0 & fatherweeks>=0
@@ -412,8 +412,6 @@ Duplicates in terms of country_id year
 --------------------------------------
 
 . 
-. sort country_id year
-
 . sort country_id year
 
 . 
