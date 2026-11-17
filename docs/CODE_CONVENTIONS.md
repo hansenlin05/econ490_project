@@ -58,7 +58,7 @@ only in the CheatSheet and are now out (see §7).
 
 `recast double` is not on this list; it appeared only in the CheatSheet (see §7).
 The `string()` function is not on this list either: two targeted searches of
-the two source sets found no verbatim use, and the one place the do-files
+the COMET and Test/Quiz sets found no verbatim use, and the one place the do-files
 needed it (writing corrected leave weeks back into a text column) was replaced
 on 16 November 2026 by numeric parsing plus literal `replace` values, which
 left every downstream number unchanged.
@@ -94,7 +94,7 @@ unclustered `robust` form stays as a comparison column. The single-coefficient
 
 `dtable`, `collect export` and `column(index)` are not on this list; they are
 CheatSheet additions and are now out (see §7). The `note()` option on `etable`
-is not demonstrated in any of the three source sets, so the exported table's
+is not demonstrated in any of the source sets, so the exported table's
 fixed-effects statement belongs in a plain comment instead.
 
 **Banned, with no exceptions**
@@ -112,14 +112,17 @@ against the local PDF/MD originals on 16 Nov)**
 
 `isid`, `count` (as a command), `tempfile`, `recast double`, `dtable`,
 `collect export`, `column(index)`, `note()` (on `etable`), `test coef = 0`,
-`lincom`, `margins`, `vce(cluster id)`, `vce(robust)`, and the `sheet()`,
-`cellrange()`, `firstrow()` import options. The exact source status differs:
+`lincom`, `margins`, `vce(robust)`, and the `sheet()`, `cellrange()`,
+`firstrow()` import options. The exact source status differs:
 `isid`, `tempfile`, `recast double`, `dtable`, `collect export`, `column(index)`,
-`lincom`, `margins`, `vce(cluster id)`, `vce(robust)` and the three import options
+`lincom`, `margins`, `vce(robust)` and the three import options
 are demonstrated only in the CheatSheet, which is no longer a source. The
 `count` command, `test varname = 0` and `etable note()` have no verbatim form in
-any of the three source sets. None is demonstrated in the COMET or Test/Quiz
-course text. §7 names which of them the current do-files still use.
+any of the source sets. None is demonstrated in the COMET or Test/Quiz
+course text. `vce(cluster id)` is **not** in this list: the lecture note
+added on 17 November 2026 demonstrates it verbatim and §1 permits it, with
+`vce(cluster country_id)` used in every main regression. §7 records each
+replacement.
 
 ## 2. The three documented exceptions
 
@@ -244,7 +247,8 @@ demonstrated in one of those sources and is not one of the exceptions in §2,
 it is not permitted. The CheatSheet is not a source.
 
 **COMET Notebook modules 02–18** (`02 - Working with Do-Files` through
-`18 - Stata Workflow Guide`) and the **Test / Quiz** question sets, combined:
+`18 - Stata Workflow Guide`), the **Test / Quiz** question sets, and the
+**lecture note `Preparing for Panel Data Analysis`**, combined:
 
 | Area | Commands permitted here |
 |---|---|
@@ -264,9 +268,12 @@ it is not permitted. The CheatSheet is not a source.
 | 15 Panel data | `xtset`, `xtreg ..., fe`, `xtreg ..., re`, `hausman`, `testparm i.year`, `xttest3`, `xtserial`, `xtpcse ..., het corr(ar1)`, `L1.` / `F1.` |
 | 16 Differences-in-differences | `1.treated#1.post`, event-time dummies built with `generate` + `replace` |
 | 18 Stata Workflow Guide | `/* Project info */` header, directory globals, `capture noisily do` in a fixed order, `clear` rather than `clear all` |
+| Lecture note `Preparing for Panel Data Analysis` | `reshape long y x, i(id) j(year)`, `xtset id year`, `xtreg y x, fe vce(cluster id)`, `reg y x1 x2, vce(cluster id)`, `xtreg y x, re`, `hausman fe re`, `estimates store`, `i.treated##i.post`, `testparm i.year`, `xttest3`, `xtserial`, `xtpcse ..., het corr(ar1)`; "Always cluster your SEs" |
 
 **Removed with the CheatSheet, and no longer used anywhere.** Each row names
-what replaced it in the current do-files.
+what replaced it in the current do-files. `vce(cluster id)` is excluded from
+this table: the lecture note demonstrates it verbatim, so it is a permitted
+command (see the lecture-note row below).
 
 | Command or option | Replacement in the current chain |
 |---|---|
@@ -275,7 +282,6 @@ what replaced it in the current do-files.
 | `recast double` | not needed; the corrections are literal numeric replaces |
 | `count` | `tabulate`, `duplicates report`, or the per-variable `(count)` statistics in `collapse` |
 | `dtable` / `collect export` | `collapse` with `(mean) (sd) (min) (max) (count)` plus `export excel` / `export delimited` |
-| `vce(cluster id)` (on `xtreg` and `regress`) | lecture note `Preparing for Panel Data Analysis`: `xtreg y x, fe vce(cluster id)` and `reg y x1 x2, vce(cluster id)`; the do-files use `vce(cluster country_id)` on the same form. PCSE with `het corr(ar1)` is the serial-correlation correction |
 | `test coef = 0` | `testparm` on the same term |
 | `column(index)` | `column(dvlabel)` |
 | `note()` on `etable` | the fixed-effects statement goes into the exported Word table by post-export editing |
