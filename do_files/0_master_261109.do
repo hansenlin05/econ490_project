@@ -9,7 +9,7 @@ clear
 /* Directory settings: paths to folders, defined as globals */
 ********************* * Directory Settings ***********************
 
-capture noisily cd "C:\Users\Hansen\AppData\Local\Temp\econ490_neal_run"
+capture noisily cd "C:\Users\Hansen\UBC\ECON 490 003 2026W1 Seminar in Applied Economics - econ490_project"
 capture noisily dir
 
 global proj_name "econ490_project"                 // project name
