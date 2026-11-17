@@ -81,7 +81,25 @@ generate ln_leave_gdp = ln(leave_gdp)
 
 encode iso, generate(country_id)
 generate year_centered = year - 2010
-regress ln_gap ln_childcare ln_fatherweeks10 lag_lngdp ln_leave_gdp ///
-    i.year i.country_id c.year_centered#i.country_id, robust
+tsset country_id year
+
+xtreg ln_gap ln_childcare ln_fatherweeks10 lag_lngdp ln_leave_gdp ///
+    i.year c.year_centered#i.country_id, fe
+testparm i.year
+xttest3
+capture noisily xtserial ln_gap ln_childcare ln_fatherweeks10 lag_lngdp ln_leave_gdp
+
+su ln_gap, detail
+generate ln_gap_winsor = ln_gap
+replace ln_gap_winsor = r(p1) if ln_gap_winsor < r(p1) & ln_gap_winsor != .
+replace ln_gap_winsor = r(p99) if ln_gap_winsor > r(p99) & ln_gap_winsor != .
+
+su lag_lngdp, detail
+generate lag_lngdp_winsor = lag_lngdp
+replace lag_lngdp_winsor = r(p1) if lag_lngdp_winsor < r(p1) & lag_lngdp_winsor != .
+replace lag_lngdp_winsor = r(p99) if lag_lngdp_winsor > r(p99) & lag_lngdp_winsor != .
+
+xtpcse ln_gap_winsor ln_childcare ln_fatherweeks10 lag_lngdp_winsor ln_leave_gdp ///
+    i.year i.country_id c.year_centered#i.country_id, het corr(ar1)
 
 capture log close
