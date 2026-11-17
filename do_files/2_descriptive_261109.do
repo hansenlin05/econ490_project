@@ -60,14 +60,14 @@ graph export "${figdir}/histogram_childcare_byregion_261109.png", as(png) replac
 * same specification in each group and in the full sample
 * the EU Barcelona targets tied childcare access to parental work
 * https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32022H1220(01)
-regress ln_gap ln_spending ln_leaveweeks lag_lngdp lag_gdp_growth ln_leavespending ///
-    i.year i.country_id c.year_centered#i.country_id, vce(cluster country_id)
+xtpcse ln_gap ln_spending ln_leaveweeks lag_lngdp lag_gdp_growth ln_leavespending ///
+    i.year i.country_id c.year_centered#i.country_id, het corr(ar1)
 estimates store childcare_all
-regress ln_gap ln_spending ln_leaveweeks lag_lngdp lag_gdp_growth ln_leavespending ///
-    i.year i.country_id c.year_centered#i.country_id if eu_childcare==1, vce(cluster country_id)
+xtpcse ln_gap ln_spending ln_leaveweeks lag_lngdp lag_gdp_growth ln_leavespending ///
+    i.year i.country_id c.year_centered#i.country_id if eu_childcare==1, het corr(ar1)
 estimates store childcare_eu
-regress ln_gap ln_spending ln_leaveweeks lag_lngdp lag_gdp_growth ln_leavespending ///
-    i.year i.country_id c.year_centered#i.country_id if eu_childcare==0, vce(cluster country_id)
+xtpcse ln_gap ln_spending ln_leaveweeks lag_lngdp lag_gdp_growth ln_leavespending ///
+    i.year i.country_id c.year_centered#i.country_id if eu_childcare==0, het corr(ar1)
 estimates store childcare_other
 
 * columns, all countries, EU group, other OECD, with country, year and trend effects in each

@@ -49,20 +49,18 @@ units), `lag_lngdp` (the course's required convergence variable),
 `lag_gdp_growth`, and `leave_gdp` (public maternity and parental leave
 spending).
 
-Specification: `regress` with `i.year i.country_id
-c.year_centered#i.country_id`, standard errors clustered by country
-(reference inference); the same model under unclustered robust SEs and under
-PCSE with common AR(1) as the sensitivity checks. Estimates are conditional
-associations, not causal effects.
-A quadratic spending term was assessed and is not in the main model (p =
-0.8891).
+Specification: the initial `xtreg ..., fe` and diagnostic sequence follow
+Test7. The reported main, comparison, subset, build-up and winsorized models
+use `xtpcse ..., het corr(ar1)`. No `vce(...)` option or separate `robust`
+comparison remains in the active do-files. Country and year effects and the
+existing country-specific trends are retained. The quadratic term has
+p = 0.5241 and is excluded.
 
-**Conclusion to write up:** a statistically significant negative conditional
-association conditional on country-specific linear trends. Removing only
-the trends while retaining country and year fixed effects gives +0.131
-(clustered p = 0.5181). Report this dependence on the trend specification.
-The regressions do not establish a causal effect. The earlier father-specific paid leave
-analysis was retired on 16 November 2026; none of its numbers may be quoted.
+**Conclusion to write up:** a significant negative conditional association
+in the model with country-specific linear trends. Keeping both fixed effects
+but removing the trends gives +0.103 (p = 0.4925). Report this dependence on
+the specification and avoid a causal interpretation. The earlier father-leave
+analysis remains retired.
 
 ---
 
@@ -85,9 +83,9 @@ assignment's log limit; the instructor confirmed 35 pages on 16 November 2026
 
 Latest verification (17 Nov 2026, full rerun from `data_raw`): no `r()` errors
 anywhere, and the key numbers below are exactly the ones in the current logs.
-Log sizes are 577 / 421 / 910 / 747 lines, roughly 12.0 / 8.8 / 19.0 / 15.6
-pages with 80-character wrapping — all under both the old 25-page and the new
-35-page limit.
+Log sizes are 548 / 426 / 640 / 785 lines, roughly 12.0 / 13.9 / 21.6 / 27.0
+estimated pages with 80-character wrapping and 48 lines per page, all under
+the current 35-page limit. Final pagination still needs checking in Word.
 
 All 100-point rubric items on the code side are closed: four official data
 citations in the do-file; a 2019 single-year summary table restricted to rows
@@ -112,46 +110,30 @@ folders, and the 11 Dec paper itself.
 All regressions use the 347-observation estimation sample; the subset columns
 use 309 (EU-target group) and 38 (other OECD).
 
-- **Primary specification** (year + country effects + country trends, SEs
-  clustered by country, transformed continuous variables): `ln_spending`
-  **−0.582** (SE 0.172, p = 0.003); `testparm ln_spending` F(1, 22) = 11.39.
-  GDP per capita is logged. GDP growth is the WDI annual percentage growth
-  series and stays in levels. Childcare spending enters as ln(1 + x), so its
-  local elasticity is beta × x/(1 + x). At the sample mean of 0.538 percent of
-  GDP, a 1 percent relative spending increase is associated with about a 0.20
-  percent smaller gap. The coefficient is an elasticity with respect to 1 + x.
-  The outcome and public leave spending use ln(x), and father leave uses
-  ln(1 + lagged weeks/10).
-- **Unclustered robust SEs:** **−0.582** (SE 0.116, p < 0.001); `testparm`
-  F(1, 276) = 25.17.
-- **PCSE, heteroskedastic panels, common AR(1):** **−0.477** (SE 0.135,
-  p < 0.001); `testparm` chi2(1) = 12.52, p = 0.0004.
-- Subset columns (clustered): EU-target group −0.566 (p = 0.005); other OECD
-  −0.327 (p = 0.149, 38 observations — not readable as a policy effect; the
-  table note carries the warning).
-- Full 1/99 winsorized repeat: **−0.581** (clustered SE 0.166, p = 0.002),
-  same sign and significance, so the unwinsorized model stays preferred.
-- Log model without country trends (both fixed effects kept): **+0.131**
-  (clustered SE 0.199, p = 0.518). The negative association is identified
-  relative to each country's own trajectory; without the trend terms it is
-  not present, and the paper reports this openly. The trend terms stand
-  because countries started from different childcare systems (the same
-  institutional-divergence logic as the Barcelona-targets subset).
-- Level specification retained as a comparison column: `lag_socx_ecec`
-  **−9.456** (clustered SE 3.305, p = 0.009), a percentage-point effect.
-- Diagnostics: `testparm i.year` F(22, 276) = 1.15, p = 0.2904 (year effects retained by
-design, although not jointly significant in the log model); `testparm i.country_id` in the LSDV form F(19, 22) = 6.7e+06, p < 0.001 (country
-  effects kept); `xttest3` chi2(23) = 5332.23, p < 0.001 (groupwise
-  heteroskedasticity present, clustered/PCSE inference responds to it);
-  `xtserial` p = 0.0009 (serial correlation present, AR(1) PCSE responds to
-  it); quadratic term F(1, 22) = 0.02, p = 0.8891 (not included).
+- **Primary PCSE AR(1) specification**: childcare −0.477 (SE 0.135,
+  p = 0.0004). Country FE, year FE, country trends and all existing controls
+  are included.
+- **All six continuous variables winsorized at 1/99**: −0.481 (SE 0.133,
+  p = 0.0003). The observed-data model remains preferred.
+- **Without country trends, keeping both fixed effects**: +0.103 (SE 0.150,
+  p = 0.4925). The negative association depends on the trend specification.
+- **Level comparison**: −7.735 (SE 2.718, p = 0.0044).
+- **Subsets**: EU-target group −0.456 (SE 0.143, p = 0.001 as rounded in the
+  log), other OECD −0.257 (SE 0.247, p = 0.300). The small group has only 38
+  observations and four countries, so its estimates remain descriptive.
+- **Diagnostics**: year FE `testparm` p = 0.2904; the country-effects F test
+  printed by `xtreg, fe` is F(22,276) = 68.49, p < 0.001; `xttest3`
+  chi2(23) = 5332.23, p < 0.001; `xtserial` p = 0.0009. The PCSE quadratic
+  term has p = 0.5241.
 
-Country-clustered standard errors are the reference inference because the
-lecture note "Preparing for Panel Data Analysis" states "Always cluster your
-SEs" and demonstrates `vce(cluster id)` verbatim. Unclustered robust SEs and
-PCSE are sensitivity checks. With 23 country clusters the note's rough floor
-of 30-50 is not met, and the paper discloses this limitation. Any document
-whose numbers disagree with these logs is wrong.
+Spending uses ln(1+x). Its local elasticity is beta*x/(1+x), approximately
+−0.17 at the sample mean of 0.538 percent of GDP. Father leave uses
+ln(1+lagged weeks/10). The outcome and public leave spending use ln(x).
+Lagged real GDP per capita is logged and GDP growth stays in annual percent.
+
+The main inference is the Test7 PCSE form with panel-specific heteroskedasticity
+and common AR(1). This is not country-clustered inference. Its assumptions and
+the dependence on country trends limit the interpretation.
 
 ---
 
@@ -286,10 +268,10 @@ Full list with evidence: `docs/PITFALLS_AND_CORRECTIONS.md`.
 | 2019 is the representative year | Latest year with broad coverage for the single-year summary table (23 rows on the main regressor) |
 | Subsets: EU childcare-targets group vs other OECD members | The EU's Barcelona targets and the 2022 Council Recommendation link ECEC provision to parental employment (https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32022H1220(01)); no comparable supranational target exists for the other members |
 | Keep the weak "other OECD" column | Rubric demands three columns and overlapping subset histograms; deleting it loses points. Disclosed as low-power |
-| Country-clustered SEs are the reference inference; robust SEs and PCSE AR(1) are the sensitivity checks | The lecture note demonstrates `vce(cluster id)` and says "Always cluster your SEs"; 23 clusters is below its 30-50 floor and this is disclosed |
-| Country-specific linear trends are in the main specification | They absorb divergent institutional trajectories (the Barcelona-targets logic); dropping them removes the association (+0.131, p = 0.518) and this is reported openly |
-| No quadratic term | F(1, 22) = 0.02, p = 0.8891; the assignment permits non-linearity only when it improves fit and theory predicts it |
-| Unwinsorized specification preferred | The 1/99 repeat keeps the main coefficient at −0.581 with clustered SEs (F(1, 22) = 12.20, p = 0.002); the do-file comment states the preference |
+| PCSE AR(1) is the reported estimator | The user requested the Test7 workflow and excluded VCE options and the extra robust comparison |
+| Country-specific linear trends remain in the main model | Removing only the trends gives +0.103, p = 0.4925, so the result is explicitly conditional on that choice |
+| No quadratic term | The PCSE quadratic test gives p = 0.5241 |
+| Unwinsorized specification preferred | The winsorized PCSE coefficient is −0.481, p = 0.0003, close to the main −0.477, p = 0.0004 |
 | Fourth numbered do-file for the tables | Keeps every log well under the 35-page limit; Workflow Guide 18 §18.2.2 allows it |
 | Build-up table on one fixed sample | All five columns use the same 347-observation sample so coefficient moves read as the effect of added controls |
 | 2019 summary table as `.csv` + `.xlsx` | Rubric says "Excel or Word document"; Canvas file types do not list `.xlsx`, so the CSV is the upload-safe fallback |

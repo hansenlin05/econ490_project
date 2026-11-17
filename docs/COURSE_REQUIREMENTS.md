@@ -115,13 +115,10 @@ removed as a permitted source on 16 November 2026.
   similar commands from general Stata practice are out of bounds. The local
   index is `docs/CODE_CONVENTIONS.md`, which records each permitted command and
   flags the CheatSheet commands still present in the do-files.
-- **Standard-error practice.** The lecture note `Preparing for Panel Data
-  Analysis` says to always cluster standard errors and demonstrates
-  `vce(cluster id)` verbatim; as of 17 November 2026 the chain uses
-  `vce(cluster country_id)` as the reference inference, with unclustered
-  `regress ..., robust` and `xtpcse ..., het corr(ar1)` as sensitivity checks.
-  With 23 clusters the note's rough floor of 30-50 is not met and the paper
-  discloses this limitation.
+- **Current estimator choice.** The user requested the Test7 form
+  `xtpcse ..., het corr(ar1)` for all reported regressions. The active do-files
+  contain no VCE options or separate robust comparison. The requirement to
+  diagnose and address heteroskedasticity and serial correlation remains.
 - **Workflow 18 structure** for the master and numbered do-files; `clear` in the
   master, never `clear all` in a sub-do-file; `capture noisily do` calls;
   §18.2.2 allows a separate do-file for tables.
@@ -149,7 +146,7 @@ removed as a permitted source on 16 November 2026.
 | Single-year summary table | `tables/descriptive_2019_oecd_childcare_261109.xlsx` and `.csv` (the CSV is the upload-safe fallback if Canvas rejects the Excel format) |
 | Overlapping histograms | `figures/histogram_childcare_byregion_261109.png` |
 | Other publication graphs | `figures/scatter_gap_childcare_261109.png` |
-| Heteroskedasticity / serial correlation / FE tests | `log_files/3_results_261109.log` (`xttest3`, `xtserial`, `testparm i.year`, `testparm i.country_id`) |
+| Heteroskedasticity / serial correlation / FE tests | `log_files/3_results_261109.log` (`xttest3`, `xtserial`, `testparm i.year`, and the country-effects F test printed by `xtreg, fe`) |
 | Single specification | `log_files/3_results_261109.log`, `tables/results_oecd_childcare_261109.docx` |
 | Full winsorized repeat + quadratic check | `log_files/4_tables_261109.log`, `tables/results_childcare_winsor_261109.docx` |
 | Build-up table, one variable at a time, all columns on 347 observations | `tables/results_childcare_buildup_261109.docx`, `log_files/4_tables_261109.log` |

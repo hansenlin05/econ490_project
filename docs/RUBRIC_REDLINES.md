@@ -61,9 +61,8 @@ loses 15–35 points before the regressions are read.
 ### Item 4 — Diagnostic tests (2 + 2 + 3 = 7 pts)
 
 - **Must**: test heteroskedasticity, serial correlation, and the need for year
-  and panel fixed effects. Our log shows `xttest3`, `xtserial`, `testparm
-  i.year` and `testparm i.country_id` (the latter after the LSDV `regress`;
-  it aborts after `xtreg, fe`).
+  and panel fixed effects. Our log shows `xttest3`, `xtserial`,
+  `testparm i.year`, and the country-effects F test printed by `xtreg, fe`.
 - **Must not**: report a single specification with no diagnostics, or claim a
   correction without running the test that motivates it.
 
@@ -73,7 +72,7 @@ loses 15–35 points before the regressions are read.
   **and** is explained by economic theory.
 - **Must not**: add a term just because it is significant; keep a term that
   fails both tests. Our quadratic spending term is assessed in the log
-  (p = 0.8891) and excluded.
+  (p = 0.5241) and excluded.
 
 ### Item 6 — One properly specified regression (10 pts)
 
@@ -134,7 +133,7 @@ loses 15–35 points before the regressions are read.
 | Meaningful variable names | 5 | do-files |
 | Heteroskedasticity test | 2 | `xttest3` in `3_results` log |
 | Serial correlation test | 2 | `xtserial` in `3_results` log |
-| Time and panel FE tests | 3 | `testparm i.year` and `testparm i.country_id` in `3_results` log |
+| Time and panel FE tests | 3 | `testparm i.year` and the `xtreg` country-effects F test in `3_results` log |
 | Single properly specified regression | 10 | `3_results` log primary column |
 | Complete regression table (one variable at a time) | 15 | `results_childcare_buildup_261109.docx` |
 | Subset table (theory-chosen) | 10 | `results_childcare_subsets_261109.docx` |

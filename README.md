@@ -66,7 +66,7 @@ wrong at least once.
 | `data_raw/` | Eleven frozen source snapshots | Never overwritten. Official portals are cited as provenance, not read at run time |
 | `data_final/` | The built panel, its CSV copy, and the five intermediate files `1_build_data_261109.do` writes before the final merge | Rebuilt from `data_raw/` by `1_build_data_261109.do` |
 
-## 4. Research in one paragraph
+## 4. Current research and results
 
 Question: does lagged public spending on early childhood education and care
 reduce the male-minus-female employment gap among parents of young children?
@@ -77,29 +77,30 @@ share of GDP (OECD SOCX TP521). Controls: lagged father-specific paid leave,
 lagged log real GDP per capita, lagged real GDP growth, and contemporaneous
 public maternity and parental leave spending.
 
-The primary model includes country and year fixed effects and country-specific
-linear trends, with standard errors clustered by country. The childcare
-coefficient is −0.582 (SE 0.172, exact p = 0.0027). It remains negative under
-unclustered robust SEs (−0.582, p < 0.001), PCSE with common AR(1) (−0.477,
-p = 0.0004), and the full 1/99 winsorized repeat (−0.581, clustered p = 0.0021).
-The level comparison gives −9.456 (clustered p = 0.0091).
+The primary model follows the Test7 panel workflow. `xtreg ..., fe` supplies
+the initial fixed-effects output, followed by `testparm i.year`, `xttest3`,
+and `xtserial`. The reported regressions use `xtpcse ..., het corr(ar1)` with
+country and year fixed effects and country-specific linear trends. No
+`vce(...)` or separate `regress ..., robust` comparison is used.
 
-**The result depends on the trend specification.** Keeping both fixed effects
-and removing only country-specific trends gives +0.131 (clustered p = 0.5181).
-The supported conclusion is a negative conditional association after accounting
-for country-specific linear trajectories. This is a panel association, with no
-claim that the regressions establish a causal policy effect. Inference also
-has the limitation of only 23 country clusters.
+The main childcare coefficient is −0.477 (SE 0.135, p = 0.0004). The full
+1/99 winsorized repeat gives −0.481 (SE 0.133, p = 0.0003). The level model
+gives −7.735 (p = 0.0044). All of these reported models use panel-specific
+heteroskedasticity and a common AR(1) process.
+
+**The result depends on the trend specification.** Keeping country and year
+fixed effects and removing only country-specific trends gives +0.103
+(p = 0.4925). The supported conclusion is a negative conditional association
+after accounting for the specified country trajectories. This panel model
+does not establish a causal policy effect. Its inference relies on the
+assumed error structure and the available unbalanced panel.
 
 The outcome is ln(employment gap), and childcare spending enters as ln(1 + x),
-where x is measured in percentage points of GDP. The local elasticity with
-respect to spending is beta × x/(1 + x). At the sample mean x = 0.538, a 1
-percent relative increase in spending is associated with approximately a 0.20
-percent smaller gap (−0.582 × 0.538/1.538). A rise from 0.538 to 0.54338 percent
-of GDP is a 1 percent relative spending increase. The coefficient −0.582 is
-the elasticity with respect to 1 + x. The elasticity with respect to x tends
-to zero as x tends to zero, and approaches beta as x becomes large. GDP growth
-is the WDI annual percentage growth series and stays in levels.
+where x is measured in percentage points of GDP. The local spending elasticity
+is beta × x/(1 + x). At the sample mean x = 0.538, a 1 percent relative increase
+in spending is associated with approximately a 0.17 percent smaller gap
+(−0.477 × 0.538/1.538). The coefficient is an elasticity with respect to 1 + x.
+GDP growth is the WDI annual percentage growth series and stays in levels.
 
 The earlier father-specific paid leave analysis is retired. The earlier
 single-file childcare PCSE variant is archived in `legacy/prior_pcse/` with its
@@ -115,15 +116,13 @@ Full reasoning and evidence in `docs/RESEARCH_DECISIONS.md`.
    resurrect its samples, coefficients or p-values.
 2. **`lag_socx_ecec` is the main explanatory variable**, built on the full
    SOCX annual series before any merge, in the same way as every other lag.
-3. **Country-clustered SEs are the reference inference; unclustered robust
-   SEs and PCSE with common AR(1) are the sensitivity checks.** The lecture
-   note demonstrates `vce(cluster id)` verbatim; with 23 clusters the note's
-   30-50 floor is disclosed as a limitation.
-4. **Country-specific linear trends are part of the main specification** to
-   absorb divergent institutional trajectories (the same logic that defines
-   the Barcelona-targets subset); dropping them removes the association
-   (+0.131, p = 0.518) and this is reported wherever the headline is quoted.
-   The quadratic spending term was assessed and excluded (p = 0.8891).
+3. **PCSE with `het corr(ar1)` is the reported estimator**, following Test7.
+   The current project excludes `vce(...)` and the extra `robust` comparison.
+   This restriction follows the user's latest instruction. It does not claim
+   that such syntax is absent from every course document.
+4. **Country-specific linear trends remain in the main model.** Removing them
+   gives +0.103 (p = 0.4925). The quadratic term is insignificant
+   (p = 0.5241) and is excluded from the main model.
 5. **Five do-files and four logs.** Each numbered do-file writes its own log.
 6. **No live downloads at run time.** `data_raw/` snapshots are the inputs.
 7. **The 2019 summary table is restricted to observations with the main
@@ -147,9 +146,8 @@ The ones that have already caused damage; the full list with evidence is in
 - The source workbook stores leave weeks as text, sometimes with two slash-
   separated options; `real()` plus literal replaces handle this. Do not
   "simplify" it to a numeric import.
-- `testparm i.country_id` only works after the LSDV `regress` form. After
-  `xtreg, fe` the country effects are absorbed and the test aborts with
-  `no such variables`.
+- Country effects are assessed using the F test printed by `xtreg, fe`.
+  There is no extra LSDV regression or `testparm i.country_id` in this chain.
 - The "other OECD" subset column has 38 observations and is insignificant by
   construction of the small group; the table note must carry the warning.
 - Log page limits are measured after 80-character wrapping, not by line count.

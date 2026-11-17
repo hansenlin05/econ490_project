@@ -4,6 +4,22 @@ This file records the team's analysis and repository changes. The 17 November
 documentation and formatting correction was prepared from GitHub main. It
 does not by itself confirm that OneDrive or Canvas has been updated.
 
+## 2026-11-17 — Use the Test7 PCSE AR1 workflow
+
+Following the user's instruction, removed VCE options and the extra robust
+comparison. Reported main, comparison, subset, build-up and winsorized models
+now use `xtpcse ..., het corr(ar1)`. The existing data construction, controls,
+fixed effects and country trends are unchanged. The initial `xtreg, fe` and
+diagnostic sequence remain. Country effects use the F test printed by `xtreg`.
+Only obsolete comments on the removed regression blocks were removed.
+
+Reran the full master from the frozen raw inputs. Main childcare is -0.477
+(p = 0.0004), winsorized -0.481 (p = 0.0003), without trends +0.103
+(p = 0.4925), and the level comparison -7.735 (p = 0.0044). Sample sizes remain
+347 overall, 309 EU-target, and 38 other OECD. Updated the current documents,
+Canvas text and all four Word tables to the new common estimator. Earlier
+entries below record historical estimators and results.
+
 ## 2026-11-17 — Comment voice made consistent with a team of writers
 
 Rewrote the explanatory comments in all five do-files so they read like different

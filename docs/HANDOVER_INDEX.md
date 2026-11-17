@@ -56,7 +56,7 @@ language:
 ## 5. Authoritative outputs elsewhere in this repository
 
 - `log_files/3_results_261109.log` — all main regression numbers. Highest authority.
-- `log_files/4_tables_261109.log` — build-up, winsorized and quadratic-check estimates.
+- `log_files/4_tables_261109.log` — build-up and winsorized estimates.
 - `log_files/2_descriptive_261109.log` — 2019 summary table, figures and subset columns.
 - `log_files/1_build_data_261109.log` — sample construction and coverage counts.
 - `tables/results_oecd_childcare_261109.docx` — main result table.

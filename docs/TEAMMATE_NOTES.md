@@ -58,9 +58,9 @@ treating a GitHub commit as a Canvas submission.
   Father-specific leave weeks stay in the model as a control. Every regression
   includes lagged log real GDP per capita.
 - Year effects, country effects and country-specific linear trends are in the
-  main specification; standard errors clustered by country are the reference
-  inference and unclustered robust SEs and PCSE with common AR(1) are the
-  sensitivity checks.
+  main specification. Reported regressions use the Test7 form
+  `xtpcse ..., het corr(ar1)`. VCE options and the extra robust comparison
+  are excluded by the user’s latest instruction.
 - The quadratic spending term is not in the main model; the unwinsorized
   specification is preferred.
 - The 18 Nov tables use 2019 as the representative year and the EU
@@ -75,22 +75,20 @@ Full rationale in `docs/RESEARCH_DECISIONS.md`.
 
 ## Current headline numbers (from `log_files/3_results_261109.log`)
 
-All regressions use N = 347; the subset columns use 309 (EU-target group) and
-38 (other OECD). The headline is the log specification with country-clustered
-SEs (the lecture note's "Always cluster your SEs"): `ln_spending` **-0.582**
-with year and country effects plus country trends (clustered SE 0.172,
-p = 0.003), -0.582 with unclustered robust SEs (p < 0.001), **-0.477** under
-PCSE with common AR(1) (p < 0.001), and -0.581 in the full 1/99 winsorized
-repeat (p = 0.002). Keeping both fixed effects and dropping only the trends
-gives **+0.131** (p = 0.518), so the negative association rides on the
-country-specific trends; the trend terms stand because countries started from
-different childcare systems, and this is reported wherever the headline is
-quoted. The level comparison column gives -9.456 (clustered p = 0.009).
-Diagnostics: `xttest3` p < 0.001, `xtserial` p = 0.0009, `testparm i.year`
-p = 0.2904 (year effects not jointly significant in the log model but
-retained because the rubric requires them), `testparm i.country_id`
-p < 0.001, quadratic term p = 0.8891. 23 clusters is below the lecture
-note's 30-50 floor and the paper discloses this.
+All regressions use N = 347. The subset columns use 309 and 38 observations.
+The primary PCSE AR(1) coefficient is -0.477 (SE 0.135, p = 0.0004), and the
+all-variable winsorized repeat gives -0.481 (SE 0.133, p = 0.0003). Without
+country trends, keeping both fixed effects, childcare is +0.103 (p = 0.4925).
+The level comparison gives -7.735 (p = 0.0044). The EU-target subset gives
+-0.456 (p = 0.001 as rounded in the log), and other OECD gives -0.257 (p = 0.300).
+
+The main local spending elasticity at mean spending of 0.538 percent of GDP
+is approximately -0.17. The model does not establish causality and its negative
+association depends on the country trend specification. PCSE uses the Test7
+assumption of panel-specific heteroskedasticity and common AR(1).
+
+Diagnostics: year effects p = 0.2904, country-effects F test in `xtreg` output
+p < 0.001, `xttest3` p < 0.001, `xtserial` p = 0.0009, quadratic term p = 0.5241.
 
 ## Evidence hierarchy
 

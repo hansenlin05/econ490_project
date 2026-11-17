@@ -11,20 +11,20 @@ generate year_centered = year - 2010
 xtset country_id year, yearly
 
 * hold the sample and all effects fixed across the columns
-regress ln_gap ln_spending ///
-    i.year i.country_id c.year_centered#i.country_id, vce(cluster country_id)
+xtpcse ln_gap ln_spending ///
+    i.year i.country_id c.year_centered#i.country_id, het corr(ar1)
 estimates store build1
-regress ln_gap ln_spending ln_leaveweeks ///
-    i.year i.country_id c.year_centered#i.country_id, vce(cluster country_id)
+xtpcse ln_gap ln_spending ln_leaveweeks ///
+    i.year i.country_id c.year_centered#i.country_id, het corr(ar1)
 estimates store build2
-regress ln_gap ln_spending ln_leaveweeks lag_lngdp ///
-    i.year i.country_id c.year_centered#i.country_id, vce(cluster country_id)
+xtpcse ln_gap ln_spending ln_leaveweeks lag_lngdp ///
+    i.year i.country_id c.year_centered#i.country_id, het corr(ar1)
 estimates store build3
-regress ln_gap ln_spending ln_leaveweeks lag_lngdp lag_gdp_growth ///
-    i.year i.country_id c.year_centered#i.country_id, vce(cluster country_id)
+xtpcse ln_gap ln_spending ln_leaveweeks lag_lngdp lag_gdp_growth ///
+    i.year i.country_id c.year_centered#i.country_id, het corr(ar1)
 estimates store build4
-regress ln_gap ln_spending ln_leaveweeks lag_lngdp lag_gdp_growth ln_leavespending ///
-    i.year i.country_id c.year_centered#i.country_id, vce(cluster country_id)
+xtpcse ln_gap ln_spending ln_leaveweeks lag_lngdp lag_gdp_growth ln_leavespending ///
+    i.year i.country_id c.year_centered#i.country_id, het corr(ar1)
 estimates store build5
 
 * country, year and trend effects in every column, same sample throughout
@@ -43,8 +43,8 @@ foreach var in ln_gap ln_spending ln_leaveweeks lag_lngdp lag_gdp_growth ln_leav
     replace w_`var' = `high' if `var'>`high'
 }
 
-regress w_ln_gap w_ln_spending w_ln_leaveweeks w_lag_lngdp ///
-    w_lag_gdp_growth w_ln_leavespending i.year i.country_id c.year_centered#i.country_id, vce(cluster country_id)
+xtpcse w_ln_gap w_ln_spending w_ln_leaveweeks w_lag_lngdp ///
+    w_lag_gdp_growth w_ln_leavespending i.year i.country_id c.year_centered#i.country_id, het corr(ar1)
 estimates store childcare_winsor
 testparm w_ln_spending
 * keep the observed spending as the preferred spec, winsorizing changes little

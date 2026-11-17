@@ -20,6 +20,19 @@ Commands that appeared only in the CheatSheet, and are therefore no longer
 permitted, are listed in §7. All of them were removed from the do-files by
 16 November 2026; §7 records what replaced them.
 
+## Current project restriction
+
+The user's 17 November instruction takes precedence over the broader course
+coverage inventory. The active analysis follows Test7 and excludes every
+`vce(...)` option and the separate `regress ..., robust` comparison. The main,
+subset, build-up, comparison and winsorized regressions use
+`xtpcse ..., het corr(ar1)`. The initial `xtreg, fe` and the taught diagnostic
+commands remain. Existing informal code comments are retained except where a
+removed block or changed estimator makes them inaccurate.
+
+The lecture-note verification remains a record of source coverage. It does
+not authorize reintroducing the excluded options into this project.
+
 ## 1. Permitted command set
 
 If a command is not on this list, it is not permitted. Do not substitute a
@@ -67,21 +80,17 @@ left every downstream number unchanged.
 
 **Estimation**
 
-- `regress`, including `regress ..., robust` (the verbatim COMET 14 form) and
-  factor terms
+- `regress` and factor terms as course coverage. The active chain uses
+  `xtpcse ..., het corr(ar1)` for its reported results
 - `xtreg ..., fe`, `xtreg ..., re`
 - `xtpcse ..., het corr(ar1)`
 - post-estimation: `estimates store`, `testparm`, `hausman`, `predict`
 - diagnostics: `xttest3`, `xtserial`
 
-`lincom` and `margins` are not on this list; they appear only in the
-CheatSheet and are now out (see §7). `vce(cluster id)` **is** permitted as of
-17 November 2026: the lecture note `Preparing for Panel Data Analysis`
-demonstrates `xtreg y x, fe vce(cluster id)` verbatim and states "Always
-cluster your SEs". The main regressions use `vce(cluster country_id)`; the
-unclustered `robust` form stays as a comparison column. The single-coefficient
-`test varname = 0` form is not demonstrated in any course material; use
-`testparm`, which the panel module shows.
+`vce(...)` options and the extra `robust` comparison are excluded from the
+current project by the user's latest instruction, even though some broader
+course sources show them. `lincom` and `margins` are also excluded. The
+`testparm` command is the taught testing form used here.
 
 **Tables and figures**
 
@@ -121,10 +130,8 @@ against the local PDF/MD originals on 16 Nov)**
 are demonstrated only in the CheatSheet, which is no longer a source. The
 `count` command, `test varname = 0` and `etable note()` have no verbatim form in
 any of the source sets. None is demonstrated in the COMET or Test/Quiz
-course text. `vce(cluster id)` is **not** in this list: the lecture note
-added on 17 November 2026 demonstrates it verbatim and §1 permits it, with
-`vce(cluster country_id)` used in every main regression. §7 records each
-replacement.
+course text. The lecture note documents additional VCE syntax, but the current project
+restriction above excludes it. §7 preserves the source coverage record.
 
 ## 2. The three documented exceptions
 
@@ -257,7 +264,7 @@ it is not permitted. The CheatSheet is not a source.
 `18 - Stata Workflow Guide`), the **Test / Quiz** question sets, and the
 **lecture note `Preparing for Panel Data Analysis`**, combined:
 
-| Area | Commands permitted here |
+| Area | Course syntax coverage subject to the current restriction |
 |---|---|
 | 02 Do-files and logs | `do`, `log using ..., text replace`, `log close`, `capture noisily`, `*` and `//` comments |
 | 03 Stata essentials | `use`, `describe`, `list`, `summarize`, `summarize, detail`, `tabulate`, `keep`, `drop`, `sort`, `clear`, `missing()`, `inlist()`, `inrange()`, `foreach`, `forvalues` |
@@ -279,8 +286,8 @@ it is not permitted. The CheatSheet is not a source.
 
 **Removed with the CheatSheet, and no longer used anywhere.** Each row names
 what replaced it in the current do-files. `vce(cluster id)` is excluded from
-this table: the lecture note demonstrates it verbatim, so it is a permitted
-command (see the lecture-note row below).
+this historical removal table because the lecture note demonstrates it.
+The current project override separately excludes it from active code.
 
 | Command or option | Replacement in the current chain |
 |---|---|

@@ -1,5 +1,9 @@
 # ECON 490 Final Paper — English Outline Skeleton
 
+> Historical father-leave outline. Its old samples, clustered inference and
+> result placeholders are superseded by the current OECD childcare PCSE AR(1)
+> analysis in README.md and HANDOVER.md.
+
 Generated: 12 November 2026
 Companion to the 18 November Econometric Files package.
 
