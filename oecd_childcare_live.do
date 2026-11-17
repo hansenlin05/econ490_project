@@ -99,7 +99,23 @@ generate lag_lngdp_winsor = lag_lngdp
 replace lag_lngdp_winsor = r(p1) if lag_lngdp_winsor < r(p1) & lag_lngdp_winsor != .
 replace lag_lngdp_winsor = r(p99) if lag_lngdp_winsor > r(p99) & lag_lngdp_winsor != .
 
-xtpcse ln_gap_winsor ln_childcare ln_fatherweeks10 lag_lngdp_winsor ln_leave_gdp ///
-    i.year i.country_id c.year_centered#i.country_id, het corr(ar1)
+quietly su ln_childcare, detail
+generate ln_childcare_winsor = ln_childcare
+replace ln_childcare_winsor = r(p1) if ln_childcare_winsor < r(p1) & ln_childcare_winsor != .
+replace ln_childcare_winsor = r(p99) if ln_childcare_winsor > r(p99) & ln_childcare_winsor != .
+
+quietly su ln_fatherweeks10, detail
+generate ln_fatherweeks10_winsor = ln_fatherweeks10
+replace ln_fatherweeks10_winsor = r(p1) if ln_fatherweeks10_winsor < r(p1) & ln_fatherweeks10_winsor != .
+replace ln_fatherweeks10_winsor = r(p99) if ln_fatherweeks10_winsor > r(p99) & ln_fatherweeks10_winsor != .
+
+quietly su ln_leave_gdp, detail
+generate ln_leave_gdp_winsor = ln_leave_gdp
+replace ln_leave_gdp_winsor = r(p1) if ln_leave_gdp_winsor < r(p1) & ln_leave_gdp_winsor != .
+replace ln_leave_gdp_winsor = r(p99) if ln_leave_gdp_winsor > r(p99) & ln_leave_gdp_winsor != .
+
+xtpcse ln_gap_winsor ln_childcare_winsor ln_fatherweeks10_winsor ///
+    lag_lngdp_winsor ln_leave_gdp_winsor i.year i.country_id ///
+    c.year_centered#i.country_id, het corr(ar1)
 
 capture log close
