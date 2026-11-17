@@ -89,12 +89,12 @@ testparm i.year
 xttest3
 capture noisily xtserial ln_gap ln_childcare ln_fatherweeks10 lag_lngdp ln_leave_gdp
 
-su ln_gap, detail
+quietly su ln_gap, detail
 generate ln_gap_winsor = ln_gap
 replace ln_gap_winsor = r(p1) if ln_gap_winsor < r(p1) & ln_gap_winsor != .
 replace ln_gap_winsor = r(p99) if ln_gap_winsor > r(p99) & ln_gap_winsor != .
 
-su lag_lngdp, detail
+quietly su lag_lngdp, detail
 generate lag_lngdp_winsor = lag_lngdp
 replace lag_lngdp_winsor = r(p1) if lag_lngdp_winsor < r(p1) & lag_lngdp_winsor != .
 replace lag_lngdp_winsor = r(p99) if lag_lngdp_winsor > r(p99) & lag_lngdp_winsor != .
