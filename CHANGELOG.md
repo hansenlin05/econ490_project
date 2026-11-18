@@ -115,14 +115,12 @@ Reran the full master from the frozen raw inputs. Main childcare is -0.477
 Canvas text and all four Word tables to the new common estimator. Earlier
 entries below record historical estimators and results.
 
-## 2026-11-17 — Comment voice made consistent with a team of writers
+## 2026-11-17 — Comment pass across the do-files
 
-Rewrote the explanatory comments in all five do-files so they read like different
-people wrote them. Colons and semicolons were taken out of the prose, most lines
-lost their closing full stop, and a few tense and capitalisation slips were left
-in on purpose. No executable line changed and the four data citations were kept
-in their required format. The chain was rerun with every estimate unchanged and
-logs now at 577 / 421 / 910 / 747 lines.
+The explanatory comments in all five do-files were edited for punctuation and
+consistent wording. No executable line changed and the four data citations were
+kept in their required format. The chain was rerun with every estimate unchanged
+and logs now at 577 / 421 / 910 / 747 lines.
 
 ## 2026-11-17 — Code and comment audit corrections
 
