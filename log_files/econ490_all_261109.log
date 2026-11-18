@@ -1,0 +1,1269 @@
+-------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  C:\Users\Hansen\UBC\ECON 490 003 2026W1 Seminar in Applied Economi
+> cs - econ490_project\log_files/econ490_all_261109.log
+  log type:  text
+ opened on:  18 Nov 2026, 16:47:54
+
+. 
+. /* run the numbered files in order, no per-file logs inside them */
+. if ${run_build}==1 {
+.     capture noisily do "${do_dir}/1_build_data_261109.do"
+
+. /* Project info
+>    1_build_data_261109.do | build the OECD childcare panel from the raw sourc
+> es
+>    output oecd_childcare_261109.dta, OECD countries seen from 2000 to 2024
+>    inputs were country_codes.csv, ilo_household_raw.csv, oecd_socx_ecec_gdp.c
+> sv,
+>    oecd_socx_tp512_leave.csv, oecd_leave_timeseries.csv and wdi_raw.dta */
+. 
+. * Data sources, the copies we actually read sit in data_raw
+. * International Labour Organization. 2026. "Employment rate by sex and househ
+> old
+. *   composition" [GED_PEPR_SEX_HHT_CHL_RT_A] (database), ILOSTAT. Geneva: ILO
+> .
+. *   https://ilostat.ilo.org/data/ (accessed 14 November 2026).
+. * OECD. 2026. Social Expenditure Database (SOCX) (dataset), public spending o
+> n
+. *   early childhood education and care (TP521) and on maternity and parental
+. *   leave (TP512), percent of GDP. Paris: OECD. https://doi.org/10.1787/data-
+> 00167-en
+. *   (accessed 16 November 2026).
+. * OECD. 2026. "PF2.5 Trends in leave entitlements around childbirth" (dataset
+> ),
+. *   OECD Family Database, updated November 2026. Paris: OECD.
+. *   https://webfs.oecd.org/els-com/Family_Database/PF2_5_Trends_in_leave_enti
+> tlements_around_childbirth.xlsx
+. *   (accessed 14 November 2026).
+. * World Bank. 2026. World Development Indicators (dataset), NY.GDP.PCAP.KD,
+. *   last updated 11 November 2026. Washington, DC: World Bank.
+. *   https://databank.worldbank.org/source/world-development-indicators
+. *   (accessed 14 November 2026).
+. 
+. * country names and ISO codes, used to match the sources
+. import delimited "${datadir_raw}/country_codes.csv", clear varnames(1)
+(encoding automatically selected: UTF-8)
+(3 vars, 38 obs)
+
+. 
+. save "${datadir_final}/tmp_country_codes.dta", replace
+file ./data_final/tmp_country_codes.dta saved
+
+. 
+. * control variables, weeks of paid leave kept for fathers and mothers, from t
+> he OECD workbook
+. import delimited "${datadir_raw}/oecd_leave_timeseries.csv", clear varnames(1
+> )
+(encoding automatically selected: ISO-8859-1)
+(5 vars, 2,165 obs)
+
+. keep country year total_paid_raw total_paid_mothers_raw
+
+. keep if inrange(year,1970,2024)
+(76 observations deleted)
+
+. * unmatched rows are workbook notes and countries not on the OECD list
+. merge m:1 country using "${datadir_final}/tmp_country_codes.dta"
+
+    Result                      Number of obs
+    -----------------------------------------
+    Not matched                             0
+    Matched                             2,089  (_merge==3)
+    -----------------------------------------
+
+. keep if _merge==3
+(0 observations deleted)
+
+. drop _merge
+
+. 
+. sort iso year
+
+. encode iso, generate(leave_id)
+
+. xtset leave_id year, yearly
+
+Panel variable: leave_id (unbalanced)
+ Time variable: year, 1970 to 2024
+         Delta: 1 year
+
+. sort leave_id year
+
+. 
+. * parse the leave weeks out of their text columns
+. * 2 paid entries give 2 options with a slash, we took the lower one
+. generate fatherweeks = real(total_paid_raw)
+(287 missing values generated)
+
+. replace fatherweeks = 28.6  if total_paid_raw == "28.6 / 54.6"
+(7 real changes made)
+
+. replace fatherweeks = 30.17 if total_paid_raw == "30.17 / 56.17"
+(3 real changes made)
+
+. 
+. * France reports a short and a long option for mothers, we took the short one
+. generate motherweeks = real(total_paid_mothers_raw)
+(223 missing values generated)
+
+. replace motherweeks = 16 if total_paid_mothers_raw == "16.0 / 162.0"
+(10 real changes made)
+
+. replace motherweeks = 42 if total_paid_mothers_raw == "42.0 / 162.0"
+(10 real changes made)
+
+. replace motherweeks = 42 if total_paid_mothers_raw == "42.0 / 136.0"
+(1 real change made)
+
+. replace motherweeks = 42 if total_paid_mothers_raw == "42.0 / 110"
+(10 real changes made)
+
+. 
+. * 3 entries moved to the year the leave became law
+. replace fatherweeks = 2.6 if iso=="FRA" & year==2014
+(1 real change made)
+
+. replace fatherweeks = 4 if iso=="IRL" & year==2019
+(1 real change made)
+
+. replace fatherweeks = 15 if iso=="ITA" & year==2022
+(1 real change made)
+
+. 
+. * 4 snapshots logged a reform 1 year late, so we used next year's value
+. replace fatherweeks = 12.996666 if iso=="AUT" & year==2019
+(1 real change made)
+
+. replace fatherweeks = 4.285714286 if iso=="EST" & year==2020
+(1 real change made)
+
+. replace fatherweeks = 9 if iso=="FIN" & year==2010
+(1 real change made)
+
+. replace fatherweeks = 11.46666 if iso=="GRC" & year==2021
+(1 real change made)
+
+. label variable fatherweeks "Weeks of paid father-specific leave (lower bound)
+> "
+
+. label variable motherweeks "Weeks of paid maternity, parental and home care l
+> eave for mothers"
+
+. 
+. * build the lag on the full 2000-2024 series, before the merge
+. keep if inrange(year,2000,2024)
+(1,139 observations deleted)
+
+. drop leave_id
+
+. encode iso, generate(leave_id)
+
+. xtset leave_id year, yearly
+
+Panel variable: leave_id (strongly balanced)
+ Time variable: year, 2000 to 2024
+         Delta: 1 year
+
+. generate fatherweeks10 = fatherweeks/10
+(52 missing values generated)
+
+. generate lag_fatherweeks10 = L1.fatherweeks10
+(90 missing values generated)
+
+. generate motherweeks10 = motherweeks/10
+(46 missing values generated)
+
+. generate lag_motherweeks10 = L1.motherweeks10
+(84 missing values generated)
+
+. label variable fatherweeks10 "Father-specific paid leave, per 10 weeks"
+
+. label variable lag_fatherweeks10 "Lagged father-specific paid leave, per 10 w
+> eeks"
+
+. label variable motherweeks10 "Mother-side paid leave, per 10 weeks"
+
+. label variable lag_motherweeks10 "Lagged mother-side paid leave, per 10 weeks
+> "
+
+. keep iso country year fatherweeks fatherweeks10 lag_fatherweeks10 motherweeks
+>  motherweeks10 lag_motherweeks10
+
+. save "${datadir_final}/tmp_leave_weeks.dta", replace
+file ./data_final/tmp_leave_weeks.dta saved
+
+. 
+. * control variable, GDP per capita, lagged on the full series
+. use "${datadir_raw}/wdi_raw.dta", clear
+
+. rename countrycode iso
+
+. keep iso year ny_gdp_pcap_kd
+
+. generate lngdp = ln(ny_gdp_pcap_kd) if ny_gdp_pcap_kd>0
+(2,995 missing values generated)
+
+. encode iso, generate(gdp_id)
+
+. xtset gdp_id year, yearly
+
+Panel variable: gdp_id (strongly balanced)
+ Time variable: year, 1960 to 2025
+         Delta: 1 year
+
+. generate lag_lngdp = L1.lngdp
+(3,229 missing values generated)
+
+. label variable lag_lngdp "Lagged log real GDP per capita"
+
+. keep iso year lngdp lag_lngdp
+
+. save "${datadir_final}/tmp_gdp_controls.dta", replace
+file ./data_final/tmp_gdp_controls.dta saved
+
+. 
+. * control variable, public spending on maternity and parental leave
+. import delimited using "${datadir_raw}/oecd_socx_tp512_leave.csv", clear varn
+> ames(1)
+(encoding automatically selected: ISO-8859-1)
+(16 vars, 1,009 obs)
+
+. keep if unit_measure=="PT_B1GQ" & expend_source=="ES10" & programme_type=="TP
+> 512"
+(0 observations deleted)
+
+. rename ref_area iso
+
+. rename time_period year
+
+. keep iso year obs_value
+
+. rename obs_value leave_gdp
+
+. label variable leave_gdp "Public maternity and parental leave spending, perce
+> nt of GDP"
+
+. save "${datadir_final}/tmp_leave_spending.dta", replace
+file ./data_final/tmp_leave_spending.dta saved
+
+. 
+. * main explanatory variable, childcare spending lagged on the full series
+. import delimited using "${datadir_raw}/oecd_socx_ecec_gdp.csv", clear varname
+> s(1)
+(encoding automatically selected: ISO-8859-2)
+(16 vars, 1,009 obs)
+
+. keep if unit_measure=="PT_B1GQ" & expend_source=="ES10" & programme_type=="TP
+> 521"
+(0 observations deleted)
+
+. rename ref_area iso
+
+. rename time_period year
+
+. keep iso year obs_value
+
+. encode iso, generate(spending_id)
+
+. xtset spending_id year, yearly
+
+Panel variable: spending_id (unbalanced)
+ Time variable: year, 1999 to 2023
+         Delta: 1 year
+
+. sort spending_id year
+
+. generate lag_socx_ecec = L1.obs_value
+(95 missing values generated)
+
+. label variable lag_socx_ecec "Prior-year public ECEC spending (% of GDP)"
+
+. keep iso year lag_socx_ecec
+
+. 
+. sort iso year
+
+. save "${datadir_final}/tmp_childcare_spending.dta", replace
+file ./data_final/tmp_childcare_spending.dta saved
+
+. 
+. * dependent variable, employment rates of mothers and fathers of children und
+> er 6
+. import delimited "${datadir_raw}/ilo_household_raw.csv", clear varnames(1)
+(encoding automatically selected: ISO-8859-1)
+(11 vars, 169,678 obs)
+
+. rename ref_area iso
+
+. rename time year
+
+. keep if classif1=="HHT_AGGREGATE_K" & classif2=="CHL_AGET6_YES"
+(165,414 observations deleted)
+
+. keep if inlist(sex,"SEX_M","SEX_F") & inrange(year,2000,2024)
+(1,487 observations deleted)
+
+. * drop country-years that ILOSTAT marks as unreliable
+. bysort iso year: egen flagged = max(obs_status!="")
+
+. keep if flagged==0
+(27 observations deleted)
+
+. generate sexcode = "F"
+
+. replace sexcode = "M" if sex=="SEX_M"
+(1,375 real changes made)
+
+. keep iso year sexcode obs_value
+
+. duplicates report iso year sexcode
+
+Duplicates in terms of iso year sexcode
+
+--------------------------------------
+   Copies | Observations       Surplus
+----------+---------------------------
+        1 |         2750             0
+--------------------------------------
+
+. 
+. sort iso year sexcode
+
+. reshape wide obs_value, i(iso year) j(sexcode) string
+(j = F M)
+
+Data                               Long   ->   Wide
+-----------------------------------------------------------------------------
+Number of observations            2,750   ->   1,375       
+Number of variables                   4   ->   4           
+j variable (2 values)           sexcode   ->   (dropped)
+xij variables:
+                              obs_value   ->   obs_valueF obs_valueM
+-----------------------------------------------------------------------------
+
+. rename obs_valueM male_rate
+
+. rename obs_valueF female_rate
+
+. label variable male_rate "Fathers' employment rate, percent"
+
+. label variable female_rate "Mothers' employment rate, percent"
+
+. 
+. * merge the paid-leave weeks controls
+. * matched rows without a father leave record drop, they carry no entitlement 
+> to lag
+. merge 1:1 iso year using "${datadir_final}/tmp_leave_weeks.dta"
+
+    Result                      Number of obs
+    -----------------------------------------
+    Not matched                         1,285
+        from master                       855  (_merge==1)
+        from using                        430  (_merge==2)
+
+    Matched                               520  (_merge==3)
+    -----------------------------------------
+
+. keep if _merge==3 & !missing(fatherweeks)
+(1,328 observations deleted)
+
+. drop _merge
+
+. drop if missing(male_rate,female_rate)
+(0 observations deleted)
+
+. generate employment_gap = male_rate-female_rate
+
+. label variable employment_gap "Male minus female employment rate (pp)"
+
+. encode iso, generate(country_id)
+
+. 
+. sort country_id year
+
+. 
+. * merge the GDP controls, unmatched rows sit outside the panel
+. merge 1:1 iso year using "${datadir_final}/tmp_gdp_controls.dta"
+
+    Result                      Number of obs
+    -----------------------------------------
+    Not matched                        17,079
+        from master                         0  (_merge==1)
+        from using                     17,079  (_merge==2)
+
+    Matched                               477  (_merge==3)
+    -----------------------------------------
+
+. keep if _merge==3
+(17,079 observations deleted)
+
+. drop _merge
+
+. 
+. * merge leave spending
+. * unmatched country-years have no SOCX row, 2024 and a few others, they stay 
+> missing
+. merge 1:1 iso year using "${datadir_final}/tmp_leave_spending.dta"
+(variable iso was str3, now str4 to accommodate using data's values)
+
+    Result                      Number of obs
+    -----------------------------------------
+    Not matched                           632
+        from master                        50  (_merge==1)
+        from using                        582  (_merge==2)
+
+    Matched                               427  (_merge==3)
+    -----------------------------------------
+
+. drop if _merge==2
+(582 observations deleted)
+
+. drop _merge
+
+. 
+. * merge childcare spending
+. * spending-only rows are outside the job panel, job rows with no spending sta
+> y and get marked
+. merge 1:1 iso year using "${datadir_final}/tmp_childcare_spending.dta"
+
+    Result                      Number of obs
+    -----------------------------------------
+    Not matched                           632
+        from master                        50  (_merge==1)
+        from using                        582  (_merge==2)
+
+    Matched                               427  (_merge==3)
+    -----------------------------------------
+
+. tabulate _merge
+
+   Matching result from |
+                  merge |      Freq.     Percent        Cum.
+------------------------+-----------------------------------
+        Master only (1) |         50        4.72        4.72
+         Using only (2) |        582       54.96       59.68
+            Matched (3) |        427       40.32      100.00
+------------------------+-----------------------------------
+                  Total |      1,059      100.00
+
+. drop if _merge==2
+(582 observations deleted)
+
+. drop _merge
+
+. 
+. * two subsets, European countries under the EU childcare targets and the rest
+>  of the OECD
+. generate byte eu_childcare = 0
+
+. replace eu_childcare = 1 if inlist(iso,"AUT","BEL","CZE","DEU","ESP","EST","F
+> RA","GBR")
+(189 real changes made)
+
+. replace eu_childcare = 1 if inlist(iso,"GRC","HUN","IRL","ITA","LTU","LUX","L
+> VA","NLD")
+(131 real changes made)
+
+. replace eu_childcare = 1 if inlist(iso,"POL","PRT","SVN")
+(43 real changes made)
+
+. label variable eu_childcare "European group covered by EU childcare targets d
+> uring the study period"
+
+. 
+. * flag country-years where every model variable is there
+. generate byte childcare_sample = 1
+
+. replace childcare_sample = 0 if missing(employment_gap, lag_socx_ecec, lag_fa
+> therweeks10, lag_motherweeks10)
+(80 real changes made)
+
+. replace childcare_sample = 0 if missing(lag_lngdp, leave_gdp)
+(50 real changes made)
+
+. label variable childcare_sample "Complete-case sample for the childcare regre
+> ssions"
+
+. tabulate childcare_sample
+
+Complete-ca |
+  se sample |
+    for the |
+  childcare |
+regressions |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          0 |        130       27.25       27.25
+          1 |        347       72.75      100.00
+------------+-----------------------------------
+      Total |        477      100.00
+
+. 
+. * log versions of the continuous variables, for the elasticity model
+. generate ln_gender_gap = ln(employment_gap)
+
+. generate ln_childcare_spending = ln(1 + lag_socx_ecec)
+(66 missing values generated)
+
+. generate ln_father_leaveweeks = ln(1 + lag_fatherweeks10)
+(14 missing values generated)
+
+. generate ln_mother_leaveweeks = ln(1 + lag_motherweeks10)
+(14 missing values generated)
+
+. generate ln_leave_spending = ln(leave_gdp)
+(115 missing values generated)
+
+. label variable ln_gender_gap "Log of the male minus female employment gap"
+
+. label variable ln_childcare_spending "Log of one plus prior-year ECEC spendin
+> g (% of GDP)"
+
+. label variable ln_father_leaveweeks "Log of one plus lagged father leave (per
+>  10 weeks)"
+
+. label variable ln_mother_leaveweeks "Log of one plus lagged mother-side paid 
+> leave (per 10 weeks)"
+
+. label variable ln_leave_spending "Log of public leave spending (% of GDP)"
+
+. 
+. xtset country_id year, yearly
+
+Panel variable: country_id (unbalanced)
+ Time variable: year, 2000 to 2024, but with gaps
+         Delta: 1 year
+
+. save "${datadir_final}/oecd_childcare_261109.dta", replace
+file ./data_final/oecd_childcare_261109.dta saved
+
+. export delimited using "${datadir_final}/oecd_childcare_261109.csv", replace
+file ./data_final/oecd_childcare_261109.csv saved
+
+. 
+end of do-file
+. }
+
+. if ${run_descriptive}==1 {
+.     capture noisily do "${do_dir}/2_descriptive_261109.do"
+
+. /* Project info
+>    2_descriptive_261109.do | descriptives, figures and the subset runs */
+. use "${datadir_final}/oecd_childcare_261109.dta", clear
+
+. 
+. * mean, sd, min, max and N for every model variable, 2019 only
+. preserve
+
+.     keep if year==2019 & !missing(ln_childcare_spending)
+(454 observations deleted)
+
+.     collapse ///
+>         (mean) mean_gap=ln_gender_gap (sd) sd_gap=ln_gender_gap ///
+>         (min) min_gap=ln_gender_gap (max) max_gap=ln_gender_gap ///
+>         (count) n_gap=ln_gender_gap ///
+>         (mean) mean_spend=ln_childcare_spending (sd) sd_spend=ln_childcare_sp
+> ending ///
+>         (min) min_spend=ln_childcare_spending (max) max_spend=ln_childcare_sp
+> ending ///
+>         (count) n_spend=ln_childcare_spending ///
+>         (mean) mean_leave=ln_father_leaveweeks (sd) sd_leave=ln_father_leavew
+> eeks ///
+>         (min) min_leave=ln_father_leaveweeks (max) max_leave=ln_father_leavew
+> eeks ///
+>         (count) n_leave=ln_father_leaveweeks ///
+>         (mean) mean_lngdp=lag_lngdp (sd) sd_lngdp=lag_lngdp ///
+>         (min) min_lngdp=lag_lngdp (max) max_lngdp=lag_lngdp ///
+>         (count) n_lngdp=lag_lngdp ///
+>         (mean) mean_mleave=ln_leave_spending (sd) sd_mleave=ln_leave_spending
+>  ///
+>         (min) min_mleave=ln_leave_spending (max) max_mleave=ln_leave_spending
+>  ///
+>         (count) n_mleave=ln_leave_spending ///
+>         (mean) mean_mother=ln_mother_leaveweeks (sd) sd_mother=ln_mother_leav
+> eweeks ///
+>         (min) min_mother=ln_mother_leaveweeks (max) max_mother=ln_mother_leav
+> eweeks ///
+>         (count) n_mother=ln_mother_leaveweeks
+
+.     list
+
+     +-----------------------------------------------------------------------+
+  1. | mean_gap |  sd_gap | min_gap |  max_gap | n_gap | mean_s~d | sd_spend |
+     | 3.247079 | .545026 | 2.22797 | 4.070274 |    23 | .4545092 | .1322491 |
+     |-----------------------------------------------------------------------|
+     | min_sp~d  | max_sp~d  | n_spend  | mean_l~e  | sd_leave  |  min_le~e  |
+     | .2745968  | .8289884  |      23  | .3236888  | .3879526  |         0  |
+     |-----------+----------------------+-----------+-----------+------------|
+     | max_le~e  | n_leave  | mean_l~p  | sd_lngdp  | min_ln~p  |  max_ln~p  |
+     | 1.350667  |      23  | 10.09245  | .6283056  | 8.756768  |  11.21221  |
+     |----------------------+-----------+------------------------------------|
+     | n_lngdp | mean_ml~e  | sd_mle~e  | min_mle~e  | max_ml~e  | n_mleave  |
+     |      23 | -1.346957  | .9658964  | -3.863233  |  .188138  |       20  |
+     |-----------------------------------------------------------------------|
+     |  mean_m~r   |  sd_mot~r   |  min_mo~r   |   max_mo~r   |   n_mother   |
+     |  1.632221   |  .7197223   |         0   |    3.11795   |         23   |
+     +-----------------------------------------------------------------------+
+
+.     export excel using "${tabledir}/descriptive_2019_oecd_childcare_261109.xl
+> sx", replace
+file ./tables/descriptive_2019_oecd_childcare_261109.xlsx saved
+
+.     export delimited using "${tabledir}/descriptive_2019_oecd_childcare_26110
+> 9.csv", replace
+file ./tables/descriptive_2019_oecd_childcare_261109.csv saved
+
+. restore
+
+. 
+. keep if childcare_sample==1
+(130 observations deleted)
+
+. generate year_centered = year - 2010
+
+. xtset country_id year, yearly
+
+Panel variable: country_id (unbalanced)
+ Time variable: year, 2001 to 2023, but with gaps
+         Delta: 1 year
+
+. tabulate eu_childcare
+
+   European |
+      group |
+ covered by |
+         EU |
+  childcare |
+    targets |
+ during the |
+      study |
+     period |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          0 |         38       10.95       10.95
+          1 |        309       89.05      100.00
+------------+-----------------------------------
+      Total |        347      100.00
+
+. 
+. * scatter of spending against the gap
+. twoway (scatter ln_gender_gap ln_childcare_spending) (lfit ln_gender_gap ln_c
+> hildcare_spending), ///
+>     title("Public childcare spending and the employment gap") ///
+>     xtitle("Log of one plus prior-year ECEC spending (% of GDP)") ///
+>     ytitle("Log of the male minus female employment rate") ///
+>     legend(label(1 "Country-year observation") label(2 "Linear fit")) ///
+>     graphregion(color(white))
+
+. graph export "${figdir}/scatter_gap_childcare_261109.png", as(png) replace
+file ./figures/scatter_gap_childcare_261109.png saved as PNG format
+
+. 
+. * logged spending by the two groups used in the subsets
+. twoway (histogram ln_childcare_spending if eu_childcare==1, color(navy) lcolo
+> r(black)) ///
+>     (histogram ln_childcare_spending if eu_childcare==0, color(maroon) lcolor
+> (black)), ///
+>     title("Public childcare spending by subgroup") ///
+>     xtitle("Log of one plus prior-year ECEC spending (% of GDP)") ///
+>     ytitle("Density") ///
+>     legend(label(1 "EU-target group") label(2 "Other OECD")) graphregion(colo
+> r(white))
+
+. graph export "${figdir}/histogram_childcare_byregion_261109.png", as(png) rep
+> lace
+file ./figures/histogram_childcare_byregion_261109.png saved as PNG format
+
+. 
+. * same specification in each group and in the full sample
+. * the EU Barcelona targets tied childcare access to parental work
+. * https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32022H1220(01)
+. quietly xtpcse ln_gender_gap ln_childcare_spending ln_father_leaveweeks ln_mo
+> ther_leaveweeks lag_lngdp ln_leave_spending ///
+>     i.year i.country_id c.year_centered#i.country_id, het corr(ar1)
+
+. estimates store childcare_all
+
+. quietly xtpcse ln_gender_gap ln_childcare_spending ln_father_leaveweeks ln_mo
+> ther_leaveweeks lag_lngdp ln_leave_spending ///
+>     i.year i.country_id c.year_centered#i.country_id if eu_childcare==1, het 
+> corr(ar1)
+
+. estimates store childcare_eu
+
+. quietly xtpcse ln_gender_gap ln_childcare_spending ln_father_leaveweeks ln_mo
+> ther_leaveweeks lag_lngdp ln_leave_spending ///
+>     i.year i.country_id c.year_centered#i.country_id if eu_childcare==0, het 
+> corr(ar1)
+
+. estimates store childcare_other
+
+. 
+. * columns, all countries, EU group, other OECD, with country, year and trend 
+> effects in each
+. etable, estimates(childcare_all childcare_eu childcare_other) ///
+>     keep(ln_childcare_spending ln_father_leaveweeks ln_mother_leaveweeks lag_
+> lngdp ln_leave_spending) ///
+>     mstat(N) showstars showstarsnote varlabel column(dvlabel) ///
+>     export("${tabledir}/results_childcare_subsets_261109.docx", replace)
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+                                                             Log of the male minus female employment gap Log of the male minus female employment gap Log of the male minus female employment gap
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Log of one plus prior-year ECEC spending (% of GDP)                            -0.472 **                                   -0.447 **                                   -0.198                   
+                                                                              (0.135)                                     (0.143)                                     (0.243)                   
+Log of one plus lagged father leave (per 10 weeks)                              0.032                                       0.034                                      -0.508 **                
+                                                                              (0.028)                                     (0.028)                                     (0.171)                   
+Log of one plus lagged mother-side paid leave (per 10 weeks)                    0.021                                       0.027                                       0.057                   
+                                                                              (0.033)                                     (0.034)                                     (0.043)                   
+Lagged log real GDP per capita                                                  0.387 *                                     0.560 **                                   -0.299                   
+                                                                              (0.162)                                     (0.177)                                     (0.378)                   
+Log of public leave spending (% of GDP)                                        -0.083 **                                   -0.071 *                                    -0.107                   
+                                                                              (0.028)                                     (0.030)                                     (0.065)                   
+Number of observations                                                            347                                         309                                          38                   
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+** p<.01, * p<.05
+(collection ETable exported to file
+ ./tables/results_childcare_subsets_261109.docx)
+
+. 
+end of do-file
+. }
+
+. if ${run_mainresults}==1 {
+.     capture noisily do "${do_dir}/3_results_261109.do"
+
+. /* Project info
+>    3_results_261109.do | the main OECD childcare expenditure regressions */
+. 
+. use "${datadir_final}/oecd_childcare_261109.dta", clear
+
+. keep if childcare_sample==1
+(130 observations deleted)
+
+. generate year_centered = year - 2010
+
+. xtset country_id year, yearly
+
+Panel variable: country_id (unbalanced)
+ Time variable: year, 2001 to 2023, but with gaps
+         Delta: 1 year
+
+. 
+. * check year effects, heteroskedasticity and serial correlation
+. xtreg ln_gender_gap ln_childcare_spending ln_father_leaveweeks ln_mother_leav
+> eweeks lag_lngdp ln_leave_spending ///
+>     i.year c.year_centered#i.country_id, fe
+note: 3.country_id#c.year_centered omitted because of collinearity.
+note: 25.country_id#c.year_centered omitted because of collinearity.
+
+Fixed-effects (within) regression               Number of obs     =        347
+Group variable: country_id                      Number of groups  =         23
+
+R-squared:                                      Obs per group:
+     Within  = 0.7080                                         min =          1
+     Between = 0.0180                                         avg =       15.1
+     Overall = 0.0123                                         max =         22
+
+                                                F(48, 276)        =      13.94
+corr(u_i, Xb) = -0.6411                         Prob > F          =     0.0000
+
+------------------------------------------------------------------------------
+ln_gender_~p | Coefficient  Std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+ln_childca~g |  -.5843195   .1494456    -3.91   0.000    -.8785175   -.2901216
+ln_father_~s |   .0420833   .0367644     1.14   0.253     -.030291    .1144575
+ln_mother_~s |   .0089086   .0428054     0.21   0.835     -.075358    .0931753
+   lag_lngdp |   .3646206   .1707381     2.14   0.034     .0285062     .700735
+ln_leave_s~g |  -.0936627   .0351982    -2.66   0.008    -.1629538   -.0243716
+             |
+        year |
+       2002  |  -.0089593   .0484296    -0.18   0.853    -.1042976    .0863789
+       2003  |  -.0422752   .0505477    -0.84   0.404    -.1417831    .0572327
+       2004  |  -.0195643   .0580629    -0.34   0.736    -.1338666     .094738
+       2005  |  -.0185187   .0652616    -0.28   0.777    -.1469925    .1099551
+       2006  |  -.0347648   .0738197    -0.47   0.638    -.1800859    .1105563
+       2007  |  -.0422975   .0843656    -0.50   0.617    -.2083794    .1237843
+       2008  |   -.069142   .0946909    -0.73   0.466    -.2555501    .1172661
+       2009  |    -.12119   .1022988    -1.18   0.237    -.3225751    .0801951
+       2010  |  -.1200242   .1037553    -1.16   0.248    -.3242765    .0842281
+       2011  |  -.1255317   .1124129    -1.12   0.265    -.3468274     .095764
+       2012  |  -.1856521   .1214268    -1.53   0.127    -.4246926    .0533883
+       2013  |  -.1562647   .1296957    -1.20   0.229    -.4115832    .0990537
+       2014  |  -.1601772   .1388401    -1.15   0.250    -.4334973    .1131429
+       2015  |  -.1335756   .1498392    -0.89   0.373    -.4285485    .1613974
+       2016  |   -.150065   .1607898    -0.93   0.351    -.4665953    .1664652
+       2017  |  -.1242238   .1702999    -0.73   0.466    -.4594757     .211028
+       2018  |  -.1486575   .1815897    -0.82   0.414    -.5061343    .2088193
+       2019  |  -.1578082   .1927034    -0.82   0.414    -.5371634    .2215471
+       2020  |  -.1361888   .2040379    -0.67   0.505     -.537857    .2654794
+       2021  |   -.220712   .2018687    -1.09   0.275    -.6181099    .1766859
+       2022  |  -.2289197    .224429    -1.02   0.309    -.6707299    .2128905
+       2023  |  -.3201149   .2414954    -1.33   0.186     -.795522    .1552921
+             |
+  country_id#|
+          c. |
+year_cente~d |
+        AUT  |   -.012201   .0100933    -1.21   0.228    -.0320707    .0076686
+        BEL  |  -.0053896   .0096478    -0.56   0.577    -.0243822     .013603
+        CAN  |          0  (omitted)
+        CHL  |  -.0133523   .0115629    -1.15   0.249     -.036115    .0094104
+        COL  |   .0140455   .0124134     1.13   0.259    -.0103914    .0384824
+        CZE  |   -.002788   .0087887    -0.32   0.751    -.0200894    .0145134
+        DEU  |  -.0101434   .0093532    -1.08   0.279    -.0285561    .0082693
+        ESP  |  -.0333046   .0102783    -3.24   0.001    -.0535384   -.0130709
+        EST  |   .0166777   .0095434     1.75   0.082    -.0021094    .0354649
+        FRA  |  -.0234771    .010528    -2.23   0.027    -.0442026   -.0027517
+        GBR  |  -.0147174   .0106833    -1.38   0.169    -.0357485    .0063137
+        GRC  |   .0236065    .011498     2.05   0.041     .0009715    .0462414
+        HUN  |  -.0089702   .0087388    -1.03   0.306    -.0261734    .0082329
+        IRL  |  -.0313374   .0098383    -3.19   0.002    -.0507051   -.0119697
+        ITA  |    .011607   .0171624     0.68   0.499    -.0221788    .0453928
+        LTU  |   .0477715   .0218178     2.19   0.029      .004821     .090722
+        LUX  |  -.0429905   .0115446    -3.72   0.000    -.0657172   -.0202639
+        LVA  |  -.0173242   .0213852    -0.81   0.419     -.059423    .0247746
+        NLD  |  -.0245038    .009858    -2.49   0.014    -.0439103   -.0050973
+        POL  |  -.0118357   .0096222    -1.23   0.220    -.0307779    .0071066
+        PRT  |  -.0553428   .0124144    -4.46   0.000    -.0797818   -.0309038
+        SVN  |  -.0101652   .0214804    -0.47   0.636    -.0524514    .0321211
+        TUR  |          0  (omitted)
+             |
+       _cons |   -.157413   1.677183    -0.09   0.925    -3.459108    3.144282
+-------------+----------------------------------------------------------------
+     sigma_u |  .62292169
+     sigma_e |  .10321169
+         rho |  .97328046   (fraction of variance due to u_i)
+------------------------------------------------------------------------------
+F test that all u_i=0: F(22, 276) = 56.83                    Prob > F = 0.0000
+
+. testparm i.year
+
+ ( 1)  2002.year = 0
+ ( 2)  2003.year = 0
+ ( 3)  2004.year = 0
+ ( 4)  2005.year = 0
+ ( 5)  2006.year = 0
+ ( 6)  2007.year = 0
+ ( 7)  2008.year = 0
+ ( 8)  2009.year = 0
+ ( 9)  2010.year = 0
+ (10)  2011.year = 0
+ (11)  2012.year = 0
+ (12)  2013.year = 0
+ (13)  2014.year = 0
+ (14)  2015.year = 0
+ (15)  2016.year = 0
+ (16)  2017.year = 0
+ (17)  2018.year = 0
+ (18)  2019.year = 0
+ (19)  2020.year = 0
+ (20)  2021.year = 0
+ (21)  2022.year = 0
+ (22)  2023.year = 0
+
+       F( 22,   276) =    1.36
+            Prob > F =    0.1342
+
+. xttest3
+
+Modified Wald test for groupwise heteroskedasticity
+in fixed effect regression model
+
+H0: sigma(i)^2 = sigma^2 for all i
+
+chi2 (23)  =        4213.28
+Prob > chi2 =          0.0000
+
+
+. xtserial ln_gender_gap ln_childcare_spending ln_father_leaveweeks ln_mother_l
+> eaveweeks lag_lngdp ln_leave_spending
+
+Wooldridge test for autocorrelation in panel data
+H0: no first order autocorrelation
+    F(  1,      21) =     16.096
+           Prob > F =      0.0006
+
+. 
+. * PCSE inference with first-order serial correlation
+. xtpcse ln_gender_gap ln_childcare_spending ln_father_leaveweeks ln_mother_lea
+> veweeks lag_lngdp ln_leave_spending ///
+>     i.year i.country_id c.year_centered#i.country_id, het corr(ar1)
+
+Number of gaps in sample = 5
+note: computations for rho restarted at each gap.
+note: 3.country_id#c.year_centered omitted because of collinearity.
+note: 25.country_id#c.year_centered omitted because of collinearity.
+
+Prais–Winsten regression, heteroskedastic panels corrected standard errors
+
+Group variable:   country_id                    Number of obs     =        347
+Time variable:    year                          Number of groups  =         23
+Panels:           heteroskedastic (unbalanced)  Obs per group:
+Autocorrelation:  common AR(1)                                min =          1
+                                                              avg =  15.086957
+                                                              max =         22
+Estimated covariances      =        23          R-squared         =     0.9603
+Estimated autocorrelations =         1          Wald chi2(70)     =   22490.59
+Estimated coefficients     =        71          Prob > chi2       =     0.0000
+
+------------------------------------------------------------------------------
+             |            Het-corrected
+ln_gender_~p | Coefficient  std. err.      z    P>|z|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+ln_childca~g |  -.4720809   .1352972    -3.49   0.000    -.7372586   -.2069032
+ln_father_~s |   .0324471   .0280087     1.16   0.247     -.022449    .0873432
+ln_mother_~s |   .0205438    .033319     0.62   0.538    -.0447603    .0858478
+   lag_lngdp |   .3868943   .1618082     2.39   0.017     .0697561    .7040325
+ln_leave_s~g |   -.082759   .0276822    -2.99   0.003    -.1370152   -.0285029
+             |
+        year |
+       2002  |  -.0022618   .0352965    -0.06   0.949    -.0714417    .0669181
+       2003  |   -.008965   .0382509    -0.23   0.815    -.0839353    .0660053
+       2004  |   .0200961   .0386404     0.52   0.603    -.0556377      .09583
+       2005  |   .0420845   .0383913     1.10   0.273    -.0331611    .1173301
+       2006  |   .0379947   .0366204     1.04   0.299      -.03378    .1097695
+       2007  |   .0467637   .0374946     1.25   0.212    -.0267244    .1202518
+       2008  |   .0348475   .0386595     0.90   0.367    -.0409237    .1106188
+       2009  |  -.0042544   .0377921    -0.11   0.910    -.0783254    .0698167
+       2010  |   .0111809   .0378173     0.30   0.767    -.0629396    .0853014
+       2011  |   .0188436   .0385373     0.49   0.625    -.0566881    .0943753
+       2012  |  -.0246891   .0389533    -0.63   0.526    -.1010363     .051658
+       2013  |   .0179209   .0403246     0.44   0.657    -.0611138    .0969556
+       2014  |   .0334301   .0409101     0.82   0.414    -.0467522    .1136123
+       2015  |   .0665158   .0417372     1.59   0.111    -.0152876    .1483192
+       2016  |   .0652814   .0424587     1.54   0.124    -.0179362     .148499
+       2017  |   .1068062   .0430896     2.48   0.013     .0223521    .1912602
+       2018  |   .0974126    .044795     2.17   0.030      .009616    .1852091
+       2019  |   .1032289   .0459784     2.25   0.025     .0131128    .1933449
+       2020  |   .1373935   .0494158     2.78   0.005     .0405403    .2342466
+       2021  |   .0694036   .0476509     1.46   0.145    -.0239904    .1627975
+       2022  |   .0547739   .0431565     1.27   0.204    -.0298113    .1393591
+       2023  |          0  (omitted)
+             |
+  country_id |
+        BEL  |  -.1075449   .0526879    -2.04   0.041    -.2108112   -.0042786
+        CAN  |  -.0753119   .0454748    -1.66   0.098    -.1644409    .0138171
+        CHL  |   1.264695   .2101009     6.02   0.000     .8529046    1.676485
+        COL  |   1.368264   .3427967     3.99   0.000     .6963952    2.040133
+        CZE  |   1.470351   .1610461     9.13   0.000     1.154707    1.785996
+        DEU  |   .3932977   .0363936    10.81   0.000     .3219676    .4646277
+        ESP  |   .4599119   .0952984     4.83   0.000     .2731304    .6466934
+        EST  |   1.049095   .1703243     6.16   0.000     .7152655    1.382924
+        FRA  |   .3408094   .0753501     4.52   0.000     .1931259    .4884928
+        GBR  |   .2189355   .0530422     4.13   0.000     .1149748    .3228963
+        GRC  |     .60699   .1419094     4.28   0.000     .3288527    .8851273
+        HUN  |   1.480539   .2108828     7.02   0.000     1.067216    1.893861
+        IRL  |  -.0549033   .0570341    -0.96   0.336     -.166688    .0568814
+        ITA  |    .559019   .0621199     9.00   0.000     .4372662    .6807717
+        LTU  |  -.4087492   .4711784    -0.87   0.386    -1.332242    .5147434
+        LUX  |  -.1742247   .1531941    -1.14   0.255    -.4744797    .1260303
+        LVA  |   .7320832   .3372707     2.17   0.030     .0710448    1.393122
+        NLD  |   -.400951   .0867105    -4.62   0.000    -.5709005   -.2310015
+        POL  |   .9554144   .2365017     4.04   0.000     .4918796    1.418949
+        PRT  |  -.0853478   .1475118    -0.58   0.563    -.3744656    .2037701
+        SVN  |   .0417755   .2030147     0.21   0.837    -.3561259     .439677
+        TUR  |   1.456156    .287169     5.07   0.000     .8933156    2.018997
+             |
+  country_id#|
+          c. |
+year_cente~d |
+        AUT  |  -.0266753   .0056677    -4.71   0.000    -.0377837   -.0155669
+        BEL  |  -.0208679   .0047556    -4.39   0.000    -.0301887   -.0115471
+        CAN  |          0  (omitted)
+        CHL  |  -.0298261   .0059878    -4.98   0.000    -.0415619   -.0180903
+        COL  |  -.0012447   .0064692    -0.19   0.847    -.0139241    .0114346
+        CZE  |   -.017743   .0053553    -3.31   0.001    -.0282392   -.0072468
+        DEU  |  -.0261441   .0045946    -5.69   0.000    -.0351493   -.0171389
+        ESP  |  -.0479551   .0054812    -8.75   0.000     -.058698   -.0372123
+        EST  |  -.0030368   .0085546    -0.35   0.723    -.0198035    .0137299
+        FRA  |  -.0376746   .0039255    -9.60   0.000    -.0453684   -.0299807
+        GBR  |  -.0293337   .0045646    -6.43   0.000    -.0382802   -.0203872
+        GRC  |   .0089879   .0055426     1.62   0.105    -.0018754    .0198513
+        HUN  |  -.0274864   .0096881    -2.84   0.005    -.0464748   -.0084981
+        IRL  |  -.0459176   .0076988    -5.96   0.000     -.061007   -.0308282
+        ITA  |  -.0034961   .0048053    -0.73   0.467    -.0129142    .0059221
+        LTU  |   .0322882   .0511002     0.63   0.527    -.0678663    .1324427
+        LUX  |  -.0572185   .0068621    -8.34   0.000    -.0706681    -.043769
+        LVA  |  -.0332969   .0323951    -1.03   0.304    -.0967902    .0301963
+        NLD  |  -.0406459    .004535    -8.96   0.000    -.0495344   -.0317573
+        POL  |  -.0327521    .011011    -2.97   0.003    -.0543332    -.011171
+        PRT  |  -.0700611    .009936    -7.05   0.000    -.0895353   -.0505869
+        SVN  |  -.0302206   .0181098    -1.67   0.095     -.065715    .0052739
+        TUR  |   -.017902    .007781    -2.30   0.021    -.0331525   -.0026516
+             |
+       _cons |  -1.064552   1.735972    -0.61   0.540    -4.466995    2.337891
+-------------+----------------------------------------------------------------
+         rho |   .2914245
+------------------------------------------------------------------------------
+
+. estimates store childcare_pcse
+
+. testparm ln_childcare_spending
+
+ ( 1)  ln_childcare_spending = 0
+
+           chi2(  1) =   12.17
+         Prob > chi2 =    0.0005
+
+. 
+. * a version without the country trends, but with both fixed effects
+. quietly xtpcse ln_gender_gap ln_childcare_spending ln_father_leaveweeks ln_mo
+> ther_leaveweeks lag_lngdp ln_leave_spending ///
+>     i.year i.country_id, het corr(ar1)
+
+. estimates store childcare_no_trends
+
+. testparm ln_childcare_spending
+
+ ( 1)  ln_childcare_spending = 0
+
+           chi2(  1) =    0.38
+         Prob > chi2 =    0.5357
+
+. 
+. * level version kept as a comparison column on the same sample
+. quietly xtpcse employment_gap lag_socx_ecec lag_fatherweeks10 lag_motherweeks
+> 10 lag_lngdp leave_gdp ///
+>     i.year i.country_id c.year_centered#i.country_id, het corr(ar1)
+
+. estimates store childcare_level
+
+. testparm lag_socx_ecec
+
+ ( 1)  lag_socx_ecec = 0
+
+           chi2(  1) =    7.90
+         Prob > chi2 =    0.0050
+
+. 
+. etable, estimates(childcare_pcse childcare_no_trends childcare_level) ///
+>     keep(ln_childcare_spending ln_father_leaveweeks ln_mother_leaveweeks lag_
+> lngdp ln_leave_spending ///
+>          lag_socx_ecec lag_fatherweeks10 lag_motherweeks10 leave_gdp) ///
+>     mstat(N) showstars showstarsnote varlabel column(dvlabel) ///
+>     export("${tabledir}/results_oecd_childcare_261109.docx", replace)
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+                                                             Log of the male minus female employment gap Log of the male minus female employment gap Male minus female employment rate (pp)
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Log of one plus prior-year ECEC spending (% of GDP)                            -0.472 **                                    0.092                                                          
+                                                                              (0.135)                                     (0.148)                                                          
+Log of one plus lagged father leave (per 10 weeks)                              0.032                                      -0.064                                                          
+                                                                              (0.028)                                     (0.035)                                                          
+Log of one plus lagged mother-side paid leave (per 10 weeks)                    0.021                                       0.076                                                          
+                                                                              (0.033)                                     (0.040)                                                          
+Lagged log real GDP per capita                                                  0.387 *                                     0.285 *                                                        
+                                                                              (0.162)                                     (0.136)                                                          
+Log of public leave spending (% of GDP)                                        -0.083 **                                   -0.053 *                                                        
+                                                                              (0.028)                                     (0.027)                                                          
+Lagged log real GDP per capita                                                                                                                                      12.661 **              
+                                                                                                                                                                   (4.873)                 
+Prior-year public ECEC spending (% of GDP)                                                                                                                          -7.496 **              
+                                                                                                                                                                   (2.668)                 
+Lagged father-specific paid leave, per 10 weeks                                                                                                                      0.494                 
+                                                                                                                                                                   (0.290)                 
+Lagged mother-side paid leave, per 10 weeks                                                                                                                          0.315 **              
+                                                                                                                                                                   (0.111)                 
+Public maternity and parental leave spending, percent of GDP                                                                                                        -4.928 *               
+                                                                                                                                                                   (2.159)                 
+Number of observations                                                            347                                         347                                      347                 
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+** p<.01, * p<.05
+(collection ETable exported to file
+ ./tables/results_oecd_childcare_261109.docx)
+
+. 
+. * check for curvature on the same sample
+. quietly xtpcse ln_gender_gap c.ln_childcare_spending##c.ln_childcare_spending
+>  ///
+>     ln_father_leaveweeks ln_mother_leaveweeks lag_lngdp ln_leave_spending ///
+>     i.year i.country_id c.year_centered#i.country_id, het corr(ar1)
+
+. testparm c.ln_childcare_spending#c.ln_childcare_spending
+
+ ( 1)  c.ln_childcare_spending#c.ln_childcare_spending = 0
+
+           chi2(  1) =    0.32
+         Prob > chi2 =    0.5702
+
+. 
+end of do-file
+. }
+
+. if ${run_tables}==1 {
+.     capture noisily do "${do_dir}/4_tables_261109.do"
+
+. /* Project info
+>    4_tables_261109.do | the build-up table and the winsorizing check */
+. 
+. use "${datadir_final}/oecd_childcare_261109.dta", clear
+
+. keep if childcare_sample==1
+(130 observations deleted)
+
+. generate year_centered = year - 2010
+
+. xtset country_id year, yearly
+
+Panel variable: country_id (unbalanced)
+ Time variable: year, 2001 to 2023, but with gaps
+         Delta: 1 year
+
+. 
+. * hold the sample and all effects fixed across the columns
+. quietly xtpcse ln_gender_gap ln_childcare_spending ///
+>     i.year i.country_id c.year_centered#i.country_id, het corr(ar1)
+
+. estimates store build1
+
+. quietly xtpcse ln_gender_gap ln_childcare_spending ln_father_leaveweeks ///
+>     i.year i.country_id c.year_centered#i.country_id, het corr(ar1)
+
+. estimates store build2
+
+. quietly xtpcse ln_gender_gap ln_childcare_spending ln_father_leaveweeks ln_mo
+> ther_leaveweeks ///
+>     i.year i.country_id c.year_centered#i.country_id, het corr(ar1)
+
+. estimates store build3
+
+. quietly xtpcse ln_gender_gap ln_childcare_spending ln_father_leaveweeks ln_mo
+> ther_leaveweeks lag_lngdp ///
+>     i.year i.country_id c.year_centered#i.country_id, het corr(ar1)
+
+. estimates store build4
+
+. quietly xtpcse ln_gender_gap ln_childcare_spending ln_father_leaveweeks ln_mo
+> ther_leaveweeks lag_lngdp ln_leave_spending ///
+>     i.year i.country_id c.year_centered#i.country_id, het corr(ar1)
+
+. estimates store build5
+
+. 
+. * country, year and trend effects in every column, same sample throughout
+. etable, estimates(build1 build2 build3 build4 build5) ///
+>     keep(ln_childcare_spending ln_father_leaveweeks ln_mother_leaveweeks lag_
+> lngdp ln_leave_spending) ///
+>     mstat(N) showstars showstarsnote varlabel column(dvlabel) ///
+>     export("${tabledir}/results_childcare_buildup_261109.docx", replace)
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+> --------------------------------------------------------------------------------
+                                                             Log of the male minus female employment gap Log of the male minus female employment gap Log of the male minus female employment gap Log of 
+> the male minus female employment gap Log of the male minus female employment gap
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+> --------------------------------------------------------------------------------
+Log of one plus prior-year ECEC spending (% of GDP)                            -0.522 **                                   -0.568 **                                   -0.568 **                        
+>            -0.474 **                                   -0.472 **                
+                                                                              (0.132)                                     (0.132)                                     (0.132)                           
+>           (0.138)                                     (0.135)                   
+Log of one plus lagged father leave (per 10 weeks)                                                                          0.054 *                                     0.047                           
+>             0.036                                       0.032                   
+                                                                                                                          (0.026)                                     (0.028)                           
+>           (0.028)                                     (0.028)                   
+Log of one plus lagged mother-side paid leave (per 10 weeks)                                                                                                            0.018                           
+>             0.024                                       0.021                   
+                                                                                                                                                                      (0.034)                           
+>           (0.033)                                     (0.033)                   
+Lagged log real GDP per capita                                                                                                                                                                          
+>             0.388 *                                     0.387 *                 
+                                                                                                                                                                                                        
+>           (0.168)                                     (0.162)                   
+Log of public leave spending (% of GDP)                                                                                                                                                                 
+>                                                        -0.083 **                
+                                                                                                                                                                                                        
+>                                                       (0.028)                   
+Number of observations                                                            347                                         347                                         347                           
+>               347                                         347                   
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+> --------------------------------------------------------------------------------
+** p<.01, * p<.05
+(collection ETable exported to file
+ ./tables/results_childcare_buildup_261109.docx)
+
+. 
+. * winsorize the 6 continuous variables on the main sample
+. foreach var in ln_gender_gap ln_childcare_spending ln_father_leaveweeks ln_mo
+> ther_leaveweeks lag_lngdp ln_leave_spending {
+  2.     quietly summarize `var', detail
+  3.     local low = r(p1)
+  4.     local high = r(p99)
+  5.     generate w_`var' = `var'
+  6.     replace w_`var' = `low' if `var'<`low'
+  7.     replace w_`var' = `high' if `var'>`high'
+  8. }
+(3 real changes made)
+(3 real changes made)
+(0 real changes made)
+(3 real changes made)
+(0 real changes made)
+(0 real changes made)
+(1 real change made)
+(3 real changes made)
+(3 real changes made)
+(3 real changes made)
+(3 real changes made)
+(3 real changes made)
+
+. 
+. quietly xtpcse w_ln_gender_gap w_ln_childcare_spending w_ln_father_leaveweeks
+>  w_ln_mother_leaveweeks w_lag_lngdp ///
+>     w_ln_leave_spending i.year i.country_id c.year_centered#i.country_id, het
+>  corr(ar1)
+
+. estimates store childcare_winsor
+
+. testparm w_ln_childcare_spending
+
+ ( 1)  w_ln_childcare_spending = 0
+
+           chi2(  1) =   12.97
+         Prob > chi2 =    0.0003
+
+. * keep the observed spending as the preferred spec, winsorizing changes littl
+> e
+. 
+. * column 1 uses the raw numbers, column 2 winsorizes each continuous variable
+>  at 1 and 99
+. etable, estimates(build5 childcare_winsor) ///
+>     keep(ln_childcare_spending ln_father_leaveweeks ln_mother_leaveweeks lag_
+> lngdp ln_leave_spending ///
+>          w_ln_childcare_spending w_ln_father_leaveweeks w_ln_mother_leaveweek
+> s w_lag_lngdp w_ln_leave_spending) ///
+>     mstat(N) showstars showstarsnote column(dvlabel) ///
+>     export("${tabledir}/results_childcare_winsor_261109.docx", replace)
+
+------------------------------------------------------------------------------------------------------------------------
+                                                             Log of the male minus female employment gap w_ln_gender_gap
+------------------------------------------------------------------------------------------------------------------------
+Log of one plus prior-year ECEC spending (% of GDP)                            -0.472 **                                
+                                                                              (0.135)                                   
+Log of one plus lagged father leave (per 10 weeks)                              0.032                                   
+                                                                              (0.028)                                   
+Log of one plus lagged mother-side paid leave (per 10 weeks)                    0.021                                   
+                                                                              (0.033)                                   
+Lagged log real GDP per capita                                                  0.387 *                                 
+                                                                              (0.162)                                   
+Log of public leave spending (% of GDP)                                        -0.083 **                                
+                                                                              (0.028)                                   
+w_ln_childcare_spending                                                                                      -0.479 **  
+                                                                                                            (0.133)     
+w_ln_father_leaveweeks                                                                                        0.031     
+                                                                                                            (0.028)     
+w_ln_mother_leaveweeks                                                                                        0.023     
+                                                                                                            (0.033)     
+w_lag_lngdp                                                                                                   0.443 **  
+                                                                                                            (0.161)     
+w_ln_leave_spending                                                                                          -0.076 **  
+                                                                                                            (0.028)     
+Number of observations                                                            347                           347     
+------------------------------------------------------------------------------------------------------------------------
+** p<.01, * p<.05
+(collection ETable exported to file
+ ./tables/results_childcare_winsor_261109.docx)
+
+. 
+end of do-file
+. }
+
+. 
+. capture log close

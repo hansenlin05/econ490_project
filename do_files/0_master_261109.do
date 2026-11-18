@@ -23,19 +23,19 @@ global figdir        "${proj_main}/figures"        // figures path
 global literature    "${proj_main}/literature"     // literature path
 global paperdir      "${proj_main}/paper"          // paper path
 
-/* Project settings, the run and log switches */
+/* Project settings, the run switch */
 ********************* * Project Settings ***********************
 
 global run_build = 1                // 0 skip the build, 1 run it
-global store_log_build = 1          // 0 no log, 1 save it
 global run_descriptive = 1          // 0 skip, 1 run
-global store_log_descriptive = 1    // 0 no log, 1 save it
 global run_mainresults = 1          // 0 skip, 1 run
-global store_log_mainresults = 1    // 0 no log, 1 save it
-global run_tables = 1              // 0 skip, 1 run
-global store_log_tables = 1        // 0 no log, 1 save it
+global run_tables = 1               // 0 skip, 1 run
 
-/* run the numbered files in order */
+/* one log for the whole run, hosted here so every do writes to the same file */
+capture log close
+capture noisily log using "${log_dir}/econ490_all_261109.log", text replace
+
+/* run the numbered files in order, no per-file logs inside them */
 if ${run_build}==1 {
     capture noisily do "${do_dir}/1_build_data_261109.do"
 }
@@ -48,4 +48,6 @@ if ${run_mainresults}==1 {
 if ${run_tables}==1 {
     capture noisily do "${do_dir}/4_tables_261109.do"
 }
+
+capture log close
 

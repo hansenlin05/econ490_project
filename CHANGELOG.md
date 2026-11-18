@@ -4,6 +4,23 @@ This file records the team's analysis and repository changes. The 17 November
 documentation and formatting correction was prepared from GitHub main. It
 does not by itself confirm that OneDrive or Canvas has been updated.
 
+## 2026-11-18 — One combined logfile and clearer variable names
+
+The four numbered log files are replaced by a single log, `econ490_all_261109.log`,
+opened once in the master file. The numbered do-files no longer open or close
+their own logs. Intermediate regressions whose coefficients already appear in
+the exported Word tables now run under `quietly`, which keeps the combined log
+well inside the page limit while the diagnostics, the main specification and
+all table exports remain in full view. The continuous model variables are
+renamed for clarity: `ln_gap` to `ln_gender_gap`, `ln_spending` to
+`ln_childcare_spending`, `ln_leaveweeks` to `ln_father_leaveweeks`,
+`ln_motherweeks` to `ln_mother_leaveweeks`, and `ln_leavespending` to
+`ln_leave_spending`. The estimates are unchanged by the renaming. Five raw
+inputs that the current do-files do not read were removed from `data_raw`:
+`europe_legacy267.csv`, `eurostat_employment_raw.csv`, `oecd_did_input.dta`,
+`oecd_leave_history.xlsx` and `oecd_policy_donor.dta`. The full chain was rerun
+from a clean state after these changes and reproduces the same results.
+
 ## 2026-11-18 — Dead defensive code removed from the build
 
 A targeted audit asked whether every block in the do-files came from a real

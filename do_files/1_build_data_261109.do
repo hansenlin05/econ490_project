@@ -4,12 +4,6 @@
    inputs were country_codes.csv, ilo_household_raw.csv, oecd_socx_ecec_gdp.csv,
    oecd_socx_tp512_leave.csv, oecd_leave_timeseries.csv and wdi_raw.dta */
 
-//If log setting is activated, we record a log file in the log folder
-if ${store_log_build}==1 {
-    capture log close
-    capture noisily log using "${log_dir}/1_build_data_261109.log", text replace
-}
-
 * Data sources, the copies we actually read sit in data_raw
 * International Labour Organization. 2026. "Employment rate by sex and household
 *   composition" [GED_PEPR_SEX_HHT_CHL_RT_A] (database), ILOSTAT. Geneva: ILO.
@@ -47,7 +41,7 @@ xtset leave_id year, yearly
 sort leave_id year
 
 * parse the leave weeks out of their text columns
-* two paid entries give two options with a slash, we took the lower one
+* 2 paid entries give 2 options with a slash, we took the lower one
 generate fatherweeks = real(total_paid_raw)
 replace fatherweeks = 28.6  if total_paid_raw == "28.6 / 54.6"
 replace fatherweeks = 30.17 if total_paid_raw == "30.17 / 56.17"
@@ -59,12 +53,12 @@ replace motherweeks = 42 if total_paid_mothers_raw == "42.0 / 162.0"
 replace motherweeks = 42 if total_paid_mothers_raw == "42.0 / 136.0"
 replace motherweeks = 42 if total_paid_mothers_raw == "42.0 / 110"
 
-* three entries moved to the year the leave became law
+* 3 entries moved to the year the leave became law
 replace fatherweeks = 2.6 if iso=="FRA" & year==2014
 replace fatherweeks = 4 if iso=="IRL" & year==2019
 replace fatherweeks = 15 if iso=="ITA" & year==2022
 
-* four snapshots logged a reform one year late, so we used next year's value
+* 4 snapshots logged a reform 1 year late, so we used next year's value
 replace fatherweeks = 12.996666 if iso=="AUT" & year==2019
 replace fatherweeks = 4.285714286 if iso=="EST" & year==2020
 replace fatherweeks = 9 if iso=="FIN" & year==2010
@@ -126,7 +120,7 @@ keep iso year lag_socx_ecec
 sort iso year
 save "${datadir_final}/tmp_childcare_spending.dta", replace
 
-* dependent variable, employment rates of mothers and fathers of children under six
+* dependent variable, employment rates of mothers and fathers of children under 6
 import delimited "${datadir_raw}/ilo_household_raw.csv", clear varnames(1)
 rename ref_area iso
 rename time year
@@ -192,22 +186,17 @@ label variable childcare_sample "Complete-case sample for the childcare regressi
 tabulate childcare_sample
 
 * log versions of the continuous variables, for the elasticity model
-generate ln_gap = ln(employment_gap)
-generate ln_spending = ln(1 + lag_socx_ecec)
-generate ln_leaveweeks = ln(1 + lag_fatherweeks10)
-generate ln_motherweeks = ln(1 + lag_motherweeks10)
-generate ln_leavespending = ln(leave_gdp)
-label variable ln_gap "Log of the male minus female employment gap"
-label variable ln_spending "Log of one plus prior-year ECEC spending (% of GDP)"
-label variable ln_leaveweeks "Log of one plus lagged father leave (per 10 weeks)"
-label variable ln_motherweeks "Log of one plus lagged mother-side paid leave (per 10 weeks)"
-label variable ln_leavespending "Log of public leave spending (% of GDP)"
+generate ln_gender_gap = ln(employment_gap)
+generate ln_childcare_spending = ln(1 + lag_socx_ecec)
+generate ln_father_leaveweeks = ln(1 + lag_fatherweeks10)
+generate ln_mother_leaveweeks = ln(1 + lag_motherweeks10)
+generate ln_leave_spending = ln(leave_gdp)
+label variable ln_gender_gap "Log of the male minus female employment gap"
+label variable ln_childcare_spending "Log of one plus prior-year ECEC spending (% of GDP)"
+label variable ln_father_leaveweeks "Log of one plus lagged father leave (per 10 weeks)"
+label variable ln_mother_leaveweeks "Log of one plus lagged mother-side paid leave (per 10 weeks)"
+label variable ln_leave_spending "Log of public leave spending (% of GDP)"
 
 xtset country_id year, yearly
 save "${datadir_final}/oecd_childcare_261109.dta", replace
 export delimited using "${datadir_final}/oecd_childcare_261109.csv", replace
-
-//Close log if needed
-if ${store_log_build}==1 {
-    capture log close
-}
