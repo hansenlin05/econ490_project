@@ -3,7 +3,7 @@
        log:  C:\Users\Hansen\UBC\ECON 490 003 2026W1 Seminar in Applied Economi
 > cs - econ490_project\log_files/1_build_data_261109.log
   log type:  text
- opened on:  17 Nov 2026, 14:06:38
+ opened on:  17 Nov 2026, 22:42:02
 . }
 
 . 
@@ -45,9 +45,9 @@ file ./data_final/tmp_country_codes.dta saved
 . import delimited "${datadir_raw}/oecd_leave_timeseries.csv", clear varnames(1
 > )
 (encoding automatically selected: ISO-8859-1)
-(4 vars, 2,165 obs)
+(5 vars, 2,165 obs)
 
-. keep country year total_all_raw total_paid_raw
+. keep country year total_all_raw total_paid_raw total_paid_mothers_raw
 
 . keep if inrange(year,1970,2024)
 (76 observations deleted)
@@ -90,7 +90,7 @@ Panel variable: leave_id (unbalanced)
 . sort leave_id year
 
 . 
-. * parse the total and paid leave weeks out of their text columns
+. * parse the leave weeks out of their text columns
 . * two paid entries give two options with a slash, we took the lower one
 . generate weeks_all = real(total_all_raw)
 (277 missing values generated)
@@ -103,6 +103,23 @@ Panel variable: leave_id (unbalanced)
 
 . replace fatherweeks = 30.17 if total_paid_raw == "30.17 / 56.17"
 (3 real changes made)
+
+. 
+. * France reports a short and a long option for mothers, we took the short one
+. generate motherweeks = real(total_paid_mothers_raw)
+(223 missing values generated)
+
+. replace motherweeks = 16 if total_paid_mothers_raw == "16.0 / 162.0"
+(10 real changes made)
+
+. replace motherweeks = 42 if total_paid_mothers_raw == "42.0 / 162.0"
+(10 real changes made)
+
+. replace motherweeks = 42 if total_paid_mothers_raw == "42.0 / 136.0"
+(1 real change made)
+
+. replace motherweeks = 42 if total_paid_mothers_raw == "42.0 / 110"
+(10 real changes made)
 
 . 
 . * three entries moved to the year the leave became law
@@ -147,6 +164,9 @@ Panel variable: leave_id (unbalanced)
 . label variable fatherweeks "Weeks of paid father-specific leave (lower bound)
 > "
 
+. label variable motherweeks "Weeks of paid maternity, parental and home care l
+> eave for mothers"
+
 . label variable leave_known "Father-specific leave entitlement is reported"
 
 . 
@@ -170,15 +190,28 @@ Panel variable: leave_id (strongly balanced)
 . generate lag_fatherweeks10 = L1.fatherweeks10
 (90 missing values generated)
 
+. generate motherweeks10 = motherweeks/10
+(46 missing values generated)
+
+. generate lag_motherweeks10 = L1.motherweeks10
+(84 missing values generated)
+
 . label variable fatherweeks10 "Father-specific paid leave, per 10 weeks"
 
 . label variable lag_fatherweeks10 "Lagged father-specific paid leave, per 10 w
 > eeks"
 
-. keep iso country year fatherweeks fatherweeks10 lag_fatherweeks10 leave_known
+. label variable motherweeks10 "Mother-side paid leave, per 10 weeks"
 
-. save "${datadir_final}/tmp_father_leave.dta", replace
-file ./data_final/tmp_father_leave.dta saved
+. label variable lag_motherweeks10 "Lagged mother-side paid leave, per 10 weeks
+> "
+
+. keep iso country year fatherweeks fatherweeks10 lag_fatherweeks10 motherweeks
+>  motherweeks10 lag_motherweeks10 leave_known
+
+. save "${datadir_final}/tmp_leave_weeks.dta", replace
+(file ./data_final/tmp_leave_weeks.dta not found)
+file ./data_final/tmp_leave_weeks.dta saved
 
 . 
 . * control variable, GDP per capita, lagged on the full series
@@ -368,10 +401,10 @@ xij variables:
 . label variable female_rate "Mothers' employment rate, percent"
 
 . 
-. * merge the father-leave control
+. * merge the paid-leave weeks controls
 . * unmatched ones are leave years with no job record and countries ILOSTAT lea
 > ves out
-. merge 1:1 iso year using "${datadir_final}/tmp_father_leave.dta"
+. merge 1:1 iso year using "${datadir_final}/tmp_leave_weeks.dta"
 
     Result                      Number of obs
     -----------------------------------------
@@ -503,7 +536,7 @@ Duplicates in terms of country_id year
 . generate byte childcare_sample = 1
 
 . replace childcare_sample = 0 if missing(employment_gap, lag_socx_ecec, lag_fa
-> therweeks10)
+> therweeks10, lag_motherweeks10)
 (80 real changes made)
 
 . replace childcare_sample = 0 if missing(lag_lngdp, leave_gdp)
@@ -535,6 +568,9 @@ regressions |      Freq.     Percent        Cum.
 . generate ln_leaveweeks = ln(1 + lag_fatherweeks10)
 (14 missing values generated)
 
+. generate ln_motherweeks = ln(1 + lag_motherweeks10)
+(14 missing values generated)
+
 . generate ln_leavespending = ln(leave_gdp)
 (115 missing values generated)
 
@@ -545,6 +581,9 @@ regressions |      Freq.     Percent        Cum.
 
 . label variable ln_leaveweeks "Log of one plus lagged father leave (per 10 wee
 > ks)"
+
+. label variable ln_motherweeks "Log of one plus lagged mother-side paid leave 
+> (per 10 weeks)"
 
 . label variable ln_leavespending "Log of public leave spending (% of GDP)"
 

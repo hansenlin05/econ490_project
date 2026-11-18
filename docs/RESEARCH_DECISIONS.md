@@ -23,6 +23,7 @@ quoted in the submission. Every decision below belongs to the current chain.
 | `lag_socx_ecec` (prior-year public ECEC spending, % of GDP) is the main explanatory variable | Instructor's suggested direction; SOCX TP521 is the official OECD series for publicly funded early childhood education and care | OECD SOCX; citation block in `1_build_data_261109.do` |
 | Every lag is built on its own full annual series before any merge | A lag built after the merge disappears whenever the previous year's outcome is missing, which lets outcome availability decide the estimation sample. Applies to GDP, leave weeks, leave spending and ECEC spending alike | `1_build_data_261109.do` lag blocks |
 | `lag_fatherweeks10` stays in the model as a control | Father-specific leave is the strongest competing policy explanation for the same outcome; dropping it would confound the childcare association | `0_master_261109.do` global `controls` |
+| `lag_motherweeks10` added as a control (17 November) | Sultana raised the omitted-variable concern that father leave and mother leave are distinct variables. Verified on the frozen panel first: the estimation sample stays at 347 and the childcare coefficient moves only from −0.4734 to −0.4721. The source column sits in the same PF2.5 workbook as the father series, so no new citation is needed | `1_build_data_261109.do` leave-weeks block; `3_results_261109.do` |
 | All regressions include `lag_lngdp` as the sole GDP control | It controls economic development level. GDP growth was removed at the user’s request. The employment-gap regression is not a Solow growth equation or an employment-gap convergence test | `1_build_data_261109.do`; `3_results_261109.do` |
 
 ## 2. Specification and inference
@@ -38,9 +39,9 @@ options is historical and does not override this instruction.
 | PCSE with panel-specific heteroskedasticity and common AR(1) is the main estimator | This is the Test7 form requested by the user. Childcare is −0.473, SE 0.136, p = 0.0005 |
 | Country and year effects and country-specific trends remain | This preserves the existing mean model. Removing only the trends gives +0.090, SE 0.150, p = 0.5488. The negative association is conditional on the trend specification |
 | No quadratic term in the main model | The PCSE quadratic test has p = 0.5643 and the term is excluded |
-| Observed data preferred | Full 1/99 winsorization of all five continuous variables gives −0.480, SE 0.133, p = 0.0003 |
-| Diagnostics precede PCSE | `testparm i.year` p = 0.1312, country-effects F(22,277) = 73.16 with p < 0.001 in the `xtreg` output, `xttest3` p < 0.001 and `xtserial` p = 0.0006 |
-| Log transformations match the build code | Outcome and leave spending use ln(x), childcare uses ln(1+x), father leave uses ln(1+lagged weeks/10), lagged GDP per capita is logged and is the only GDP control |
+| Observed data preferred | Full 1/99 winsorization of all six continuous variables gives −0.479, SE 0.133, p < 0.001 |
+| Diagnostics precede PCSE | `testparm i.year` p = 0.1342, country-effects F(22,276) = 56.83 with p < 0.001 in the `xtreg` output, `xttest3` p < 0.001 and `xtserial` p = 0.0006 |
+| Log transformations match the build code | Outcome and leave spending use ln(x), childcare and both leave-week controls use ln(1+x), lagged GDP per capita is logged and is the only GDP control |
 | Spending magnitudes use the local elasticity | beta*x/(1+x) is about −0.17 at mean spending of 0.538 percent of GDP. The coefficient itself is an elasticity with respect to 1+x |
 | Report association with limitations | PCSE relies on the specified error structure. The unbalanced sample and dependence on country trends remain relevant. No causal claim is made |
 

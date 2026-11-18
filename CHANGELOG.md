@@ -4,6 +4,27 @@ This file records the team's analysis and repository changes. The 17 November
 documentation and formatting correction was prepared from GitHub main. It
 does not by itself confirm that OneDrive or Canvas has been updated.
 
+## 2026-11-17 — Mother-side paid leave added as a control
+
+Sultana supplied her own regression showing the concern and the team decided
+to add the mother-side control. The paid-leave text columns now include the
+mothers' total paid weeks column from the same PF2.5 workbook, exported into
+`oecd_leave_timeseries.csv` as `total_paid_mothers_raw`. France reports a
+short and a long option in that column, and the do-file takes the short one,
+matching the father-side treatment. The mother weeks lag, its 10-week unit
+and its ln(1+x) form mirror the father weeks exactly, and the intermediate
+file is renamed `tmp_leave_weeks.dta` since it now carries both. Every model
+adds `ln_motherweeks`: diagnostics, the main PCSE, no-trends, levels, the
+quadratic check, the subset runs, a fifth build-up column and the sixth
+winsorized variable. The estimation sample stays at 347 because the mother
+gaps fall outside it. The childcare coefficient moves from −0.4734 to
+−0.4721 (SE 0.135, p = 0.0005) and the mother control itself is insignificant
+(+0.021, SE 0.033, p = 0.538), so the association is specific to childcare
+spending rather than paid leave. The four Word tables were re-exported with
+the new numbers, so the earlier manual formatting no longer applies and needs
+to be repeated before submission. OneDrive was rerun from `data_raw` with no
+`r()` errors; local logs are 606 / 451 / 659 / 808 lines.
+
 ## 2026-11-17 — Restore the full workflow project settings
 
 The project keeps the complete Workflow 18 master structure. The master sets

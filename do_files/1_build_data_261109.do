@@ -34,7 +34,7 @@ save "${datadir_final}/tmp_country_codes.dta", replace
 
 * control variable, weeks of paid leave kept for fathers, from the OECD workbook
 import delimited "${datadir_raw}/oecd_leave_timeseries.csv", clear varnames(1)
-keep country year total_all_raw total_paid_raw
+keep country year total_all_raw total_paid_raw total_paid_mothers_raw
 keep if inrange(year,1970,2024)
 * unmatched rows are workbook notes and countries not on the OECD list
 merge m:1 country using "${datadir_final}/tmp_country_codes.dta"
@@ -47,12 +47,19 @@ encode iso, generate(leave_id)
 xtset leave_id year, yearly
 sort leave_id year
 
-* parse the total and paid leave weeks out of their text columns
+* parse the leave weeks out of their text columns
 * two paid entries give two options with a slash, we took the lower one
 generate weeks_all = real(total_all_raw)
 generate fatherweeks = real(total_paid_raw)
 replace fatherweeks = 28.6  if total_paid_raw == "28.6 / 54.6"
 replace fatherweeks = 30.17 if total_paid_raw == "30.17 / 56.17"
+
+* France reports a short and a long option for mothers, we took the short one
+generate motherweeks = real(total_paid_mothers_raw)
+replace motherweeks = 16 if total_paid_mothers_raw == "16.0 / 162.0"
+replace motherweeks = 42 if total_paid_mothers_raw == "42.0 / 162.0"
+replace motherweeks = 42 if total_paid_mothers_raw == "42.0 / 136.0"
+replace motherweeks = 42 if total_paid_mothers_raw == "42.0 / 110"
 
 * three entries moved to the year the leave became law
 replace fatherweeks = 2.6 if iso=="FRA" & year==2014
@@ -70,6 +77,7 @@ replace weeks_all = 48.53 if iso=="GRC" & year==2021
 replace fatherweeks = 11.46666 if iso=="GRC" & year==2021
 generate leave_known = !missing(weeks_all) & !missing(fatherweeks) & weeks_all>=0 & fatherweeks>=0
 label variable fatherweeks "Weeks of paid father-specific leave (lower bound)"
+label variable motherweeks "Weeks of paid maternity, parental and home care leave for mothers"
 label variable leave_known "Father-specific leave entitlement is reported"
 
 * build the lag on the full 2000-2024 series, before the merge
@@ -79,10 +87,14 @@ encode iso, generate(leave_id)
 xtset leave_id year, yearly
 generate fatherweeks10 = fatherweeks/10
 generate lag_fatherweeks10 = L1.fatherweeks10
+generate motherweeks10 = motherweeks/10
+generate lag_motherweeks10 = L1.motherweeks10
 label variable fatherweeks10 "Father-specific paid leave, per 10 weeks"
 label variable lag_fatherweeks10 "Lagged father-specific paid leave, per 10 weeks"
-keep iso country year fatherweeks fatherweeks10 lag_fatherweeks10 leave_known
-save "${datadir_final}/tmp_father_leave.dta", replace
+label variable motherweeks10 "Mother-side paid leave, per 10 weeks"
+label variable lag_motherweeks10 "Lagged mother-side paid leave, per 10 weeks"
+keep iso country year fatherweeks fatherweeks10 lag_fatherweeks10 motherweeks motherweeks10 lag_motherweeks10 leave_known
+save "${datadir_final}/tmp_leave_weeks.dta", replace
 
 * control variable, GDP per capita, lagged on the full series
 use "${datadir_raw}/wdi_raw.dta", clear
@@ -146,9 +158,9 @@ rename obs_valueF female_rate
 label variable male_rate "Fathers' employment rate, percent"
 label variable female_rate "Mothers' employment rate, percent"
 
-* merge the father-leave control
+* merge the paid-leave weeks controls
 * unmatched ones are leave years with no job record and countries ILOSTAT leaves out
-merge 1:1 iso year using "${datadir_final}/tmp_father_leave.dta"
+merge 1:1 iso year using "${datadir_final}/tmp_leave_weeks.dta"
 keep if _merge==3 & leave_known==1
 drop _merge
 drop if missing(male_rate,female_rate)
@@ -186,7 +198,7 @@ label variable eu_childcare "European group covered by EU childcare targets duri
 
 * flag country-years where every model variable is there
 generate byte childcare_sample = 1
-replace childcare_sample = 0 if missing(employment_gap, lag_socx_ecec, lag_fatherweeks10)
+replace childcare_sample = 0 if missing(employment_gap, lag_socx_ecec, lag_fatherweeks10, lag_motherweeks10)
 replace childcare_sample = 0 if missing(lag_lngdp, leave_gdp)
 label variable childcare_sample "Complete-case sample for the childcare regressions"
 tabulate childcare_sample
@@ -195,10 +207,12 @@ tabulate childcare_sample
 generate ln_gap = ln(employment_gap)
 generate ln_spending = ln(1 + lag_socx_ecec)
 generate ln_leaveweeks = ln(1 + lag_fatherweeks10)
+generate ln_motherweeks = ln(1 + lag_motherweeks10)
 generate ln_leavespending = ln(leave_gdp)
 label variable ln_gap "Log of the male minus female employment gap"
 label variable ln_spending "Log of one plus prior-year ECEC spending (% of GDP)"
 label variable ln_leaveweeks "Log of one plus lagged father leave (per 10 weeks)"
+label variable ln_motherweeks "Log of one plus lagged mother-side paid leave (per 10 weeks)"
 label variable ln_leavespending "Log of public leave spending (% of GDP)"
 
 xtset country_id year, yearly
