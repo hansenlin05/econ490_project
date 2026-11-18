@@ -3,7 +3,7 @@
        log:  C:\Users\Hansen\UBC\ECON 490 003 2026W1 Seminar in Applied Economi
 > cs - econ490_project\log_files/3_results_261109.log
   log type:  text
- opened on:  17 Nov 2026, 23:12:27
+ opened on:  18 Nov 2026, 00:55:49
 . }
 
 . 
@@ -146,8 +146,8 @@ chi2 (23)  =        4213.28
 Prob > chi2 =          0.0000
 
 
-. capture noisily xtserial ln_gap ln_spending ln_leaveweeks ln_motherweeks lag_
-> lngdp ln_leavespending
+. xtserial ln_gap ln_spending ln_leaveweeks ln_motherweeks lag_lngdp ln_leavesp
+> ending
 
 Wooldridge test for autocorrelation in panel data
 H0: no first order autocorrelation

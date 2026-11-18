@@ -4,6 +4,24 @@ This file records the team's analysis and repository changes. The 17 November
 documentation and formatting correction was prepared from GitHub main. It
 does not by itself confirm that OneDrive or Canvas has been updated.
 
+## 2026-11-18 — Dead defensive code removed from the build
+
+A targeted audit asked whether every block in the do-files came from a real
+problem the team had hit, or was only preventive armor. One block proved to be
+vestigial from the earlier sample: `weeks_all` and the `leave_known` flag. On
+the OECD panel, `leave_known` equals `!missing(fatherweeks)` on every row, so
+the merge filter never dropped more than the fatherweeks condition alone, and
+`weeks_all` was used by nothing downstream. The block is gone: the variable
+generation, its four reform-year replaces, the flag, and the filter condition
+are replaced by `!missing(fatherweeks)` with an updated comment. Four of the
+five `duplicates report` calls that always printed zero duplicates were also
+removed; the one before `reshape wide` stays because a duplicate would make
+the reshape fail. The `capture noisily` wrapper on `xtserial` went away; the
+command has never errored and should fail loudly if it ever does. The full
+chain was rerun with no `r()` errors and every estimate is unchanged,
+including the main coefficient and all diagnostics; `data_final` files no
+longer carry the unused columns.
+
 ## 2026-11-17 — Mother-side paid leave added as a control
 
 Sultana supplied her own regression showing the concern and the team decided

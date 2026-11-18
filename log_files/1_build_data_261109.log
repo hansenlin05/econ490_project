@@ -3,7 +3,7 @@
        log:  C:\Users\Hansen\UBC\ECON 490 003 2026W1 Seminar in Applied Economi
 > cs - econ490_project\log_files/1_build_data_261109.log
   log type:  text
- opened on:  17 Nov 2026, 23:11:58
+ opened on:  18 Nov 2026, 00:55:23
 . }
 
 . 
@@ -47,7 +47,7 @@ file ./data_final/tmp_country_codes.dta saved
 (encoding automatically selected: ISO-8859-1)
 (5 vars, 2,165 obs)
 
-. keep country year total_all_raw total_paid_raw total_paid_mothers_raw
+. keep country year total_paid_raw total_paid_mothers_raw
 
 . keep if inrange(year,1970,2024)
 (76 observations deleted)
@@ -66,16 +66,6 @@ file ./data_final/tmp_country_codes.dta saved
 
 . drop _merge
 
-. duplicates report iso year
-
-Duplicates in terms of iso year
-
---------------------------------------
-   Copies | Observations       Surplus
-----------+---------------------------
-        1 |         2089             0
---------------------------------------
-
 . 
 . sort iso year
 
@@ -92,9 +82,6 @@ Panel variable: leave_id (unbalanced)
 . 
 . * parse the leave weeks out of their text columns
 . * two paid entries give two options with a slash, we took the lower one
-. generate weeks_all = real(total_all_raw)
-(277 missing values generated)
-
 . generate fatherweeks = real(total_paid_raw)
 (287 missing values generated)
 
@@ -134,40 +121,23 @@ Panel variable: leave_id (unbalanced)
 
 . 
 . * four snapshots logged a reform one year late, so we used next year's value
-. replace weeks_all = 12.996666 if iso=="AUT" & year==2019
-(1 real change made)
-
 . replace fatherweeks = 12.996666 if iso=="AUT" & year==2019
-(1 real change made)
-
-. replace weeks_all = 4.285714286 if iso=="EST" & year==2020
 (1 real change made)
 
 . replace fatherweeks = 4.285714286 if iso=="EST" & year==2020
 (1 real change made)
 
-. replace weeks_all = 9 if iso=="FIN" & year==2010
-(1 real change made)
-
 . replace fatherweeks = 9 if iso=="FIN" & year==2010
-(1 real change made)
-
-. replace weeks_all = 48.53 if iso=="GRC" & year==2021
 (1 real change made)
 
 . replace fatherweeks = 11.46666 if iso=="GRC" & year==2021
 (1 real change made)
-
-. generate leave_known = !missing(weeks_all) & !missing(fatherweeks) & weeks_al
-> l>=0 & fatherweeks>=0
 
 . label variable fatherweeks "Weeks of paid father-specific leave (lower bound)
 > "
 
 . label variable motherweeks "Weeks of paid maternity, parental and home care l
 > eave for mothers"
-
-. label variable leave_known "Father-specific leave entitlement is reported"
 
 . 
 . * build the lag on the full 2000-2024 series, before the merge
@@ -207,7 +177,7 @@ Panel variable: leave_id (strongly balanced)
 > "
 
 . keep iso country year fatherweeks fatherweeks10 lag_fatherweeks10 motherweeks
->  motherweeks10 lag_motherweeks10 leave_known
+>  motherweeks10 lag_motherweeks10
 
 . save "${datadir_final}/tmp_leave_weeks.dta", replace
 file ./data_final/tmp_leave_weeks.dta saved
@@ -219,16 +189,6 @@ file ./data_final/tmp_leave_weeks.dta saved
 . rename countrycode iso
 
 . keep iso year ny_gdp_pcap_kd
-
-. duplicates report iso year
-
-Duplicates in terms of iso year
-
---------------------------------------
-   Copies | Observations       Surplus
-----------+---------------------------
-        1 |        17556             0
---------------------------------------
 
 . generate lngdp = ln(ny_gdp_pcap_kd) if ny_gdp_pcap_kd>0
 (2,995 missing values generated)
@@ -270,16 +230,6 @@ file ./data_final/tmp_gdp_controls.dta saved
 
 . rename obs_value leave_gdp
 
-. duplicates report iso year
-
-Duplicates in terms of iso year
-
---------------------------------------
-   Copies | Observations       Surplus
-----------+---------------------------
-        1 |         1009             0
---------------------------------------
-
 . label variable leave_gdp "Public maternity and parental leave spending, perce
 > nt of GDP"
 
@@ -319,16 +269,6 @@ Panel variable: spending_id (unbalanced)
 . label variable lag_socx_ecec "Prior-year public ECEC spending (% of GDP)"
 
 . keep iso year lag_socx_ecec
-
-. duplicates report iso year
-
-Duplicates in terms of iso year
-
---------------------------------------
-   Copies | Observations       Surplus
-----------+---------------------------
-        1 |         1009             0
---------------------------------------
 
 . 
 . sort iso year
@@ -401,8 +341,8 @@ xij variables:
 
 . 
 . * merge the paid-leave weeks controls
-. * unmatched ones are leave years with no job record and countries ILOSTAT lea
-> ves out
+. * matched rows without a father leave record drop, they carry no entitlement 
+> to lag
 . merge 1:1 iso year using "${datadir_final}/tmp_leave_weeks.dta"
 
     Result                      Number of obs
@@ -414,7 +354,7 @@ xij variables:
     Matched                               520  (_merge==3)
     -----------------------------------------
 
-. keep if _merge==3 & leave_known==1
+. keep if _merge==3 & !missing(fatherweeks)
 (1,328 observations deleted)
 
 . drop _merge
@@ -427,16 +367,6 @@ xij variables:
 . label variable employment_gap "Male minus female employment rate (pp)"
 
 . encode iso, generate(country_id)
-
-. duplicates report country_id year
-
-Duplicates in terms of country_id year
-
---------------------------------------
-   Copies | Observations       Surplus
-----------+---------------------------
-        1 |          477             0
---------------------------------------
 
 . 
 . sort country_id year

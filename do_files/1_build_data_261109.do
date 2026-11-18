@@ -34,13 +34,12 @@ save "${datadir_final}/tmp_country_codes.dta", replace
 
 * control variables, weeks of paid leave kept for fathers and mothers, from the OECD workbook
 import delimited "${datadir_raw}/oecd_leave_timeseries.csv", clear varnames(1)
-keep country year total_all_raw total_paid_raw total_paid_mothers_raw
+keep country year total_paid_raw total_paid_mothers_raw
 keep if inrange(year,1970,2024)
 * unmatched rows are workbook notes and countries not on the OECD list
 merge m:1 country using "${datadir_final}/tmp_country_codes.dta"
 keep if _merge==3
 drop _merge
-duplicates report iso year
 
 sort iso year
 encode iso, generate(leave_id)
@@ -49,7 +48,6 @@ sort leave_id year
 
 * parse the leave weeks out of their text columns
 * two paid entries give two options with a slash, we took the lower one
-generate weeks_all = real(total_all_raw)
 generate fatherweeks = real(total_paid_raw)
 replace fatherweeks = 28.6  if total_paid_raw == "28.6 / 54.6"
 replace fatherweeks = 30.17 if total_paid_raw == "30.17 / 56.17"
@@ -67,18 +65,12 @@ replace fatherweeks = 4 if iso=="IRL" & year==2019
 replace fatherweeks = 15 if iso=="ITA" & year==2022
 
 * four snapshots logged a reform one year late, so we used next year's value
-replace weeks_all = 12.996666 if iso=="AUT" & year==2019
 replace fatherweeks = 12.996666 if iso=="AUT" & year==2019
-replace weeks_all = 4.285714286 if iso=="EST" & year==2020
 replace fatherweeks = 4.285714286 if iso=="EST" & year==2020
-replace weeks_all = 9 if iso=="FIN" & year==2010
 replace fatherweeks = 9 if iso=="FIN" & year==2010
-replace weeks_all = 48.53 if iso=="GRC" & year==2021
 replace fatherweeks = 11.46666 if iso=="GRC" & year==2021
-generate leave_known = !missing(weeks_all) & !missing(fatherweeks) & weeks_all>=0 & fatherweeks>=0
 label variable fatherweeks "Weeks of paid father-specific leave (lower bound)"
 label variable motherweeks "Weeks of paid maternity, parental and home care leave for mothers"
-label variable leave_known "Father-specific leave entitlement is reported"
 
 * build the lag on the full 2000-2024 series, before the merge
 keep if inrange(year,2000,2024)
@@ -93,14 +85,13 @@ label variable fatherweeks10 "Father-specific paid leave, per 10 weeks"
 label variable lag_fatherweeks10 "Lagged father-specific paid leave, per 10 weeks"
 label variable motherweeks10 "Mother-side paid leave, per 10 weeks"
 label variable lag_motherweeks10 "Lagged mother-side paid leave, per 10 weeks"
-keep iso country year fatherweeks fatherweeks10 lag_fatherweeks10 motherweeks motherweeks10 lag_motherweeks10 leave_known
+keep iso country year fatherweeks fatherweeks10 lag_fatherweeks10 motherweeks motherweeks10 lag_motherweeks10
 save "${datadir_final}/tmp_leave_weeks.dta", replace
 
 * control variable, GDP per capita, lagged on the full series
 use "${datadir_raw}/wdi_raw.dta", clear
 rename countrycode iso
 keep iso year ny_gdp_pcap_kd
-duplicates report iso year
 generate lngdp = ln(ny_gdp_pcap_kd) if ny_gdp_pcap_kd>0
 encode iso, generate(gdp_id)
 xtset gdp_id year, yearly
@@ -116,7 +107,6 @@ rename ref_area iso
 rename time_period year
 keep iso year obs_value
 rename obs_value leave_gdp
-duplicates report iso year
 label variable leave_gdp "Public maternity and parental leave spending, percent of GDP"
 save "${datadir_final}/tmp_leave_spending.dta", replace
 
@@ -132,7 +122,6 @@ sort spending_id year
 generate lag_socx_ecec = L1.obs_value
 label variable lag_socx_ecec "Prior-year public ECEC spending (% of GDP)"
 keep iso year lag_socx_ecec
-duplicates report iso year
 
 sort iso year
 save "${datadir_final}/tmp_childcare_spending.dta", replace
@@ -159,15 +148,14 @@ label variable male_rate "Fathers' employment rate, percent"
 label variable female_rate "Mothers' employment rate, percent"
 
 * merge the paid-leave weeks controls
-* unmatched ones are leave years with no job record and countries ILOSTAT leaves out
+* matched rows without a father leave record drop, they carry no entitlement to lag
 merge 1:1 iso year using "${datadir_final}/tmp_leave_weeks.dta"
-keep if _merge==3 & leave_known==1
+keep if _merge==3 & !missing(fatherweeks)
 drop _merge
 drop if missing(male_rate,female_rate)
 generate employment_gap = male_rate-female_rate
 label variable employment_gap "Male minus female employment rate (pp)"
 encode iso, generate(country_id)
-duplicates report country_id year
 
 sort country_id year
 

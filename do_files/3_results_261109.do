@@ -16,7 +16,7 @@ xtreg ln_gap ln_spending ln_leaveweeks ln_motherweeks lag_lngdp ln_leavespending
     i.year c.year_centered#i.country_id, fe
 testparm i.year
 xttest3
-capture noisily xtserial ln_gap ln_spending ln_leaveweeks ln_motherweeks lag_lngdp ln_leavespending
+xtserial ln_gap ln_spending ln_leaveweeks ln_motherweeks lag_lngdp ln_leavespending
 
 * PCSE inference with first-order serial correlation
 xtpcse ln_gap ln_spending ln_leaveweeks ln_motherweeks lag_lngdp ln_leavespending ///
