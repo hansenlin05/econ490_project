@@ -32,7 +32,7 @@ import delimited "${datadir_raw}/country_codes.csv", clear varnames(1)
 
 save "${datadir_final}/tmp_country_codes.dta", replace
 
-* control variable, weeks of paid leave kept for fathers, from the OECD workbook
+* control variables, weeks of paid leave kept for fathers and mothers, from the OECD workbook
 import delimited "${datadir_raw}/oecd_leave_timeseries.csv", clear varnames(1)
 keep country year total_all_raw total_paid_raw total_paid_mothers_raw
 keep if inrange(year,1970,2024)

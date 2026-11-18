@@ -3,7 +3,7 @@
        log:  C:\Users\Hansen\UBC\ECON 490 003 2026W1 Seminar in Applied Economi
 > cs - econ490_project\log_files/1_build_data_261109.log
   log type:  text
- opened on:  17 Nov 2026, 22:42:02
+ opened on:  17 Nov 2026, 23:11:58
 . }
 
 . 
@@ -40,8 +40,8 @@
 file ./data_final/tmp_country_codes.dta saved
 
 . 
-. * control variable, weeks of paid leave kept for fathers, from the OECD workb
-> ook
+. * control variables, weeks of paid leave kept for fathers and mothers, from t
+> he OECD workbook
 . import delimited "${datadir_raw}/oecd_leave_timeseries.csv", clear varnames(1
 > )
 (encoding automatically selected: ISO-8859-1)
@@ -210,7 +210,6 @@ Panel variable: leave_id (strongly balanced)
 >  motherweeks10 lag_motherweeks10 leave_known
 
 . save "${datadir_final}/tmp_leave_weeks.dta", replace
-(file ./data_final/tmp_leave_weeks.dta not found)
 file ./data_final/tmp_leave_weeks.dta saved
 
 . 
