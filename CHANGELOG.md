@@ -401,7 +401,7 @@ so it could not merge without resolving conflicts anyway.
 
 PR #3 (`oecd-primary`, base `427e040`, clean) was closed with one element
 adopted. The adopted part is `test lag_fatherweeks10 = 0` after the main
-regressions: the course's own post-estimation material shows `test 变量 = 0`, and
+regressions: the course's own post-estimation material shows `test varname = 0`, and
 the three lines make the quoted p-values traceable. Everything else was
 declined: it makes the OECD panel the primary analysis, which is a change of
 research design rather than a code improvement; it runs `1_build_data` and

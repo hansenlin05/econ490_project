@@ -44,7 +44,7 @@ language:
 
 | Removed file | Now covered by |
 |---|---|
-| `COMET_Notebook_命令与语法汇总.md`, `StataTest与ECON490Quizzes_命令与语法汇总.md` | `CODE_CONVENTIONS.md` §1 (permitted set), §2 (documented exceptions), §7 (module-by-module provenance) |
+| `COMET_Notebook_command_syntax_index.md`, `StataTest_ECON490Quizzes_command_syntax_index.md` (Chinese, removed) | `CODE_CONVENTIONS.md` §1 (permitted set), §2 (documented exceptions), §7 (module-by-module provenance) |
 | `ECON490_DECISION_2026-11-11.txt` (interaction term) | `README.md` §7 and `RESEARCH_DECISIONS.md` |
 | `ECON490_SAMPLE_SCOPE_NOTE_261112.txt` (Europe stays primary) | superseded — the OECD childcare panel is now the primary and only analysis; see `RESEARCH_DECISIONS.md` §0 |
 | `ECON490_PRECISION_STYLE_DECISION_261114.txt` (float vs double) | `RESEARCH_DECISIONS.md` §4 |
