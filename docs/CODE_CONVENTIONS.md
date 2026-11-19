@@ -48,6 +48,14 @@ package command.
 - `log using ..., text replace`, `log close`, `capture noisily`
 - `cd`, `dir`
 
+`quietly` as a command prefix is permitted by the professor's 18 November
+instruction. Its use is limited to intermediate regressions whose coefficients
+already appear in an exported Word table (build-up columns, subset columns,
+no-trend, level, quadratic and winsorized runs) and to the `summarize v, detail`
+call inside the winsorizing loop. Diagnostics, the main specification,
+`etable` and the data build must not be quieted. The purpose is to keep the
+single combined log inside the page limit.
+
 **Inspection and descriptive work**
 
 - `describe`, `list`, `summarize varlist` and `summarize v, detail`
@@ -107,6 +115,16 @@ course sources show them. `lincom` and `margins` are also excluded. The
 CheatSheet additions and are now out (see §7). The `note()` option on `etable`
 is not demonstrated in any of the source sets, so the exported table's
 fixed-effects statement belongs in a plain comment instead.
+
+`column()` accepts only the course-verbatim values `index`, `dvlabel` and
+`dlabel`; there is no course form that passes a custom column title as a
+string. To make an exported table readable, set `label variable` on the
+relevant variables (COMET 06) and add `varlabel` to `etable` (COMET 12).
+Verified on 18 November for the winsorized table: applying `label variable`
+to each `w_` variable, including the dependent variable `w_ln_gender_gap`,
+together with `varlabel`, replaced every `w_ln_*` name in the export with a
+readable label and changed the column heading from `w_ln_gender_gap` to the
+dependent variable's label. All of these are on the whitelist.
 
 **Banned, with no exceptions**
 

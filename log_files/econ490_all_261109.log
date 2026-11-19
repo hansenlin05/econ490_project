@@ -3,7 +3,7 @@
        log:  C:\Users\Hansen\UBC\ECON 490 003 2026W1 Seminar in Applied Economi
 > cs - econ490_project\log_files/econ490_all_261109.log
   log type:  text
- opened on:  18 Nov 2026, 16:47:54
+ opened on:  18 Nov 2026, 20:21:00
 
 . 
 . /* run the numbered files in order, no per-file logs inside them */
@@ -1205,6 +1205,23 @@ Number of observations                                                          
 (3 real changes made)
 
 . 
+. * give the winsorized variables readable labels for the exported table
+. label variable w_ln_gender_gap "Log of the male minus female employment gap"
+
+. label variable w_ln_childcare_spending "Log of one plus prior-year ECEC spend
+> ing (% of GDP)"
+
+. label variable w_ln_father_leaveweeks "Log of one plus lagged father leave (p
+> er 10 weeks)"
+
+. label variable w_ln_mother_leaveweeks "Log of one plus lagged mother-side pai
+> d leave (per 10 weeks)"
+
+. label variable w_lag_lngdp "Lagged log real GDP per capita"
+
+. label variable w_ln_leave_spending "Log of public leave spending (% of GDP)"
+
+. 
 . quietly xtpcse w_ln_gender_gap w_ln_childcare_spending w_ln_father_leaveweeks
 >  w_ln_mother_leaveweeks w_lag_lngdp ///
 >     w_ln_leave_spending i.year i.country_id c.year_centered#i.country_id, het
@@ -1229,34 +1246,34 @@ Number of observations                                                          
 > lngdp ln_leave_spending ///
 >          w_ln_childcare_spending w_ln_father_leaveweeks w_ln_mother_leaveweek
 > s w_lag_lngdp w_ln_leave_spending) ///
->     mstat(N) showstars showstarsnote column(dvlabel) ///
+>     mstat(N) showstars showstarsnote varlabel column(dvlabel) ///
 >     export("${tabledir}/results_childcare_winsor_261109.docx", replace)
 
-------------------------------------------------------------------------------------------------------------------------
-                                                             Log of the male minus female employment gap w_ln_gender_gap
-------------------------------------------------------------------------------------------------------------------------
-Log of one plus prior-year ECEC spending (% of GDP)                            -0.472 **                                
-                                                                              (0.135)                                   
-Log of one plus lagged father leave (per 10 weeks)                              0.032                                   
-                                                                              (0.028)                                   
-Log of one plus lagged mother-side paid leave (per 10 weeks)                    0.021                                   
-                                                                              (0.033)                                   
-Lagged log real GDP per capita                                                  0.387 *                                 
-                                                                              (0.162)                                   
-Log of public leave spending (% of GDP)                                        -0.083 **                                
-                                                                              (0.028)                                   
-w_ln_childcare_spending                                                                                      -0.479 **  
-                                                                                                            (0.133)     
-w_ln_father_leaveweeks                                                                                        0.031     
-                                                                                                            (0.028)     
-w_ln_mother_leaveweeks                                                                                        0.023     
-                                                                                                            (0.033)     
-w_lag_lngdp                                                                                                   0.443 **  
-                                                                                                            (0.161)     
-w_ln_leave_spending                                                                                          -0.076 **  
-                                                                                                            (0.028)     
-Number of observations                                                            347                           347     
-------------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------------------------------------
+                                                             Log of the male minus female employment gap Log of the male minus female employment gap
+----------------------------------------------------------------------------------------------------------------------------------------------------
+Log of one plus prior-year ECEC spending (% of GDP)                            -0.472 **                                                            
+                                                                              (0.135)                                                               
+Log of one plus lagged father leave (per 10 weeks)                              0.032                                                               
+                                                                              (0.028)                                                               
+Log of one plus lagged mother-side paid leave (per 10 weeks)                    0.021                                                               
+                                                                              (0.033)                                                               
+Lagged log real GDP per capita                                                  0.387 *                                                             
+                                                                              (0.162)                                                               
+Log of public leave spending (% of GDP)                                        -0.083 **                                                            
+                                                                              (0.028)                                                               
+Log of one plus prior-year ECEC spending (% of GDP)                                                                        -0.479 **                
+                                                                                                                          (0.133)                   
+Log of one plus lagged father leave (per 10 weeks)                                                                          0.031                   
+                                                                                                                          (0.028)                   
+Log of one plus lagged mother-side paid leave (per 10 weeks)                                                                0.023                   
+                                                                                                                          (0.033)                   
+Lagged log real GDP per capita                                                                                              0.443 **                
+                                                                                                                          (0.161)                   
+Log of public leave spending (% of GDP)                                                                                    -0.076 **                
+                                                                                                                          (0.028)                   
+Number of observations                                                            347                                         347                   
+----------------------------------------------------------------------------------------------------------------------------------------------------
 ** p<.01, * p<.05
 (collection ETable exported to file
  ./tables/results_childcare_winsor_261109.docx)

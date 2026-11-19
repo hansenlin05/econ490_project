@@ -4,6 +4,17 @@ This file records the team's analysis and repository changes. The 17 November
 documentation and formatting correction was prepared from GitHub main. It
 does not by itself confirm that OneDrive or Canvas has been updated.
 
+## 2026-11-18 — Readable labels in the winsorized table
+
+The winsorized regression table showed raw variable names such as
+`w_ln_childcare_spending` instead of readable labels. The table's `etable`
+command was missing the `varlabel` option, and the generated `w_` variables
+carried no labels. Each `w_` variable, including the dependent variable, is
+now given a `label variable`, and `varlabel` is added to that `etable` call.
+Both commands are course-verbatim and recorded in `docs/CODE_CONVENTIONS.md`.
+A controlled run confirmed that the coefficient rows and both column headings
+now show labels, with all estimates unchanged. The full chain was rerun.
+
 ## 2026-11-18 — One combined logfile and clearer variable names
 
 The four numbered log files are replaced by a single log, `econ490_all_261109.log`,

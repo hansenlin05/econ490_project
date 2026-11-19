@@ -39,6 +39,14 @@ foreach var in ln_gender_gap ln_childcare_spending ln_father_leaveweeks ln_mothe
     replace w_`var' = `high' if `var'>`high'
 }
 
+* give the winsorized variables readable labels for the exported table
+label variable w_ln_gender_gap "Log of the male minus female employment gap"
+label variable w_ln_childcare_spending "Log of one plus prior-year ECEC spending (% of GDP)"
+label variable w_ln_father_leaveweeks "Log of one plus lagged father leave (per 10 weeks)"
+label variable w_ln_mother_leaveweeks "Log of one plus lagged mother-side paid leave (per 10 weeks)"
+label variable w_lag_lngdp "Lagged log real GDP per capita"
+label variable w_ln_leave_spending "Log of public leave spending (% of GDP)"
+
 quietly xtpcse w_ln_gender_gap w_ln_childcare_spending w_ln_father_leaveweeks w_ln_mother_leaveweeks w_lag_lngdp ///
     w_ln_leave_spending i.year i.country_id c.year_centered#i.country_id, het corr(ar1)
 estimates store childcare_winsor
@@ -49,5 +57,5 @@ testparm w_ln_childcare_spending
 etable, estimates(build5 childcare_winsor) ///
     keep(ln_childcare_spending ln_father_leaveweeks ln_mother_leaveweeks lag_lngdp ln_leave_spending ///
          w_ln_childcare_spending w_ln_father_leaveweeks w_ln_mother_leaveweeks w_lag_lngdp w_ln_leave_spending) ///
-    mstat(N) showstars showstarsnote column(dvlabel) ///
+    mstat(N) showstars showstarsnote varlabel column(dvlabel) ///
     export("${tabledir}/results_childcare_winsor_261109.docx", replace)
