@@ -62,7 +62,7 @@ finished and verified; everything left is a manual team action.
 > spending rather than to paid leave in general.
 >
 > The result depends on country-specific trends. Removing only the trends
-> while retaining both fixed effects gives +0.090 (p = 0.5488). We report a
+> while retaining both fixed effects gives +0.092 (p = 0.5357). We report a
 > conditional association under the stated specification, with no causal claim.
 >
 > Childcare is ln(1+x), with x measured in percent of GDP. The local spending
@@ -100,12 +100,12 @@ finished and verified; everything left is a manual team action.
 > and the diagnostic auxiliary regression does not establish that every feature
 > of the final model is correctly specified. The year-effects test has
 > p = 0.1312 and the country-effects F test printed by `xtreg, fe` has p < 0.001.
-> Year effects are retained. The quadratic spending term has p = 0.5643 and
+> Year effects are retained. The quadratic spending term has p = 0.5702 and
 > is excluded from the main regression.
 >
 > Preferred specification: the observed-data PCSE model. Winsorizing all six
 > continuous model variables at the first and 99th percentiles gives a similar
-> childcare coefficient (-0.480, p = 0.0003). The winsorized version is a repeat
+> childcare coefficient (-0.479, p = 0.0003). The winsorized version is a repeat
 > of the same PCSE specification.
 >
 > File note: the 2019 single-year summary table is supplied in Excel form;

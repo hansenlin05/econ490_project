@@ -17,7 +17,7 @@ Companion to the 18 November Econometric Files package.
 
 The 18 November submission is **one set of do-, log-, data-, and image files** uploaded per team to Canvas (Course Outline, "Econometric Files · 10%"; START HERE, Step 6: "Prepare one complete set of do-, log-, data-, and image files for the Canvas submission"). It contains **no stand-alone written document**. The graded written deliverable is the Final Paper due 11 December (30%), drafted 16–25 November. This skeleton therefore covers the Final Paper; a short README skeleton for the 11/18 package is included at the end in case the posted Canvas checklist asks for a file guide.
 
-This is a skeleton, not draft prose. Every number entered later must be taken from the final `3_results_261109.log`, `2_descriptive_261109.log` and the exported tables — never from an earlier handover note. No Stata output may be pasted directly into the paper.
+This is a skeleton, not draft prose. Every number entered later must be taken from the combined `econ490_all_261109.log` and the exported tables — never from an earlier handover note. No Stata output may be pasted directly into the paper.
 
 ---
 

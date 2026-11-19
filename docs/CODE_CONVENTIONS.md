@@ -222,7 +222,7 @@ line.
   slash-option replaces were deleted on 17 November 2026 because the slash text
   occurs only in the paid column, so they never changed a value. The matching
   `fatherweeks` replaces are kept; they do make real changes. The "(0 real
-  changes made)" lines that remain in `4_tables_261109.log` come from the
+  changes made)" lines that remain in `econ490_all_261109.log` come from the
   winsorize loop where a variable has no observation beyond a percentile. They
   are the expected result of the fixed `generate` + `replace` pattern, not
   redundant commands, and are kept.
@@ -266,9 +266,9 @@ Run these before any push. All six are cheap and each has caught a real defect.
 3. Rerun `0_master` from `data_raw`; expect no `r()` error in any log.
 4. Compare the analysis CSV checksums with the previous run; a difference must
    be explainable.
-5. Recheck the four log lengths after 80-character wrapping against the
-   assignment's log limit (the instructor confirmed a 35-page ceiling on
-   16 November 2026).
+5. Recheck the single combined log length after 80-character wrapping against
+   the assignment's log limit (the instructor confirmed a 35-page ceiling on
+   16 November 2026 and asked for one combined log on 18 November).
 
 ## 7. Where each permitted command is demonstrated
 

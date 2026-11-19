@@ -4,6 +4,18 @@ This file records the team's analysis and repository changes. The 17 November
 documentation and formatting correction was prepared from GitHub main. It
 does not by itself confirm that OneDrive or Canvas has been updated.
 
+## 2026-11-19 — Repository reframed as a public reproducibility record
+
+The documentation described this repository only as a private information-sync
+mirror and still carried superseded numbers and per-file log references. The
+README and HANDOVER now present the repository as a public, self-contained
+record of the analysis, name all three contributors, and state plainly that the
+graded submission goes to Canvas from OneDrive. Stale estimates were brought in
+line with the combined log: the main coefficient is −0.472, the winsorized
+repeat −0.479, the level model −7.496, the no-trend comparison +0.092, and the
+quadratic p = 0.5702. Every reference to the retired per-file logs was replaced
+by `econ490_all_261109.log`. No do-file, data file, table or figure changed.
+
 ## 2026-11-18 — Readable labels in the winsorized table
 
 The winsorized regression table showed raw variable names such as

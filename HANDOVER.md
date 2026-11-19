@@ -1,6 +1,6 @@
 # ECON 490 — Project Handover (authoritative English version)
 
-Last updated: 16 November 2026 (local time, MST).
+Last updated: 19 November 2026 (local time, MST).
 This is the single current handover. `README.md` carries the reading order and
 the closed decisions; this file carries the detail; then use
 `docs/HANDOVER_INDEX.md` for the document map.
@@ -14,17 +14,21 @@ given so it can be checked independently.
 
 ## 1. What this repository is, and is not
 
-This GitHub repository (`hansenlin05/econ490_project`) is an **information-sync
-mirror** for the teammates. It is **not** a course submission. The 18 Nov 2026
-"Econometric Files" and the 11 Dec 2026 final paper are submitted from the
-team's OneDrive project folder to Canvas.
+This GitHub repository (`hansenlin05/econ490_project`) is the **public,
+self-contained record** of the team's ECON 490 analysis. It holds the frozen
+source data, the do-files, the combined run log, the tables and figures, and
+the research and course documentation, so a reader with only this repository
+can inspect and reproduce the work. It is **not** the course submission: the
+18 Nov 2026 "Econometric Files" and the 11 Dec 2026 final paper are uploaded
+from the team's OneDrive folder to Canvas.
 
-Standing instruction: changes are synced to OneDrive by default. This GitHub
-mirror is updated only when the team explicitly asks. Do not treat a GitHub
-commit as evidence that anything was submitted to Canvas.
+Contributors: Hansen Lin and Neal Jin (Zewen Jin) wrote and reviewed the Stata
+code and the research design; Sultana wrote the paper text and prepared the
+formatted tables. The git history records each person's commits.
 
-People: Hansen and Neal own the Stata code; Sultana owns the paper text and the
-formatted tables.
+Changes are synced to OneDrive by default for the graded submission; this
+public repository is updated when the team asks. Do not treat a GitHub commit
+as evidence that anything was submitted to Canvas.
 
 ---
 
@@ -54,11 +58,11 @@ Test7. The reported main, comparison, subset, build-up and winsorized models
 use `xtpcse ..., het corr(ar1)`. No `vce(...)` option or separate `robust`
 comparison remains in the active do-files. Country and year effects and the
 existing country-specific trends are retained. The quadratic term has
-p = 0.5643 and is excluded.
+p = 0.5702 and is excluded.
 
 **Conclusion to write up:** a significant negative conditional association
 in the model with country-specific linear trends. Keeping both fixed effects
-but removing the trends gives +0.090 (p = 0.5488). Report this dependence on
+but removing the trends gives +0.092 (p = 0.5357). Report this dependence on
 the specification and avoid a causal interpretation. The earlier father-leave
 analysis remains retired.
 
@@ -67,8 +71,8 @@ analysis remains retired.
 ## 3. Current state and progress (as of 17 Nov 2026)
 
 The OneDrive submission package contains exactly nine delivery directories:
-`do_files/` (5), `log_files/` (4), `tables/` (6), `figures/` (2),
-`data_raw/` (11), `data_final/` (7), plus `literature/`, `paper/`, `slides/`
+`do_files/` (5), `log_files/` (1 combined log), `tables/` (6), `figures/` (2),
+`data_raw/` (6), `data_final/` (7), plus `literature/`, `paper/`, `slides/`
 for the 11 Dec paper. Nothing else is allowed at the project root — no
 changelogs, no handover files, no notes.
 
@@ -76,16 +80,14 @@ Chain: `do_files/0_master_261109.do` sets paths and calls, in order,
 `1_build_data_261109.do`, `2_descriptive_261109.do`, `3_results_261109.do`,
 `4_tables_261109.do`. `1_build_data` rebuilds the locked panel directly from
 the frozen files in `data_raw/`, so a single master run reproduces everything
-from raw inputs. Each numbered do-file opens and closes its own numbered log.
-The fourth do-file exists only to keep every log comfortably under the
-assignment's log limit; the instructor confirmed 35 pages on 16 November 2026
-(see `docs/COURSE_REQUIREMENTS.md`).
+from raw inputs. The master opens one combined log, `econ490_all_261109.log`,
+and all four numbered do-files write into it. The instructor's 18 Nov
+instruction asked for one log containing every do-file's output, within 35
+pages, and permitted `quietly` to keep it short (see `docs/COURSE_REQUIREMENTS.md`).
 
-Latest verification (17 Nov 2026, full rerun from `data_raw`): no `r()` errors
-anywhere, and the key numbers below are exactly the ones in the current logs.
-Log sizes are 606 / 451 / 659 / 808 lines, roughly 12.6 / 9.4 / 13.7 / 16.8
-estimated pages with 80-character wrapping and 48 lines per page, all under
-the current 35-page limit. Final pagination still needs checking in Word.
+Latest verification (18 Nov 2026, full rerun from `data_raw`): no `r()` errors,
+the combined log is about 1286 lines, and the key numbers below are exactly the
+ones in it. Final pagination still needs checking in Word.
 
 All 100-point rubric items on the code side are closed: four official data
 citations in the do-file; a 2019 single-year summary table restricted to rows
@@ -104,8 +106,7 @@ folders, and the 11 Dec paper itself.
 
 ---
 
-## 4. Headline numbers (authority: `log_files/3_results_261109.log` and
-`log_files/4_tables_261109.log`)
+## 4. Headline numbers (authority: `log_files/econ490_all_261109.log`)
 
 All regressions use the 347-observation estimation sample; the subset columns
 use 309 (EU-target group) and 38 (other OECD).
@@ -227,16 +228,17 @@ lecture notes. They are easy to miss and have caused real rework.
   variables", because the fixed-effects estimator absorbs the country effects.
   Run it after the LSDV `regress` that includes `i.country_id`.
 - **The "other OECD" subset column has 38 observations** and its coefficient
-  (−0.327, p = 0.149) is not readable as a policy effect. It is kept because
+  (−0.198, p = 0.416) is not readable as a policy effect. It is kept because
   the rubric requires three columns and the split is theory-driven; the table
   note says so.
 - **The SOCX lag is built on the full SOCX series before the merge**, in the
   same way as the GDP and leave lags. Building any lag after the merge lets
   outcome availability select the sample; that mistake is why an earlier
   direction's event-study numbers were retired.
-- **Six added regressions can push a log past its page limit.** The build-up
-  and winsorized work live in a fourth numbered do-file with its own log;
-  Workflow Guide 18 §18.2.2 allows a separate do-file for tables.
+- **The regression and table output is long enough to need `quietly`.** The
+  build-up and winsorized work live in a fourth numbered do-file, and the
+  instructor's 18 Nov instruction allows `quietly` on intermediate regressions
+  to keep the single combined log under 35 pages.
 - **Live endpoint reads are unreliable and would break reproducibility.** The
   ILOSTAT API endpoint returned HTTP 200 with 0 bytes for both `.csv` and
   `.csv.gz`, and the Eurostat SDMX 3.0 response did not finish in 20 s. The
@@ -276,12 +278,12 @@ Full list with evidence: `docs/PITFALLS_AND_CORRECTIONS.md`.
 | Country-specific linear trends remain in the main model | Removing only the trends gives +0.092, p = 0.536, so the result is explicitly conditional on that choice |
 | No quadratic term | The PCSE quadratic test gives p = 0.5702 |
 | Unwinsorized specification preferred | The winsorized PCSE coefficient is −0.479, p < 0.001, close to the main −0.472, p = 0.0005 |
-| Fourth numbered do-file for the tables | Keeps every log well under the 35-page limit; Workflow Guide 18 §18.2.2 allows it |
+| Fourth numbered do-file for the tables | Keeps the added regressions organized; the single combined log stays well under the 35-page limit with `quietly` on intermediate runs |
 | Build-up table on one fixed sample | All five columns use the same 347-observation sample so coefficient moves read as the effect of added controls |
 | 2019 summary table as `.csv` + `.xlsx` | Rubric says "Excel or Word document"; Canvas file types do not list `.xlsx`, so the CSV is the upload-safe fallback |
 | Every lag built on its own full annual series before any merge | One principle covers GDP, leave weeks, leave spending and ECEC spending |
 | Access dates: SOCX 15 November 2026, the other four sources 14 November 2026 | Kept as written in the do-file citation block |
-| OneDrive is the submission source; GitHub is a mirror | Standing instruction. GitHub is updated only on explicit request |
+| OneDrive is the submission source; GitHub is the public reproducibility record | Standing instruction. Graded files go to Canvas from OneDrive; this repository is updated as a public record when the team asks |
 
 Full rationale: `docs/RESEARCH_DECISIONS.md`. Citation strings and the official
 "How to cite" rules: `docs/DATA_CITATIONS.md`.

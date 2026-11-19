@@ -18,7 +18,7 @@ quoted in the submission. Every decision below belongs to the current chain.
 
 | Decision | Rationale | Evidence |
 |---|---|---|
-| OECD panel (23 countries, 2000-2024, 477 country-years; estimation sample 347) is the primary and only analysis | ILOSTAT household series is defined for parents of children under 6 in every OECD member; the outcome concept is one series, so no pooling question arises | `1_build_data_261109.do`, `3_results_261109.log` |
+| OECD panel (23 countries, 2000-2024, 477 country-years; estimation sample 347) is the primary and only analysis | ILOSTAT household series is defined for parents of children under 6 in every OECD member; the outcome concept is one series, so no pooling question arises | `1_build_data_261109.do`, `econ490_all_261109.log` |
 | Estimation sample is the complete-case flag `childcare_sample` | Every model variable must be observed; the flag is built with `generate`/`replace`/`missing()` and labelled | `1_build_data_261109.do` end block; `tabulate childcare_sample` in `1_build_data_261109.log` |
 | `lag_socx_ecec` (prior-year public ECEC spending, % of GDP) is the main explanatory variable | Instructor's suggested direction; SOCX TP521 is the official OECD series for publicly funded early childhood education and care | OECD SOCX; citation block in `1_build_data_261109.do` |
 | Every lag is built on its own full annual series before any merge | A lag built after the merge disappears whenever the previous year's outcome is missing, which lets outcome availability decide the estimation sample. Applies to GDP, leave weeks, leave spending and ECEC spending alike | `1_build_data_261109.do` lag blocks |
@@ -36,9 +36,9 @@ options is historical and does not override this instruction.
 
 | Decision | Rationale |
 |---|---|
-| PCSE with panel-specific heteroskedasticity and common AR(1) is the main estimator | This is the Test7 form requested by the user. Childcare is −0.473, SE 0.136, p = 0.0005 |
-| Country and year effects and country-specific trends remain | This preserves the existing mean model. Removing only the trends gives +0.090, SE 0.150, p = 0.5488. The negative association is conditional on the trend specification |
-| No quadratic term in the main model | The PCSE quadratic test has p = 0.5643 and the term is excluded |
+| PCSE with panel-specific heteroskedasticity and common AR(1) is the main estimator | This is the Test7 form requested by the user. Childcare is −0.472, SE 0.135, p = 0.0005 |
+| Country and year effects and country-specific trends remain | This preserves the existing mean model. Removing only the trends gives +0.092, SE 0.148, p = 0.5357. The negative association is conditional on the trend specification |
+| No quadratic term in the main model | The PCSE quadratic test has p = 0.5702 and the term is excluded |
 | Observed data preferred | Full 1/99 winsorization of all six continuous variables gives −0.479, SE 0.133, p < 0.001 |
 | Diagnostics precede PCSE | `testparm i.year` p = 0.1342, country-effects F(22,276) = 56.83 with p < 0.001 in the `xtreg` output, `xttest3` p < 0.001 and `xtserial` p = 0.0006 |
 | Log transformations match the build code | Outcome and leave spending use ln(x), childcare and both leave-week controls use ln(1+x), lagged GDP per capita is logged and is the only GDP control |
@@ -81,7 +81,7 @@ These choices were made against the hard rubric in
 | Only demonstrated Stata syntax; `L1.` / `F1.` after `encode` + `xtset` + `sort` | Course handout constraint; the permitted list, the banned list and the documented exceptions are in `docs/CODE_CONVENTIONS.md` |
 | Prefer whitelist compliance over byte-identical CSVs when only storage precision changes | The `string()` removal is the latest application: the built panel's values were unchanged bit-for-bit, so every coefficient, standard error, p-value and sample size was unchanged |
 | Access dates: SOCX 16 November 2026, the other three sources 14 November 2026 | Kept exactly as written in the do-file citation block; see `docs/DATA_CITATIONS.md` |
-| OneDrive is the submission source; GitHub is a mirror | Standing instruction. GitHub is updated only on explicit request |
+| OneDrive is the submission source; GitHub is the public reproducibility record | Standing instruction. Graded files go to Canvas from OneDrive; this repository is updated as a public record when the team asks |
 
 ## 5. Still open (team decisions, not yet settled)
 

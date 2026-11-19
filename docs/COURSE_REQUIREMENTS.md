@@ -146,9 +146,9 @@ removed as a permitted source on 16 November 2026.
 | Single-year summary table | `tables/descriptive_2019_oecd_childcare_261109.xlsx` and `.csv` (the CSV is the upload-safe fallback if Canvas rejects the Excel format) |
 | Overlapping histograms | `figures/histogram_childcare_byregion_261109.png` |
 | Other publication graphs | `figures/scatter_gap_childcare_261109.png` |
-| Heteroskedasticity / serial correlation / FE tests | `log_files/3_results_261109.log` (`xttest3`, `xtserial`, `testparm i.year`, and the country-effects F test printed by `xtreg, fe`) |
-| Single specification | `log_files/3_results_261109.log`, `tables/results_oecd_childcare_261109.docx` |
-| Full winsorized repeat + quadratic check | `log_files/4_tables_261109.log`, `tables/results_childcare_winsor_261109.docx` |
-| Build-up table, one variable at a time, all columns on 347 observations | `tables/results_childcare_buildup_261109.docx`, `log_files/4_tables_261109.log` |
+| Heteroskedasticity / serial correlation / FE tests | `log_files/econ490_all_261109.log` (`xttest3`, `xtserial`, `testparm i.year`, and the country-effects F test printed by `xtreg, fe`) |
+| Single specification | `log_files/econ490_all_261109.log`, `tables/results_oecd_childcare_261109.docx` |
+| Full winsorized repeat + quadratic check | `log_files/econ490_all_261109.log`, `tables/results_childcare_winsor_261109.docx` |
+| Build-up table, one variable at a time, all columns on 347 observations | `tables/results_childcare_buildup_261109.docx`, `log_files/econ490_all_261109.log` |
 | Subset table, three columns (309 + 38 = 347) | `tables/results_childcare_subsets_261109.docx`, `log_files/2_descriptive_261109.log` |
 | Fully annotated logs under 35 pages | `log_files/*.log` (conservative estimates 12.2 / 8.8 / 19.0 / 15.6 pages) |

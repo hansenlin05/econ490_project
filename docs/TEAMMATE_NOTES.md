@@ -11,11 +11,16 @@ correct. For the 18 Nov submission rules, read `RUBRIC_REDLINES.md`.
 
 ## What this repository is
 
-A mirror for information sync and handoff between teammates. It is **not** the
-course submission. The 18 Nov 2026 Econometric Files and the 11 Dec 2026 final
-paper are uploaded from the team's OneDrive project to Canvas. Nothing here is
-graded. By standing instruction, changes are synced to OneDrive by default and
-to GitHub only when the team asks.
+A public, self-contained record of the team's ECON 490 analysis. It holds the
+frozen source data, do-files, combined log, tables, figures and documentation
+so a reader with only this repository can inspect and reproduce the work. It is
+**not** the course submission. The 18 Nov 2026 Econometric Files and the 11 Dec
+2026 final paper are uploaded from the team's OneDrive project to Canvas.
+Nothing here is graded. By standing instruction, changes are synced to OneDrive
+by default and to this public repository when the team asks.
+
+Contributors: Hansen Lin and Neal Jin (Zewen Jin) wrote and reviewed the Stata
+code and research design; Sultana wrote the paper text and formatted tables.
 
 All rules in this repository are justified with filenames or URLs. If a source
 file named in a rule is not available, ask the team for the file rather than
@@ -73,13 +78,13 @@ treating a GitHub commit as a Canvas submission.
 
 Full rationale in `docs/RESEARCH_DECISIONS.md`.
 
-## Current headline numbers (from `log_files/3_results_261109.log`)
+## Current headline numbers (from `log_files/econ490_all_261109.log`)
 
 All regressions use N = 347. The subset columns use 309 and 38 observations.
-The primary PCSE AR(1) coefficient is -0.473 (SE 0.136, p = 0.0005), and the
-all-variable winsorized repeat gives -0.480 (SE 0.133, p = 0.0003). Without
-country trends, keeping both fixed effects, childcare is +0.090 (p = 0.5488).
-The level comparison gives -7.579 (p = 0.0059). The EU-target subset gives
+The primary PCSE AR(1) coefficient is -0.472 (SE 0.135, p = 0.0005), and the
+all-variable winsorized repeat gives -0.479 (SE 0.133, p = 0.0003). Without
+country trends, keeping both fixed effects, childcare is +0.092 (p = 0.5357).
+The level comparison gives -7.496 (p = 0.0050). The EU-target subset gives
 -0.449 (p = 0.002 as rounded in the log), and other OECD gives -0.159 (p = 0.538).
 
 The main local spending elasticity at mean spending of 0.538 percent of GDP
@@ -88,7 +93,7 @@ association depends on the country trend specification. PCSE uses the Test7
 assumption of panel-specific heteroskedasticity and common AR(1).
 
 Diagnostics: year effects p = 0.1312, country-effects F test in `xtreg` output
-p < 0.001, `xttest3` p < 0.001, `xtserial` p = 0.0006, quadratic term p = 0.5643.
+p < 0.001, `xttest3` p < 0.001, `xtserial` p = 0.0006, quadratic term p = 0.5702.
 
 ## Evidence hierarchy
 
