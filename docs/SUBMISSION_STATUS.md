@@ -1,17 +1,19 @@
-# 18 Nov submission notes — OECD childcare chain
+# 18 Nov submission record — OECD childcare chain
 
-Last updated 17 November 2026. This is the actionable checklist. Code work is
-finished and verified; everything left is a manual team action.
+Last updated 19 November 2026. The 18 Nov Econometric Files were submitted;
+this page records the submitted package and the ready-to-paste Canvas comments.
+For the current project state and the 11 Dec paper, see `README.md` and
+`HANDOVER.md`.
 
-## 1. Done and verified
+## 1. Submitted package
 
-- Five numbered do-files, four numbered logs, six tables (four Word tables
-  plus the 2019 summary as `.csv` and `.xlsx`), two PNG figures, eleven
-  `data_raw` inputs, seven `data_final` outputs.
-- Full rerun from `data_raw` on 17 Nov: no `r()` errors anywhere. Logs are
-  606 / 451 / 659 / 808 lines, roughly 12.6 / 9.4 / 13.7 / 16.8 pages with
-  80-character wrapping — all under the 35-page limit the instructor
-  confirmed on 16 November 2026.
+- Five numbered do-files plus one master, one combined log
+  (`econ490_all_261109.log`, about 1286 lines), six tables (four Word tables
+  plus the 2019 summary as `.csv` and `.xlsx`), two PNG figures, six `data_raw`
+  inputs, seven `data_final` outputs.
+- Full rerun from `data_raw` on 18 Nov: no `r()` errors; the combined log holds
+  every do-file's output and stays under the 35-page limit the instructor
+  confirmed on 16 November 2026. Final rendered page count to confirm in Word.
 - All four data sources cited in the do-file citation block
   (see `docs/DATA_CITATIONS.md`).
 - 2019 single-year summary table, restricted to rows with the main regressor
@@ -99,7 +101,7 @@ finished and verified; everything left is a manual team action.
 > heteroskedasticity and common AR(1) in PCSE. These are assumed error structures,
 > and the diagnostic auxiliary regression does not establish that every feature
 > of the final model is correctly specified. The year-effects test has
-> p = 0.1312 and the country-effects F test printed by `xtreg, fe` has p < 0.001.
+> p = 0.1342 and the country-effects F test printed by `xtreg, fe` has p < 0.001.
 > Year effects are retained. The quadratic spending term has p = 0.5702 and
 > is excluded from the main regression.
 >
@@ -115,6 +117,6 @@ finished and verified; everything left is a manual team action.
 ## 4. After 18 Nov
 
 Sultana drafts the 11 Dec paper from `docs/COURSE_REQUIREMENTS.md` §3,
-`docs/LITERATURE_SOURCES.md`, and the four numbered logs. Any number in the
-paper must be traceable to a log, and any new empirical work must be added to
-a do-file and rerun so the log contains it.
+`docs/LITERATURE_SOURCES.md`, the paper outline, and the single combined log.
+Any number in the paper must be traceable to `econ490_all_261109.log`, and any
+new empirical work must be added to a do-file and rerun so the log contains it.

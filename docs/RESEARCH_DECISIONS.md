@@ -19,7 +19,7 @@ quoted in the submission. Every decision below belongs to the current chain.
 | Decision | Rationale | Evidence |
 |---|---|---|
 | OECD panel (23 countries, 2000-2024, 477 country-years; estimation sample 347) is the primary and only analysis | ILOSTAT household series is defined for parents of children under 6 in every OECD member; the outcome concept is one series, so no pooling question arises | `1_build_data_261109.do`, `econ490_all_261109.log` |
-| Estimation sample is the complete-case flag `childcare_sample` | Every model variable must be observed; the flag is built with `generate`/`replace`/`missing()` and labelled | `1_build_data_261109.do` end block; `tabulate childcare_sample` in `1_build_data_261109.log` |
+| Estimation sample is the complete-case flag `childcare_sample` | Every model variable must be observed; the flag is built with `generate`/`replace`/`missing()` and labelled | `1_build_data_261109.do` end block; `tabulate childcare_sample` in `econ490_all_261109.log` |
 | `lag_socx_ecec` (prior-year public ECEC spending, % of GDP) is the main explanatory variable | Instructor's suggested direction; SOCX TP521 is the official OECD series for publicly funded early childhood education and care | OECD SOCX; citation block in `1_build_data_261109.do` |
 | Every lag is built on its own full annual series before any merge | A lag built after the merge disappears whenever the previous year's outcome is missing, which lets outcome availability decide the estimation sample. Applies to GDP, leave weeks, leave spending and ECEC spending alike | `1_build_data_261109.do` lag blocks |
 | `lag_fatherweeks10` stays in the model as a control | Father-specific leave is the strongest competing policy explanation for the same outcome; dropping it would confound the childcare association | `0_master_261109.do` global `controls` |
@@ -70,7 +70,7 @@ These choices were made against the hard rubric in
 
 | Decision | Rationale |
 |---|---|
-| Five numbered do-files, four numbered logs | Workflow Guide 18 §18.2.2 permits a separate do-file for tables; the fourth do-file keeps every log under the 35-page limit the instructor confirmed on 16 November 2026 (conservative estimates 12.2 / 8.8 / 19.0 / 15.6 pages) |
+| Five do-files (one master + four numbered), one combined log | Workflow Guide 18 §18.2.2 permits a separate do-file for tables. The 18 Nov instruction prefers a single log containing every do-file's output; the master opens `econ490_all_261109.log`, all numbered do-files write into it, and `quietly` on intermediate regressions keeps it under the 35-page limit confirmed on 16 November 2026 |
 | Leave-week corrections as literal numeric replaces | The workbook stores weeks as text with occasional slash-separated options; values are parsed with `real()` and every year correction is a hardcoded literal taken from the recorded next year. The `string()`/`F1.snapshot` construction was removed on 16 November 2026 as it had no first-hand course source; the literal version is bit-identical in the built panel |
 | `real()` is a documented exception | The slash-text column cannot be parsed without it; `destring` is not course material either. Documented in `docs/CODE_CONVENTIONS.md` |
 | Full 1/99 winsorized repeat | Rubric item 7 says "with all variables winsorized"; the repeat covers all five continuous model variables via `summarize, detail` percentiles plus `generate`/`replace` |

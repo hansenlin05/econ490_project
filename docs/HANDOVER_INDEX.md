@@ -32,33 +32,28 @@ document collection.
 | File | What it answers |
 |---|---|
 | `LITERATURE_SOURCES.md` | Article PDFs by filename, the EU policy sources for the subset split, plus AER / Chicago paper-format rules |
-| `ECON490_PAPER_OUTLINE_EN_261112.md` | Final-paper outline with word budgets |
-| `ECON490_SULTANA_TASKS_261111.txt` | Division of labour; Sultana owns paper text and formatted tables |
+| `ECON490_PAPER_OUTLINE_EN_261112.md` | Final-paper outline with word budgets and the authoritative numbers to use |
 
-## 4. Where the Chinese material went
+## 4. Retired directions and files
 
-Earlier versions of this mirror carried Chinese working notes and two
-Chinese-language command indexes. Their content now lives in the English
-documents and the files themselves were removed, so the repository has one
-language:
+The earlier Europe-primary father-specific-leave design and its Chinese working
+notes were retired on 16 November 2026, when the team adopted the OECD childcare
+panel. Their content is either superseded or already carried forward:
 
-| Removed file | Now covered by |
-|---|---|
-| `COMET_Notebook_command_syntax_index.md`, `StataTest_ECON490Quizzes_command_syntax_index.md` (Chinese, removed) | `CODE_CONVENTIONS.md` §1 (permitted set), §2 (documented exceptions), §7 (module-by-module provenance) |
-| `ECON490_DECISION_2026-11-11.txt` (interaction term) | `README.md` §7 and `RESEARCH_DECISIONS.md` |
-| `ECON490_SAMPLE_SCOPE_NOTE_261112.txt` (Europe stays primary) | superseded — the OECD childcare panel is now the primary and only analysis; see `RESEARCH_DECISIONS.md` §0 |
-| `ECON490_PRECISION_STYLE_DECISION_261114.txt` (float vs double) | `RESEARCH_DECISIONS.md` §4 |
-| `ECON490_ECONOMETRIC_FILES_GAP_261114.txt` (rubric gap audit) | `COURSE_REQUIREMENTS.md` and `SUBMISSION_STATUS.md` |
-| `ECON490_NEAL_REPORT_261113_CN.txt` (status report) | `HANDOVER.md` §3 and `CHANGELOG.md` |
-| `NEAL_HANDOFF_USABLE_261113.txt` (old file provenance) | retired with the files it described |
-| `SYNC_STATUS_2026-11-14.md` (mirror scope and the 15 Nov verification) | `README.md` §3, `SUBMISSION_STATUS.md` §1 and §2 |
+- Interaction-term decision, precision/float decision and the rubric gap audit → `RESEARCH_DECISIONS.md`, `docs/COURSE_REQUIREMENTS.md`.
+- Status and file-provenance notes → `HANDOVER.md` and `CHANGELOG.md`.
+- Command syntax indexes → `CODE_CONVENTIONS.md` §1–§2 and §7.
+- Any father-leave coefficient, sample size or p-value from that design is retired and must not reappear in the paper.
+
+The single-file childcare PCSE variant is preserved in `legacy/prior_pcse/`
+for rollback only; see §6 below.
 
 ## 5. Authoritative outputs elsewhere in this repository
 
-- `log_files/econ490_all_261109.log` — one combined log holding the diagnostics, main,
-  subset, build-up and winsorized estimates. Highest authority.
-- `log_files/2_descriptive_261109.log` — 2019 summary table, figures and subset columns.
-- `log_files/1_build_data_261109.log` — sample construction and coverage counts.
+- `log_files/econ490_all_261109.log` — the single combined log holding everything:
+  sample construction and coverage counts, diagnostics, 2019 summary, figures,
+  main, subset, build-up and winsorized estimates. Highest authority; this is
+  the only log file in the repository.
 - `tables/results_oecd_childcare_261109.docx` — main result table.
 - `1_build_data_261109.do` (`* Data sources` block) — the four data citations.
 
