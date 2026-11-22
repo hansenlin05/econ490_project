@@ -40,7 +40,7 @@ The nine PDFs currently held (Patnaik 2019; Kleven, Landais & Søgaard 2019; Kot
 
 ## 3. Data (500–750 words)
 
-1. Sources and citations: ILOSTAT household employment series; OECD Family Database PF2.1/PF2.5; OECD SOCX (TP521 for ECEC spending); World Bank WDI. All datasets must appear in the bibliography.
+1. Sources and citations: ILOSTAT household employment series; OECD Family Database PF2.5 (paid-leave weeks); OECD SOCX (TP521 for ECEC spending, TP512 for parental-leave spending); World Bank WDI. All datasets must appear in the bibliography.
 2. Sample: 23 OECD countries, 2000–2024 source window (477 panel rows); estimation sample 347 complete cases over 2001–2023. The lag consumes the first year and missing covariates consume the rest; explain why this is not an error.
 3. Variable construction and units: employment gap in percentage points; ECEC spending as a share of GDP lagged one year; father and mother paid-leave weeks in 10-week units, lagged; log real GDP per capita lagged; public maternity and parental leave spending as a share of GDP. Explain the one-year lag and the slash-coded leave-cell rule.
 4. Required table: mean, sd, min, max, N for **all** model variables, with appropriate decimal places and CAPS variable names used consistently. The 2019 summary is in `tables/descriptive_2019_oecd_childcare_261109.csv`.

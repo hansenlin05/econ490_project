@@ -88,7 +88,7 @@ loses 15–35 points before the regressions are read.
 - **Must**: rerun that same regression with **all** variables winsorized, and
   comment on whether this is the preferred specification.
 - **Must not**: winsorize only two variables and call it "all"; skip the
-  preferred-specification comment. Our repeat covers all five continuous model
+  preferred-specification comment. Our repeat covers all six continuous model
   variables and the comment states the unwinsorized model is preferred.
 
 ### Item 8 — Build-up table (15 pts)

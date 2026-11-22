@@ -7,7 +7,7 @@ For the current project state and the 11 Dec paper, see `README.md` and
 
 ## 1. Submitted package
 
-- Five numbered do-files plus one master, one combined log
+- Four numbered do-files plus one master, one combined log
   (`econ490_all_261109.log`, about 1286 lines), six tables (four Word tables
   plus the 2019 summary as `.csv` and `.xlsx`), two PNG figures, six `data_raw`
   inputs, seven `data_final` outputs.

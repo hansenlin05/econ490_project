@@ -94,7 +94,7 @@ citations in the do-file; a 2019 single-year summary table restricted to rows
 with the main regressor, exported as `.csv` and `.xlsx`; a four-column
 build-up table on one fixed estimation sample; a three-column subset table
 (all countries / EU-target group / other OECD); two overlapping subset
-histograms; a full 1/99 winsorized repeat of all five continuous model
+histograms; a full 1/99 winsorized repeat of all six continuous model
 variables; `testparm` tests for the year effects and the country effects; and
 the required comments on unmatched merges, winsorization preference and
 non-linearity.
