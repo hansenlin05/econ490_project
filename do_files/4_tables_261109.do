@@ -29,7 +29,7 @@ etable, estimates(build1 build2 build3 build4 build5) ///
     mstat(N) showstars showstarsnote varlabel column(dvlabel) ///
     export("${tabledir}/results_childcare_buildup_261109.docx", replace)
 
-* winsorize each continuous variable with the three steps from the course
+* winsorize each continuous variable at the 1st and 99th percentile
 quietly summarize ln_gender_gap, detail
 local low_gap = r(p1)
 local high_gap = r(p99)

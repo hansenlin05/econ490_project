@@ -9,7 +9,7 @@ clear
 /* Directory settings, where each global points */
 ********************* * Directory Settings ***********************
 
-capture noisily cd "C:\Users\Hansen\UBC\ECON 490 003 2026W1 Seminar in Applied Economics - econ490_project"
+capture noisily cd "C:\Users\Hansen\UBC\ECON 490 003 2026W1 Seminar in Applied Economics - 2_Team\econ490_project"
 capture noisily dir
 
 global proj_name "econ490_project"                 // project name
@@ -30,6 +30,7 @@ global run_build = 1                // 0 skip the build, 1 run it
 global run_descriptive = 1          // 0 skip, 1 run
 global run_mainresults = 1          // 0 skip, 1 run
 global run_tables = 1               // 0 skip, 1 run
+global run_validate = 1             // 0 skip, 1 run
 
 /* one log for the whole run, hosted here so every do writes to the same file */
 capture log close
@@ -47,6 +48,9 @@ if ${run_mainresults}==1 {
 }
 if ${run_tables}==1 {
     capture noisily do "${do_dir}/4_tables_261109.do"
+}
+if ${run_validate}==1 {
+    capture noisily do "${do_dir}/5_validate_2019_261125.do"
 }
 
 capture log close

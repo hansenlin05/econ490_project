@@ -4,6 +4,25 @@ This file records the team's analysis and repository changes. The 17 November
 documentation and formatting correction was prepared from GitHub main. It
 does not by itself confirm that OneDrive or Canvas has been updated.
 
+## 2026-11-25 — Add a 2019 group-definition check do-file
+
+A fifth numbered do-file, `5_validate_2019_261125.do`, checks the two 2019
+group definitions used in the poster. It reports the median of prior-year
+childcare spending and the mean employment gap in each group, first across all
+2019 observations with both measures and then within the complete-case sample.
+The file uses only permitted commands: `duplicates report` for the panel key,
+`tabulate` for sample counts, and `summarize` with `if` conditions for the
+group statistics. Before this form was adopted, both versions were run on the
+final panel and the four group means matched to the last digit.
+
+The do-files as frozen on 18 November are preserved under
+`do_files/archive_1118_261125/`. `0_master_261109.do` gained a `run_validate`
+switch and now calls the fifth file after the tables. Its project directory
+line points to the current team folder. The chain was rerun from raw data:
+no `r()` error, combined log 1544 lines, main coefficient -0.472 with N = 347,
+and the same group means. The rebuilt analysis data is numerically identical
+to the previous panel across all 20 numeric columns.
+
 ## 2026-11-19 — Repository reframed as a public reproducibility record
 
 The documentation described this repository only as a private information-sync

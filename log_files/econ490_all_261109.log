@@ -1,9 +1,9 @@
 -------------------------------------------------------------------------------
       name:  <unnamed>
        log:  C:\Users\Hansen\UBC\ECON 490 003 2026W1 Seminar in Applied Economi
-> cs - econ490_project\log_files/econ490_all_261109.log
+> cs - 2_Team\econ490_project\log_files/econ490_all_261109.log
   log type:  text
- opened on:  18 Nov 2026, 21:02:53
+ opened on:  25 Nov 2026, 15:57:35
 
 . 
 . /* run the numbered files in order, no per-file logs inside them */
@@ -1181,7 +1181,7 @@ Number of observations                                                          
  ./tables/results_childcare_buildup_261109.docx)
 
 . 
-. * winsorize each continuous variable with the three steps from the course
+. * winsorize each continuous variable at the 1st and 99th percentile
 . quietly summarize ln_gender_gap, detail
 
 . local low_gap = r(p1)
@@ -1352,6 +1352,189 @@ Number of observations                                                          
 ** p<.01, * p<.05
 (collection ETable exported to file
  ./tables/results_childcare_winsor_261109.docx)
+
+. 
+end of do-file
+. }
+
+. if ${run_validate}==1 {
+.     capture noisily do "${do_dir}/5_validate_2019_261125.do"
+
+. /* Project info
+>    5_validate_2019_261125.do | check the two 2019 group definitions used in t
+> he poster */
+. 
+. use "${datadir_final}/oecd_childcare_261109.dta", clear
+
+. 
+. * check the panel key
+. duplicates report iso year
+
+Duplicates in terms of iso year
+
+--------------------------------------
+   Copies | Observations       Surplus
+----------+---------------------------
+        1 |          477             0
+--------------------------------------
+
+. 
+. * list countries with employment data and with the full model sample
+. tabulate iso if !missing(employment_gap)
+
+        iso |      Freq.     Percent        Cum.
+------------+-----------------------------------
+        AUT |         25        5.24        5.24
+        BEL |         25        5.24       10.48
+        CAN |          1        0.21       10.69
+        CHL |         15        3.14       13.84
+        COL |         18        3.77       17.61
+        CRI |         24        5.03       22.64
+        CZE |         23        4.82       27.46
+        DEU |         25        5.24       32.70
+        ESP |         25        5.24       37.95
+        EST |         21        4.40       42.35
+        FRA |         25        5.24       47.59
+        GBR |         20        4.19       51.78
+        GRC |         21        4.40       56.18
+        HUN |         25        5.24       61.43
+        IRL |         19        3.98       65.41
+        ITA |          8        1.68       67.09
+        LTU |         11        2.31       69.39
+        LUX |         15        3.14       72.54
+        LVA |         11        2.31       74.84
+        MEX |         20        4.19       79.04
+        NLD |         21        4.40       83.44
+        POL |         19        3.98       87.42
+        PRT |         13        2.73       90.15
+        SVN |         11        2.31       92.45
+        TUR |         15        3.14       95.60
+        USA |         21        4.40      100.00
+------------+-----------------------------------
+      Total |        477      100.00
+
+. tabulate iso if childcare_sample == 1
+
+        iso |      Freq.     Percent        Cum.
+------------+-----------------------------------
+        AUT |         21        6.05        6.05
+        BEL |         21        6.05       12.10
+        CAN |          1        0.29       12.39
+        CHL |         14        4.03       16.43
+        COL |         12        3.46       19.88
+        CZE |         20        5.76       25.65
+        DEU |         21        6.05       31.70
+        ESP |         21        6.05       37.75
+        EST |         17        4.90       42.65
+        FRA |         22        6.34       48.99
+        GBR |         19        5.48       54.47
+        GRC |         18        5.19       59.65
+        HUN |         21        6.05       65.71
+        IRL |         16        4.61       70.32
+        ITA |          8        2.31       72.62
+        LTU |          7        2.02       74.64
+        LUX |         14        4.03       78.67
+        LVA |          7        2.02       80.69
+        NLD |         20        5.76       86.46
+        POL |         16        4.61       91.07
+        PRT |         13        3.75       94.81
+        SVN |          7        2.02       96.83
+        TUR |         11        3.17      100.00
+------------+-----------------------------------
+      Total |        347      100.00
+
+. 
+. * all 2019 observations with both measures, median in the lower group
+. keep if year == 2019 & !missing(employment_gap, lag_socx_ecec)
+(454 observations deleted)
+
+. summarize lag_socx_ecec, detail
+
+         Prior-year public ECEC spending (% of GDP)
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%         .316           .316
+ 5%         .328           .328
+10%         .328           .328       Obs                  23
+25%         .457           .349       Sum of wgt.          23
+
+50%         .546                      Mean           .5891304
+                        Largest       Std. dev.      .2231466
+75%         .691           .798
+90%         .812           .812       Variance       .0497944
+95%         .851           .851       Skewness       1.291033
+99%        1.291          1.291       Kurtosis       5.240446
+
+. generate above_all = lag_socx_ecec > r(p50)
+
+. summarize employment_gap if above_all == 0
+
+    Variable |        Obs        Mean    Std. dev.       Min        Max
+-------------+---------------------------------------------------------
+employment~p |         12    33.19608    15.64898   9.880005     58.573
+
+. summarize employment_gap if above_all == 1
+
+    Variable |        Obs        Mean    Std. dev.       Min        Max
+-------------+---------------------------------------------------------
+employment~p |         11    25.26655    13.81914   9.281006     52.364
+
+. 
+. * complete-case sample, median recalculated within the 2019 subset
+. list iso if childcare_sample == 0
+
+     +-----+
+     | iso |
+     |-----|
+  5. | CRI |
+ 18. | MEX |
+ 23. | USA |
+     +-----+
+
+. keep if childcare_sample == 1
+(3 observations deleted)
+
+. sort lag_socx_ecec
+
+. list iso lag_socx_ecec in 10/11
+
+     +----------------+
+     | iso   lag_so~c |
+     |----------------|
+ 10. | ITA       .553 |
+ 11. | SVN       .634 |
+     +----------------+
+
+. summarize lag_socx_ecec, detail
+
+         Prior-year public ECEC spending (% of GDP)
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%         .316           .316
+ 5%         .322           .328
+10%        .3385           .349       Obs                  20
+25%        .4655           .457       Sum of wgt.          20
+
+50%        .5935                      Mean              .6172
+                        Largest       Std. dev.      .2254111
+75%        .7345           .798
+90%        .8315           .812       Variance       .0508102
+95%        1.071           .851       Skewness       1.187984
+99%        1.291          1.291       Kurtosis       5.037719
+
+. generate above_model = lag_socx_ecec > r(p50)
+
+. summarize employment_gap if above_model == 0
+
+    Variable |        Obs        Mean    Std. dev.       Min        Max
+-------------+---------------------------------------------------------
+employment~p |         10     29.6921    14.06267   9.880005     58.573
+
+. summarize employment_gap if above_model == 1
+
+    Variable |        Obs        Mean    Std. dev.       Min        Max
+-------------+---------------------------------------------------------
+employment~p |         10      24.447     14.2821   9.281006     52.364
 
 . 
 end of do-file
