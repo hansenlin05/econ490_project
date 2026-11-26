@@ -31,6 +31,7 @@ global run_descriptive = 1          // 0 skip, 1 run
 global run_mainresults = 1          // 0 skip, 1 run
 global run_tables = 1               // 0 skip, 1 run
 global run_validate = 1             // 0 skip, 1 run
+global run_additional = 1           // 0 skip, 1 run
 
 /* one log for the whole run, hosted here so every do writes to the same file */
 capture log close
@@ -51,6 +52,9 @@ if ${run_tables}==1 {
 }
 if ${run_validate}==1 {
     capture noisily do "${do_dir}/5_validate_2019_261125.do"
+}
+if ${run_additional}==1 {
+    capture noisily do "${do_dir}/6_additional_checks_261125.do"
 }
 
 capture log close

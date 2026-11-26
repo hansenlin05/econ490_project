@@ -4,6 +4,16 @@ This file records the team's analysis and repository changes. The 17 November
 documentation and formatting correction was prepared from GitHub main. It
 does not by itself confirm that OneDrive or Canvas has been updated.
 
+## 2026-11-25 — Bring the paper chain in line with the team folder
+
+The master in this repository still stopped at the fifth numbered do-file,
+while the team folder's master also runs `6_additional_checks_261125.do`. The
+sixth do-file and its four Word tables and two adjusted-scatter figures were
+missing here. The master now carries the `run_additional` switch and calls the
+sixth file after validation, and all six do-files match the team folder byte
+for byte. This is a synchronization of files already in use, not a change to
+any estimate.
+
 ## 2026-11-25 — Poster replication moved into its own folder
 
 The code that reproduces the conference poster now lives apart from the paper
