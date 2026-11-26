@@ -4,6 +4,32 @@ This file records the team's analysis and repository changes. The 17 November
 documentation and formatting correction was prepared from GitHub main. It
 does not by itself confirm that OneDrive or Canvas has been updated.
 
+## 2026-11-25 — Poster replication moved into its own folder
+
+The code that reproduces the conference poster now lives apart from the paper
+chain. The numbered paper do-files remain in `do_files/`, while the poster's
+figure and supplemental-check do-files sit in `do_files/poster/` with their own
+entry file. Both chains read the same analysis panel built by the paper chain;
+the poster chain does not modify it. The finished poster, the five figures,
+and the model comparison and sensitivity tables are in `poster/`.
+
+The poster is built from the version agreed by the team, with the three author
+names restored in the credit line. Its model uses 2010 as the reference year
+for country-specific linear trends, the same 347 complete country-years from
+23 OECD countries, and Prais-Winsten estimates with panel-corrected standard
+errors and a common AR(1) process. The headline childcare coefficient is
+-0.472 (standard error 0.135); the comparison without country trends is 0.092.
+
+The poster scripts were restricted to commands covered by the course notebooks
+and the Stata cheat sheet. Where a covered command had an equivalent in the
+course notebooks, the notebook form was used: the model comparison is written
+with `etable` rather than a hand-built document, stars come from `showstars`
+rather than a manually computed normal tail probability, the lead-spending
+merge uses `merge` followed by `drop if _merge == 2` rather than a merge option
+with no course source, and the sample-coverage bars are built with `input` and
+`replace` rather than a manual observation count. A test run completed without
+a runtime error and produced all five figures and all six tables.
+
 ## 2026-11-25 — Add a 2019 group-definition check do-file
 
 A fifth numbered do-file, `5_validate_2019_261125.do`, checks the two 2019
