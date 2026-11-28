@@ -8,8 +8,8 @@ clear
 /* Directory settings */
 ********************* * Directory Settings ***********************
 
-global datadir_raw "."                   // raw SOCX extract for the placebo test
-global datadir_final "."                 // panel built by the main chain
+global datadir_raw "./data_raw"                   // raw SOCX extract for the placebo test
+global datadir_final "./data_final"                 // panel built by the main chain
 global poster_tabledir "./poster"        // output folder for the poster tables
 
 /* Load the estimation sample and set the panel */
@@ -25,12 +25,12 @@ xtset country_id year, yearly
    country-specific linear trends. Stars and standard errors come from etable. */
 ********************* * Model Comparison ***********************
 
-local variables ln_spending ln_leaveweeks ln_motherweeks lag_lngdp ln_leavespending
-xtpcse ln_gap `variables', het corr(ar1)
+local variables ln_childcare_spending ln_father_leaveweeks ln_mother_leaveweeks lag_lngdp ln_leave_spending
+xtpcse ln_gender_gap `variables', het corr(ar1)
 estimates store pooled
-xtpcse ln_gap `variables' i.year i.country_id, het corr(ar1)
+xtpcse ln_gender_gap `variables' i.year i.country_id, het corr(ar1)
 estimates store two_way_fe
-xtpcse ln_gap `variables' i.year i.country_id c.year_centered#i.country_id, het corr(ar1)
+xtpcse ln_gender_gap `variables' i.year i.country_id c.year_centered#i.country_id, het corr(ar1)
 estimates store main_trends
 etable, estimates(pooled two_way_fe main_trends) keep(`variables') ///
     mstat(N) showstars showstarsnote varlabel ///
@@ -41,15 +41,15 @@ etable, estimates(pooled two_way_fe main_trends) keep(`variables') ///
 
 generate ln_mothers = ln(female_rate)
 generate ln_fathers = ln(male_rate)
-local controls ln_leaveweeks ln_motherweeks lag_lngdp ln_leavespending ///
+local controls ln_father_leaveweeks ln_mother_leaveweeks lag_lngdp ln_leave_spending ///
     i.year i.country_id c.year_centered#i.country_id
-quietly xtpcse ln_gap ln_spending `controls', het corr(ar1)
+quietly xtpcse ln_gender_gap ln_childcare_spending `controls', het corr(ar1)
 estimates store outcome_gap
-quietly xtpcse ln_mothers ln_spending `controls', het corr(ar1)
+quietly xtpcse ln_mothers ln_childcare_spending `controls', het corr(ar1)
 estimates store outcome_mothers
-quietly xtpcse ln_fathers ln_spending `controls', het corr(ar1)
+quietly xtpcse ln_fathers ln_childcare_spending `controls', het corr(ar1)
 estimates store outcome_fathers
-etable, estimates(outcome_gap outcome_mothers outcome_fathers) keep(ln_spending) ///
+etable, estimates(outcome_gap outcome_mothers outcome_fathers) keep(ln_childcare_spending) ///
     mstat(N) showstars showstarsnote varlabel ///
     export("${poster_tabledir}/childcare_gender_outcomes.docx", replace)
 
@@ -77,13 +77,13 @@ keep if childcare_sample == 1
 generate year_centered_post = year - 2010
 sort country_id year
 xtset country_id year, yearly
-local controls_post ln_leaveweeks ln_motherweeks lag_lngdp ln_leavespending ///
+local controls_post ln_father_leaveweeks ln_mother_leaveweeks lag_lngdp ln_leave_spending ///
     i.year i.country_id c.year_centered_post#i.country_id
-quietly xtpcse ln_gap ln_spending `controls_post' if !missing(lead_spending), het corr(ar1)
+quietly xtpcse ln_gender_gap ln_childcare_spending `controls_post' if !missing(lead_spending), het corr(ar1)
 estimates store placebo_base
-quietly xtpcse ln_gap ln_spending lead_spending `controls_post' if !missing(lead_spending), het corr(ar1)
+quietly xtpcse ln_gender_gap ln_childcare_spending lead_spending `controls_post' if !missing(lead_spending), het corr(ar1)
 estimates store placebo_joint
-etable, estimates(placebo_base placebo_joint) keep(ln_spending lead_spending) ///
+etable, estimates(placebo_base placebo_joint) keep(ln_childcare_spending lead_spending) ///
     mstat(N) showstars showstarsnote varlabel ///
     export("${poster_tabledir}/childcare_placebo.docx", replace)
 
@@ -95,38 +95,38 @@ keep if childcare_sample == 1
 generate year_centered = year - 2010
 sort country_id year
 xtset country_id year, yearly
-local controls_loo ln_leaveweeks ln_motherweeks lag_lngdp ln_leavespending ///
+local controls_loo ln_father_leaveweeks ln_mother_leaveweeks lag_lngdp ln_leave_spending ///
     i.year i.country_id c.year_centered#i.country_id
 levelsof iso, local(countries)
 foreach country of local countries {
-    quietly xtpcse ln_gap ln_spending `controls_loo' if iso != "`country'", het corr(ar1)
+    quietly xtpcse ln_gender_gap ln_childcare_spending `controls_loo' if iso != "`country'", het corr(ar1)
     estimates store omit_`country'
 }
 etable, estimates(omit_AUT omit_BEL omit_CAN omit_CHL omit_COL omit_CZE omit_DEU omit_ESP omit_EST omit_FRA omit_GBR omit_GRC omit_HUN omit_IRL omit_ITA omit_LTU omit_LUX omit_LVA omit_NLD omit_POL omit_PRT omit_SVN omit_TUR) ///
-    keep(ln_spending) mstat(N) showstars showstarsnote ///
+    keep(ln_childcare_spending) mstat(N) showstars showstarsnote ///
     export("${poster_tabledir}/childcare_leave_one_out.docx", replace)
 
 /* COVID-era sensitivity: full window, excluding 2020-21, and pre-2020 only */
 ********************* * COVID Sensitivity ***********************
 
-local controls_covid ln_spending ln_leaveweeks ln_motherweeks lag_lngdp ln_leavespending ///
+local controls_covid ln_childcare_spending ln_father_leaveweeks ln_mother_leaveweeks lag_lngdp ln_leave_spending ///
     i.year i.country_id c.year_centered#i.country_id
-quietly xtpcse ln_gap `controls_covid' if year < 2024, het corr(ar1)
+quietly xtpcse ln_gender_gap `controls_covid' if year < 2024, het corr(ar1)
 estimates store covid_full
-quietly xtpcse ln_gap `controls_covid' if !inrange(year, 2020, 2021), het corr(ar1)
+quietly xtpcse ln_gender_gap `controls_covid' if !inrange(year, 2020, 2021), het corr(ar1)
 estimates store covid_exclude
-quietly xtpcse ln_gap `controls_covid' if year <= 2019, het corr(ar1)
+quietly xtpcse ln_gender_gap `controls_covid' if year <= 2019, het corr(ar1)
 estimates store covid_pre
-etable, estimates(covid_full covid_exclude covid_pre) keep(ln_spending) ///
+etable, estimates(covid_full covid_exclude covid_pre) keep(ln_childcare_spending) ///
     mstat(N) showstars showstarsnote varlabel ///
     export("${poster_tabledir}/childcare_covid_sensitivity.docx", replace)
 
 /* Diagnostics: heteroskedasticity, serial correlation, year and panel effects */
 ********************* * Diagnostics ***********************
 
-xtreg ln_gap ln_spending ln_leaveweeks ln_motherweeks lag_lngdp ln_leavespending ///
+xtreg ln_gender_gap ln_childcare_spending ln_father_leaveweeks ln_mother_leaveweeks lag_lngdp ln_leave_spending ///
     i.year c.year_centered#i.country_id, fe
 testparm i.year
 testparm c.year_centered#i.country_id
 capture noisily xttest3
-capture noisily xtserial ln_gap ln_spending ln_leaveweeks ln_motherweeks lag_lngdp ln_leavespending
+capture noisily xtserial ln_gender_gap ln_childcare_spending ln_father_leaveweeks ln_mother_leaveweeks lag_lngdp ln_leave_spending

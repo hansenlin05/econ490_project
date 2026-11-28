@@ -8,7 +8,7 @@ clear
 /* Directory settings */
 ********************* * Directory Settings ***********************
 
-global datadir_final "."                 // panel built by the main chain
+global datadir_final "./data_final"                 // panel built by the main chain
 global poster_figdir "./poster"          // output folder for the poster figures
 
 /* Load the estimation sample and set the panel */
@@ -28,14 +28,14 @@ xtset country_id year, yearly
    then fit a line to the residuals. Each point is one country-year. */
 ********************* * Adjusted Scatter ***********************
 
-local adjustment ln_leaveweeks ln_motherweeks lag_lngdp ln_leavespending ///
+local adjustment ln_father_leaveweeks ln_mother_leaveweeks lag_lngdp ln_leave_spending ///
     i.year i.country_id c.year_centered#i.country_id
-regress ln_spending `adjustment'
+regress ln_childcare_spending `adjustment'
 predict spend_hat, xb
-generate adjusted_spending = ln_spending - spend_hat
-regress ln_gap `adjustment'
+generate adjusted_spending = ln_childcare_spending - spend_hat
+regress ln_gender_gap `adjustment'
 predict gap_hat, xb
-generate adjusted_gap = ln_gap - gap_hat
+generate adjusted_gap = ln_gender_gap - gap_hat
 regress adjusted_gap adjusted_spending
 twoway (scatter adjusted_gap adjusted_spending, msize(small) mcolor("20 125 135%70")) ///
     (lfit adjusted_gap adjusted_spending, lcolor("20 53 72") lwidth(medthick)), ///
@@ -51,11 +51,11 @@ generate step = _n
 generate coefficient = .
 local added
 local position 1
-foreach control in baseline ln_leaveweeks ln_motherweeks lag_lngdp ln_leavespending {
+foreach control in baseline ln_father_leaveweeks ln_mother_leaveweeks lag_lngdp ln_leave_spending {
     if "`control'" != "baseline" local added `added' `control'
-    quietly xtpcse ln_gap ln_spending `added' ///
+    quietly xtpcse ln_gender_gap ln_childcare_spending `added' ///
         i.year i.country_id c.year_centered#i.country_id, het corr(ar1)
-    replace coefficient = _b[ln_spending] if step == `position'
+    replace coefficient = _b[ln_childcare_spending] if step == `position'
     local ++position
 }
 keep if !missing(coefficient)
