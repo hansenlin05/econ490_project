@@ -35,10 +35,13 @@ label variable ln_gender_gap "Log of the male minus female employment gap"
 label variable ln_mothers "Log of mothers' employment rate"
 label variable ln_fathers "Log of fathers' employment rate"
 quietly xtpcse ln_gender_gap ln_childcare_spending `controls', het corr(ar1)
+testparm ln_childcare_spending
 estimates store outcome_gap
 quietly xtpcse ln_mothers ln_childcare_spending `controls', het corr(ar1)
+testparm ln_childcare_spending
 estimates store outcome_mothers
 quietly xtpcse ln_fathers ln_childcare_spending `controls', het corr(ar1)
+testparm ln_childcare_spending
 estimates store outcome_fathers
 etable, estimates(outcome_gap outcome_mothers outcome_fathers) ///
     keep(ln_childcare_spending) mstat(N) showstars showstarsnote varlabel column(dvlabel) ///
